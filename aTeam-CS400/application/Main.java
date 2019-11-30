@@ -1,10 +1,13 @@
 package application;
 	
+import java.util.ArrayList;
+
 import javafx.application.Application;
 import javafx.stage.Stage;
 import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
+import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
 import javafx.scene.layout.BorderPane;
@@ -13,21 +16,28 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 
-
 public class Main extends Application {
+	
 	@Override
 	public void start(Stage primaryStage) {
 		try {
 			BorderPane root = new BorderPane();
 			
-			root.setCenter(createCanvasPane());
+			/*** Add panes to main pane ***/
 			
+			root.setCenter(createCanvasPane());	
+			root.setBottom(createButtonPane());
 			
+			/*** Set scene ***/
 			
 			Scene scene = new Scene(root,800,600);
 			scene.getStylesheets().add(getClass().getResource("application.css").toExternalForm());
+			
+			/*** Set Stage and show ***/
+			
 			primaryStage.setScene(scene);
 			primaryStage.show();
+			
 		} catch(Exception e) {
 			e.printStackTrace();
 		}
@@ -142,12 +152,50 @@ public class Main extends Application {
 		gc.strokeLine(CIRCLE_WIDTH, CIRCLE_HEIGHT / 2, FRIEND_X_OFFSET, CIRCLE_HEIGHT / 2);		
 	}
 	
-	private GridPane createButtonPane() {
+	private HBox createButtonPane() {
+		
+		/*** Local Constants ***/
+		
+		final double BUTTON_HEIGHT  = 20.0;
+		final double BUTTON_WIDTH   = 90.0;
+		final double BUTTON_SPACING = 10.0;
 		
 		/*** Local Variables ***/
 
-		GridPane buttonPane = new GridPane();
+		HBox buttonPane = new HBox();
 		
+		ArrayList<Button> buttonList = new ArrayList<Button>();
+		
+		Button btnClear   = new Button("Clear"   );
+		Button btnNewUser = new Button("New User");
+		Button btnUndo    = new Button("Undo"    );
+		Button btnRedo    = new Button("Redo"    );
+		Button btnLoad    = new Button("Load"    );
+		Button btnExport  = new Button("Export"  );
+		Button btnExit    = new Button("Exit"    );
+		
+		/*** Add buttons to Array ***/
+		
+		buttonList.add(btnClear  );
+		buttonList.add(btnNewUser);
+		buttonList.add(btnUndo   );
+		buttonList.add(btnRedo   );
+		buttonList.add(btnLoad   );
+		buttonList.add(btnExport );
+		buttonList.add(btnExit   );	
+		
+		/*** Set spacing for HBox ***/
+		
+		buttonPane.setSpacing(BUTTON_SPACING);
+		
+		/*** Set button size and add to pane***/
+		
+		for (Button b : buttonList) {
+			
+			b.setPrefSize(BUTTON_WIDTH, BUTTON_HEIGHT);
+			
+			buttonPane.getChildren().add(b);
+		}
 		
 		return buttonPane;
 	}

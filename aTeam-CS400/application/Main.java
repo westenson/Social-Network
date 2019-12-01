@@ -3,6 +3,9 @@ package application;
 import java.util.ArrayList;
 
 import javafx.application.Application;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
+import javafx.geometry.Insets;
 import javafx.stage.Stage;
 import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
@@ -21,20 +24,40 @@ public class Main extends Application {
 	@Override
 	public void start(Stage primaryStage) {
 		try {
+			
+			/*** Local Variables ***/
+			
 			BorderPane root = new BorderPane();
 			
-			/*** Add panes to main pane ***/
+			VBox centerBox = new VBox();
 			
-			root.setCenter(createCanvasPane());	
-			root.setBottom(createButtonPane());
+			HBox spacer1 = new HBox();  // TEMPORARY FOR SPACING PURPOSES
+			HBox spacer2 = new HBox();  // TEMPORARY FOR SPACING PURPOSES			
+			
+			/*** Add components to centerBox ***/
+			
+			centerBox.getChildren().add(createCanvasPane());
+			centerBox.getChildren().add(createButtonPane());
+			
+			/*** Create Spacers ***/
+			
+			spacer1 = createPlaceHolder();  // TEMPORARY FOR SPACING PURPOSES
+			spacer2 = createPlaceHolder();  // TEMPORARY FOR SPACING PURPOSES
+			
+			/*** Add components to root ***/
+			
+			root.setTop(spacer1);		 // TEMPORARY FOR SPACING PURPOSES	
+			root.setCenter(centerBox);	
+			root.setBottom(spacer2);     // TEMPORARY FOR SPACING PURPOSES
 			
 			/*** Set scene ***/
 			
-			Scene scene = new Scene(root,800,600);
+			Scene scene = new Scene(root,725,550);
 			scene.getStylesheets().add(getClass().getResource("application.css").toExternalForm());
 			
 			/*** Set Stage and show ***/
 			
+			primaryStage.setTitle("Network Visualizer");
 			primaryStage.setScene(scene);
 			primaryStage.show();
 			
@@ -43,7 +66,7 @@ public class Main extends Application {
 		}
 	}
 	
-	private BorderPane createCanvasPane() {
+	private HBox createCanvasPane() {
 		
 		/*** Local Constants ***/
 		
@@ -52,7 +75,7 @@ public class Main extends Application {
 		
 		/*** Local Variables ***/
 		
-		BorderPane pane = new BorderPane();		
+		HBox mainBox = new HBox();		
 		
 		Canvas canvas = new Canvas(CANVAS_X, CANVAS_Y);
 		
@@ -62,12 +85,24 @@ public class Main extends Application {
 				
 		VBox rightBox = new VBox();
 		
-		ListView<String> friendList = new ListView<String>();
+		ListView<String> lvFriends = new ListView<String>();
 		
-		/*** Add components to HBox ***/
+		/*** HARDCODED DATA FOR EXAMPLE ***/
+		
+		ObservableList<String> friendsList = FXCollections.observableArrayList ("Friend 1", 
+											 "Friend 2", "Friend 3", "Friend 4");
+		
+		lvFriends.setItems(friendsList);
+		
+		/*** Add components to VBox ***/
 		
 		rightBox.getChildren().add(lblRadioChoice);
-		rightBox.getChildren().add(friendList);
+		rightBox.getChildren().add(lvFriends);
+		
+		/*** Set padding ***/
+		
+		mainBox.setPadding(new Insets(15, 15, 15, 15));
+		mainBox.setSpacing(130);
 		
 		/*** Add EXAMPLE FRIENDS ***/
 		
@@ -75,10 +110,10 @@ public class Main extends Application {
 		
 		/*** Add components to main pane ***/
 		
-		pane.setLeft(canvas);
-		pane.setRight(rightBox);
+		mainBox.getChildren().add(canvas);
+		mainBox.getChildren().add(rightBox);
 				
-		return pane;
+		return mainBox;
 	}
 	
 	private void drawExampleFriends(GraphicsContext gc, double x, double y) {
@@ -184,8 +219,9 @@ public class Main extends Application {
 		buttonList.add(btnExport );
 		buttonList.add(btnExit   );	
 		
-		/*** Set spacing for HBox ***/
+		/*** Set spacing for buttons ***/
 		
+		buttonPane.setPadding(new Insets(0, 15, 0, 15));
 		buttonPane.setSpacing(BUTTON_SPACING);
 		
 		/*** Set button size and add to pane***/
@@ -198,6 +234,21 @@ public class Main extends Application {
 		}
 		
 		return buttonPane;
+	}
+	
+	private HBox createPlaceHolder() {
+		
+		/*** Local Variables ***/
+		
+		HBox spacer = new HBox();
+		
+		spacer.setSpacing(20);
+		
+		for (int i = 0; i < 7; i++) {
+			spacer.getChildren().add(new Button("Placeholder " + i));
+		}		
+		
+		return spacer;
 	}
 	
 	public static void main(String[] args) {

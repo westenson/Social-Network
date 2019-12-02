@@ -14,5 +14,3 @@ Which team members were on same xteam together?
 Dan, Andrew and Drew were all members of xteam 61.
 
 Other notes or comments to the grader:
-
-[place any comments or notes that will help the grader here]

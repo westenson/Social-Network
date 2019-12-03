@@ -22,7 +22,7 @@ import javafx.scene.paint.Color;
 
 /***************************************************************************************************
 *
-* @author 		Dan Gerstl
+* @author 		Dan Gerstl, Cecelia Peterson
 *
 * @version	 	1.0 <p>
 *
@@ -215,25 +215,30 @@ public class Main extends Application {
     	
     	// create combo box for friend
     	VBox v2 = new VBox();
-    	Label l2 = new Label("Main Profile");
+    	Label l2 = new Label("Friend");
     	ObservableList<String> friends = 
     			FXCollections.observableArrayList("Friend 1","Friend 2","Friend 3");
     	ComboBox c2 = new ComboBox(users);
     	v2.getChildren().addAll(l2, c2);
     	
     	// create button for remove user and remove friendship
+    	VBox v3 = new VBox();
 		Button btnRmUser = new Button("Remove User");
+		v3.getChildren().add(btnRmUser);
+		v3.snappedBottomInset();
+    	VBox v4 = new VBox();
     	Button btnRmFriend = new Button("Remove Friendship");
-		
-		final double BUTTON_HEIGHT  = 20.0;
-		final double BUTTON_WIDTH   = 90.0;
-		
-		btnRmUser.setPrefSize(150.0, 20.0);
-		btnRmFriend.setPrefSize(150.0, 20.0);
+		v4.getChildren().add(btnRmFriend);
+		v4.snappedBottomInset();
+				
+		btnRmUser.setPrefSize(150.0, 40.0);
+		btnRmFriend.setPrefSize(150.0, 40.0);
     	
     	// add all nodes to top panel
     	topPanel.getChildren().addAll(tGroupContainer, v1, v2, btnRmUser, btnRmFriend);
 		topPanel.setSpacing(20);
+		
+		topPanel.setPadding(new Insets(15, 15, 0, 15));
 
 		return topPanel;
 		
@@ -242,15 +247,19 @@ public class Main extends Application {
 	private HBox createBottomPanel() { 
 		
 		HBox bottomPanel = new HBox();
-				
+			
+		// create variable for previous action
 		String prevAction = "Last Action Taken";
-		Label lastAction = new Label("Last Action Taken");
+		Label lastAction = new Label(prevAction);
 		
-		int currentUsers = 0;
+		// create variable for number of current users
+		int currentUsers = 4;
 		Label userCount = new Label("Total Current Users: " + currentUsers);
 		
 		bottomPanel.getChildren().addAll(lastAction, userCount);
-		bottomPanel.setSpacing(475);
+		bottomPanel.setSpacing(440);
+		
+		bottomPanel.setPadding(new Insets(15, 15, 15, 15));
 		
 		return bottomPanel;
 		

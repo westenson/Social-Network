@@ -93,14 +93,14 @@ public class Main extends Application {
 		
 		/*** Local Constants ***/
 		
-		final double CANVAS_X = 300;
-		final double CANVAS_Y = 300;
+		final double CANVAS_X_SIZE = 300;
+		final double CANVAS_Y_SIZE = 300;
 		
 		/*** Local Variables ***/
 		
 		HBox mainBox = new HBox();		
 		
-		Canvas canvas = new Canvas(CANVAS_X, CANVAS_Y);
+		Canvas canvas = new Canvas(CANVAS_X_SIZE, CANVAS_Y_SIZE);
 		
 		GraphicsContext gc = canvas.getGraphicsContext2D();
 		
@@ -129,7 +129,7 @@ public class Main extends Application {
 		
 		/*** Add EXAMPLE FRIENDS ***/
 		
-		drawExampleFriends(gc, CANVAS_X, CANVAS_Y);
+		drawExampleFriends(gc, CANVAS_X_SIZE, CANVAS_Y_SIZE);
 		
 		/*** Add components to main pane ***/
 		

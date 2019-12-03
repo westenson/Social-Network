@@ -11,8 +11,11 @@ import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.control.Button;
+import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
+import javafx.scene.control.RadioButton;
+import javafx.scene.control.ToggleGroup;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
@@ -31,8 +34,8 @@ public class Main extends Application {
 			
 			VBox centerBox = new VBox();
 			
-			HBox spacer1 = new HBox();  // TEMPORARY FOR SPACING PURPOSES
-			HBox spacer2 = new HBox();  // TEMPORARY FOR SPACING PURPOSES			
+			HBox topPanel = new HBox();  
+			HBox bottomPanel = new HBox();  // TEMPORARY FOR SPACING PURPOSES			
 			
 			/*** Add components to centerBox ***/
 			
@@ -41,14 +44,14 @@ public class Main extends Application {
 			
 			/*** Create Spacers ***/
 			
-			spacer1 = createPlaceHolder();  // TEMPORARY FOR SPACING PURPOSES
-			spacer2 = createPlaceHolder();  // TEMPORARY FOR SPACING PURPOSES
+			topPanel = createTopPanel();  // TEMPORARY FOR SPACING PURPOSES
+			bottomPanel = createBottomPanel();  // TEMPORARY FOR SPACING PURPOSES
 			
 			/*** Add components to root ***/
 			
-			root.setTop(spacer1);		 // TEMPORARY FOR SPACING PURPOSES	
+			root.setTop(topPanel);		 
 			root.setCenter(centerBox);	
-			root.setBottom(spacer2);     // TEMPORARY FOR SPACING PURPOSES
+			root.setBottom(bottomPanel);     // TEMPORARY FOR SPACING PURPOSES
 			
 			/*** Set scene ***/
 			
@@ -249,6 +252,74 @@ public class Main extends Application {
 		}		
 		
 		return spacer;
+	}
+	
+	private HBox createTopPanel() { 
+		
+		HBox topPanel = new HBox();
+		
+		// create radio buttons for left-most feature
+    	RadioButton rb1 = new RadioButton("Show all friends");
+    	RadioButton rb2 = new RadioButton("Show mutual friends");
+    	RadioButton rb3 = new RadioButton("Show shortest path");
+
+        VBox tGroupContainer = new VBox(rb1, rb2, rb3);
+    	final ToggleGroup tGroup = new ToggleGroup();
+    	
+    	rb1.setSelected(true);
+    	rb1.setToggleGroup(tGroup);
+    	rb2.setToggleGroup(tGroup);
+    	rb3.setToggleGroup(tGroup);
+    	
+    	// create combo box for main profile
+    	VBox v1 = new VBox();
+    	Label l1 = new Label("Main Profile");
+    	ObservableList<String> users = 
+    			FXCollections.observableArrayList("User 1","User 2","User 3");
+    	ComboBox c1 = new ComboBox(users);
+    	v1.getChildren().addAll(l1, c1);
+    	
+    	// create combo box for friend
+    	VBox v2 = new VBox();
+    	Label l2 = new Label("Main Profile");
+    	ObservableList<String> friends = 
+    			FXCollections.observableArrayList("Friend 1","Friend 2","Friend 3");
+    	ComboBox c2 = new ComboBox(users);
+    	v2.getChildren().addAll(l2, c2);
+    	
+    	// create button for remove user and remove friendship
+		Button btnRmUser = new Button("Remove User");
+    	Button btnRmFriend = new Button("Remove Friendship");
+		
+		final double BUTTON_HEIGHT  = 20.0;
+		final double BUTTON_WIDTH   = 90.0;
+		
+		btnRmUser.setPrefSize(150.0, 20.0);
+		btnRmFriend.setPrefSize(150.0, 20.0);
+    	
+    	// add all nodes to top panel
+    	topPanel.getChildren().addAll(tGroupContainer, v1, v2, btnRmUser, btnRmFriend);
+		topPanel.setSpacing(20);
+
+		return topPanel;
+		
+	}
+	
+	private HBox createBottomPanel() { 
+		
+		HBox bottomPanel = new HBox();
+				
+		String prevAction = "Last Action Taken";
+		Label lastAction = new Label("Last Action Taken");
+		
+		int currentUsers = 0;
+		Label userCount = new Label("Total Current Users: " + currentUsers);
+		
+		bottomPanel.getChildren().addAll(lastAction, userCount);
+		bottomPanel.setSpacing(475);
+		
+		return bottomPanel;
+		
 	}
 	
 	public static void main(String[] args) {

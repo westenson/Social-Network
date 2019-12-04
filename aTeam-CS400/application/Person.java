@@ -26,9 +26,6 @@ public class Person {
     private String name;
     private String[] friends;
 
-    public Person() {
-    }
-
     public Person(String name, String[] friends) {
         this.name = name;
         this.friends = friends;

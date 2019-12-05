@@ -62,7 +62,7 @@ public class Main extends Application {
 			
 			/*** Create top and bottom panels ***/
 			
-			topPanel = createTopPanel();  
+			topPanel    = createTopPanel();  
 			bottomPanel = createBottomPanel();  
 			
 			/*** Add components to root ***/
@@ -129,7 +129,9 @@ public class Main extends Application {
 		
 		/*** Add EXAMPLE FRIENDS ***/
 		
-		drawExampleFriends(gc, CANVAS_X_SIZE, CANVAS_Y_SIZE);
+		//drawExampleFriends(gc, CANVAS_X_SIZE, CANVAS_Y_SIZE);
+		
+		drawFriends(gc, CANVAS_X_SIZE, CANVAS_Y_SIZE, "USER");
 		
 		/*** Add components to main pane ***/
 		
@@ -336,6 +338,63 @@ public class Main extends Application {
 		
 		gc.strokeLine(0, CIRCLE_HEIGHT / 2, CIRCLE_WIDTH - FRIEND_X_OFFSET, CIRCLE_HEIGHT / 2);
 		gc.strokeLine(CIRCLE_WIDTH, CIRCLE_HEIGHT / 2, FRIEND_X_OFFSET, CIRCLE_HEIGHT / 2);		
+	}
+	
+	private void drawFriends(GraphicsContext gc, double x, double y, String user) {
+		
+		/*** Local Constants ***/
+		
+		final double CIRCLE_HEIGHT    = 50.0;
+		final double CIRCLE_WIDTH     = 50.0;
+		final double CIRCLE_MID		  = CIRCLE_HEIGHT / 2;
+		final double START_X 	      = 0.0;
+		final double START_Y	      = 0.0;
+		final double FRIEND_X_OFFSET  = 75.0;
+		final double FRIEND_Y_OFFSET  = 75.0;
+		final double CENTERING_OFFSET = 10.0;
+		
+		/*** Local Variables ***/
+		
+		double centerX = x / 2.0;
+		double centerY = y / 2.0;
+		
+		/*** Set drawing properties ***/
+		
+		gc.setFill(Color.CRIMSON);
+		gc.setStroke(Color.BLACK);
+		gc.setLineWidth(1);
+		
+		/*** Move to center of canvas ***/
+		
+		gc.translate(centerX, centerY);
+		
+		/*** Draw main user ***/
+		
+		gc.fillOval(START_X, START_Y, CIRCLE_WIDTH, CIRCLE_HEIGHT);
+		
+		/*** Label main user ***/
+		
+		gc.strokeText(user, CENTERING_OFFSET, CIRCLE_MID + CENTERING_OFFSET / 2);
+		
+		/*** Set color for friends ***/
+		
+		gc.setFill(Color.INDIANRED);
+		
+		gc.fillOval(START_X, START_Y - FRIEND_Y_OFFSET, CIRCLE_WIDTH, CIRCLE_HEIGHT);
+		gc.strokeText("Friend 1", CENTERING_OFFSET, CIRCLE_MID - FRIEND_Y_OFFSET + CENTERING_OFFSET);
+		gc.strokeLine(CIRCLE_MID, 0, CIRCLE_MID, CIRCLE_HEIGHT - FRIEND_Y_OFFSET);
+		
+		gc.rotate(90.0);
+		
+		gc.fillOval(START_X, START_Y - FRIEND_Y_OFFSET, CIRCLE_WIDTH, CIRCLE_HEIGHT);
+		gc.strokeLine(CIRCLE_MID, 0, CIRCLE_MID, CIRCLE_HEIGHT - FRIEND_Y_OFFSET);
+		
+		gc.rotate(-90.0);
+		gc.translate(FRIEND_X_OFFSET, FRIEND_Y_OFFSET);
+		
+		
+		gc.strokeText("Friend 2", CENTERING_OFFSET, CIRCLE_MID - FRIEND_Y_OFFSET + CENTERING_OFFSET);
+		
 	}
 	
 	/*** Application ***/

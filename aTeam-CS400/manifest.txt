@@ -1,3 +1,0 @@
-Manifest-Version: 1.0
-Created-By: Dan Gerstl, Cecelia Peterson
-Main-Class: application.Main

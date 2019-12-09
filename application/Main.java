@@ -584,6 +584,48 @@ public class Main extends Application {
 		lvFriends.setItems(friendsList);		
 	}
 	
+	/*** Click event methods ***/
+	
+	private void clickClear() {
+		
+	}
+	
+	private void clickNewUser() {
+		
+	}
+	
+	private void clickUndo() {
+		
+	}	
+	
+	private void clickRedo() {
+		
+	}
+	
+	private void clickLoad() {
+		
+	}
+	
+	private void clickExport() {
+		
+	}
+	
+	private void clickExit() {
+		
+	}
+
+	private void clickRemoveUser() {
+		
+	}
+	
+	private void clickRemoveFriendship() {
+		
+	}
+	
+	private void clickFriendListBox() {
+		
+	}
+	
 	/*** Application ***/
 	
 	public static void main(String[] args) {

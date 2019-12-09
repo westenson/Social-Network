@@ -1,6 +1,8 @@
 package application;
 	
 import java.util.ArrayList;
+import java.util.Set;
+
 import javafx.application.Application;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -19,6 +21,8 @@ import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
+import application.SocialNetwork;
+import application.Person;
 
 /***************************************************************************************************
 *
@@ -93,8 +97,8 @@ public class Main extends Application {
 		
 		/*** Local Constants ***/
 		
-		final double CANVAS_X_SIZE = 300;
-		final double CANVAS_Y_SIZE = 300;
+		final double CANVAS_X_SIZE = 350;
+		final double CANVAS_Y_SIZE = 350;
 		
 		/*** Local Variables ***/
 		
@@ -131,7 +135,7 @@ public class Main extends Application {
 		
 		//drawExampleFriends(gc, CANVAS_X_SIZE, CANVAS_Y_SIZE);
 		
-		drawFriends(gc, CANVAS_X_SIZE, CANVAS_Y_SIZE, "USER");
+		drawFriends(gc, CANVAS_X_SIZE, CANVAS_Y_SIZE, "USER", new SocialNetwork());
 		
 		/*** Add components to main pane ***/
 		
@@ -340,15 +344,15 @@ public class Main extends Application {
 		gc.strokeLine(CIRCLE_WIDTH, CIRCLE_HEIGHT / 2, FRIEND_X_OFFSET, CIRCLE_HEIGHT / 2);		
 	}
 	
-	private void drawFriends(GraphicsContext gc, double x, double y, String user) {
+	private void drawFriends(GraphicsContext gc, double x, double y, String user, SocialNetwork sn) {
 		
 		/*** Local Constants ***/
 		
 		final double CIRCLE_HEIGHT    = 50.0;
 		final double CIRCLE_WIDTH     = 50.0;
-		final double CIRCLE_MID		  = CIRCLE_HEIGHT / 2;
-		final double START_X 	      = 0.0;
-		final double START_Y	      = 0.0;
+		final double CIRCLE_MID		  =  CIRCLE_HEIGHT / 2;
+		final double START_X 	      = -CIRCLE_WIDTH  / 2;
+		final double START_Y	      = -CIRCLE_HEIGHT / 2;
 		final double FRIEND_X_OFFSET  = 75.0;
 		final double FRIEND_Y_OFFSET  = 75.0;
 		final double CENTERING_OFFSET = 10.0;
@@ -358,11 +362,27 @@ public class Main extends Application {
 		double centerX = x / 2.0;
 		double centerY = y / 2.0;
 		
+		Set<Person> friendList;
+		
+		double rotation;
+		
 		/*** Set drawing properties ***/
 		
 		gc.setFill(Color.CRIMSON);
 		gc.setStroke(Color.BLACK);
 		gc.setLineWidth(1);
+		
+		/*** Draw border ***/
+		
+		gc.strokeLine(0, 0, x, 0);
+		gc.strokeLine(x, 0, x, y);
+		gc.strokeLine(x, y, 0, y);
+		gc.strokeLine(0, y, 0, 0);
+		
+//		/*** Draw lines to find center of canvas ***/
+//		
+//		gc.strokeLine(x / 2, 0, x/2, y);
+//		gc.strokeLine(0, y/2, x, y/2);
 		
 		/*** Move to center of canvas ***/
 		
@@ -380,20 +400,85 @@ public class Main extends Application {
 		
 		gc.setFill(Color.INDIANRED);
 		
-		gc.fillOval(START_X, START_Y - FRIEND_Y_OFFSET, CIRCLE_WIDTH, CIRCLE_HEIGHT);
-		gc.strokeText("Friend 1", CENTERING_OFFSET, CIRCLE_MID - FRIEND_Y_OFFSET + CENTERING_OFFSET);
-		gc.strokeLine(CIRCLE_MID, 0, CIRCLE_MID, CIRCLE_HEIGHT - FRIEND_Y_OFFSET);
+		/*** Get friend list ***/
 		
-		gc.rotate(90.0);
+		friendList = sn.getFriend(user);
 		
-		gc.fillOval(START_X, START_Y - FRIEND_Y_OFFSET, CIRCLE_WIDTH, CIRCLE_HEIGHT);
-		gc.strokeLine(CIRCLE_MID, 0, CIRCLE_MID, CIRCLE_HEIGHT - FRIEND_Y_OFFSET);
+		/*** Determine spacing based on size of friend list ***/
 		
-		gc.rotate(-90.0);
-		gc.translate(FRIEND_X_OFFSET, FRIEND_Y_OFFSET);
+//		if (friendList.size() > 12) {
+//			
+//			rotation = (2 * Math.PI) / 12;
+//			
+//			//TODO: update user stating that there are too many to display on canvas
+//		} else {			
+//			rotation = (2 * Math.PI) / friendList.size();			
+//		}
 		
+		rotation = Math.toDegrees((2 * Math.PI) / 8);
 		
-		gc.strokeText("Friend 2", CENTERING_OFFSET, CIRCLE_MID - FRIEND_Y_OFFSET + CENTERING_OFFSET);
+		for (int i = 0; i < 8; i++) {
+			
+			
+			gc.fillOval(START_X, START_Y - FRIEND_Y_OFFSET, CIRCLE_WIDTH, CIRCLE_HEIGHT);
+			gc.strokeText("TEST" + i, CENTERING_OFFSET, CIRCLE_MID - FRIEND_Y_OFFSET + CENTERING_OFFSET);
+			gc.strokeLine(CIRCLE_MID, 0, CIRCLE_MID, CIRCLE_HEIGHT - FRIEND_Y_OFFSET);
+			
+			gc.rotate(rotation);
+			
+			
+			
+		}
+
+
+		
+//		gc.fillOval(START_X, START_Y - FRIEND_Y_OFFSET, CIRCLE_WIDTH, CIRCLE_HEIGHT);
+//		gc.strokeText("TEST1", CENTERING_OFFSET, CIRCLE_MID - FRIEND_Y_OFFSET + CENTERING_OFFSET);
+//		gc.strokeLine(CIRCLE_MID, 0, CIRCLE_MID, CIRCLE_HEIGHT - FRIEND_Y_OFFSET);
+//		
+//		/*** Translate by rotation factor ***/
+//		
+//		gc.rotate(rotation);
+//		
+//		//gc.translate(Math.cos(rotation) * 100, Math.sin(rotation) * 100);
+//		
+//		gc.fillOval(START_X, START_Y - FRIEND_Y_OFFSET, CIRCLE_WIDTH, CIRCLE_HEIGHT);
+//		gc.strokeText("TEST2", CENTERING_OFFSET, CIRCLE_MID - FRIEND_Y_OFFSET + CENTERING_OFFSET);
+//		gc.strokeLine(CIRCLE_MID, 0, CIRCLE_MID, CIRCLE_HEIGHT - FRIEND_Y_OFFSET);
+//		
+//		gc.rotate(rotation);
+//		
+//		gc.fillOval(START_X, START_Y - FRIEND_Y_OFFSET, CIRCLE_WIDTH, CIRCLE_HEIGHT);
+//		gc.strokeText("TEST3", CENTERING_OFFSET, CIRCLE_MID - FRIEND_Y_OFFSET + CENTERING_OFFSET);
+//		gc.strokeLine(CIRCLE_MID, 0, CIRCLE_MID, CIRCLE_HEIGHT - FRIEND_Y_OFFSET);
+
+		
+		//gc.rotate(90.0);
+		
+//		gc.fillOval(START_X, START_Y - FRIEND_Y_OFFSET, CIRCLE_WIDTH, CIRCLE_HEIGHT);
+//		gc.strokeLine(CIRCLE_MID, 0, CIRCLE_MID, CIRCLE_HEIGHT - FRIEND_Y_OFFSET);
+//		
+//		gc.rotate(-90.0);
+//		gc.translate(FRIEND_X_OFFSET, FRIEND_Y_OFFSET);
+//		
+//		
+//		gc.strokeText("Friend 2", CENTERING_OFFSET, CIRCLE_MID - FRIEND_Y_OFFSET + CENTERING_OFFSET);
+		
+	}
+	
+	private class canvasNode {
+		
+		/*** Class Variables ***/
+		
+		String name;
+		double lineX;
+		double lineY;
+		double circleMidX;
+		double circleMidY;
+		
+		canvasNode(Person person){
+			this.name = person.getName();
+		}
 		
 	}
 	

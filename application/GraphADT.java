@@ -57,7 +57,7 @@ public interface GraphADT {
    * @param user the user to get from.
    * @return the user person from the graph.
    */
-  public Person getNode(Person user);
+  public Person getNode(String user);
 
   /**
    * Gets all the users from the graph.

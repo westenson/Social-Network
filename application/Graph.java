@@ -181,23 +181,35 @@ public class Graph implements GraphADT {
     Set<Person> neighbors = new HashSet<Person>();
 
     // iterate through specified users edge list and add edge to neighbors list
-    for (Person edges : personsMap.get(user))
-      neighbors.add(edges.getPerson());
+    for (Person friend : personsMap.get(user))
+      neighbors.add(friend);
 
     return neighbors;
   }
 
   @Override
-  public Person getNode(Person user) {
-	  return user;
+  public Person getNode(String user) {
+	  Set<Person> allNodes = getAllNodes();
+      Iterator<Person> allNodesIterator = allNodes.iterator();
+	  
+      while (allNodesIterator.hasNext()) {
+    	  Person user1 = allNodesIterator.next();
+
+    	  if (user1.getName().equals(user)) { 
+    		  return user1;
+    	  }
+      }
+	  
+	  return null;
   }
 
   @Override
   public Set<Person> getAllNodes() {
     Set<Person> allUsers = new HashSet<Person>();
+    
     for (Person user : personsMap.keySet())
       allUsers.add(user);
-
+    
     return allUsers;
   }
 

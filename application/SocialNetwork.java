@@ -76,31 +76,38 @@ public class SocialNetwork implements SocialNetworkADT {
 
 	@Override
 	public Set<Person> getMutualFriends(String friend1, String friend2) {
-		Person user1 = new Person(friend1);
-		Person user2 = new Person(friend2);
 
-		Set<Person> user1Neighbors = graph.getNeighbors(user1);
-		Set<Person> user2Neighbors = graph.getNeighbors(user2);
+		Set<Person> user1Neighbors = graph.getNeighbors(graph.getNode(friend1));
+		Set<Person> user2Neighbors = graph.getNeighbors(graph.getNode(friend2));
+		
+
 		Set<Person> mutualFriends = new HashSet<Person>();
 
 		Iterator<Person> iterator = user1Neighbors.iterator();
-		Iterator<Person> iterator2 = user2Neighbors.iterator();
+		
 
+		
 		while (iterator.hasNext()) {
 			Person compare1 = iterator.next();
+	
+	
+			
+			Iterator<Person> iterator2 = user2Neighbors.iterator();
 
 			while (iterator2.hasNext()) {
 
 				Person compare2 = iterator2.next();
+			
 
-				if (compare1.getName().contentEquals(compare2.getName())) {
+		
+				if (compare1.getName().equals(compare2.getName())) {
 					mutualFriends.add(compare2);
 				} else {
-					iterator2.next();
+					
 				}
 
 			}
-			iterator.next();
+			
 		}
 		return mutualFriends;
 	}
@@ -232,19 +239,37 @@ public class SocialNetwork implements SocialNetworkADT {
 		SocialNetwork socialNetwork = new SocialNetwork();
 		Person wally = new Person("wally");
 		Person jack = new Person("jack");
+		Person bill = new Person("bill");
+		Person jake = new Person("jake");
 
 		socialNetwork.graph.addNode(wally);
 		socialNetwork.graph.addNode(jack);
+		socialNetwork.graph.addNode(bill);
+		socialNetwork.graph.addNode(jake);
+		
+		
 
 		socialNetwork.graph.addEdge(wally, jack);
+		socialNetwork.graph.addEdge(bill, jake);
+		socialNetwork.graph.addEdge(wally, jake);
+		socialNetwork.graph.addEdge(wally, bill);
 
+	
 		System.out.println(socialNetwork.graph);
 
 		socialNetwork.graph.removeEdge(jack, wally);
+		System.out.println(socialNetwork.graph);
+		
+
+		
+
+		//socialNetwork.graph.removeNode(wally);
 
 		// System.out.println(socialNetwork.graph.order());
 		// System.out.println(socialNetwork.graph.size());
-		System.out.print(socialNetwork.graph);
+		System.out.println(socialNetwork.getMutualFriends("jake", "bill").toString());
+		System.out.println(socialNetwork.getConnectedComponents().toString());
+		//System.out.print(socialNetwork.graph);
 
 	}
 

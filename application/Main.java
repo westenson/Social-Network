@@ -21,8 +21,6 @@ import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
-import javafx.scene.shape.Circle;
-import javafx.scene.text.Font;
 import application.SocialNetwork;
 import application.Person;
 
@@ -380,7 +378,6 @@ public class Main extends Application {
 		gc.setFill(Color.CRIMSON);
 		gc.setStroke(Color.BLACK);
 		gc.setLineWidth(1);
-		//gc.setFont(Font.font("Arial", 15));
 		
 		/*** Draw border ***/
 		
@@ -414,7 +411,7 @@ public class Main extends Application {
 		
 		friendList = sn.getFriend(user);
 		
-		/*** Get rotation based on friends list size ***/
+		/*** Determine rotation based on friend list size ***/
 		
 //		if (friendList.size() > 12) {
 //			
@@ -425,13 +422,13 @@ public class Main extends Application {
 //			rotation = (2 * Math.PI) / friendList.size();			
 //		}
 		
-		int tempListSize = 12;
+		int tempListSize = 12; // USED JUST FOR TESTING PURPOSES
 		
 		rotation = Math.toDegrees((2 * Math.PI) / tempListSize);
 		
 		gc.save();	
 		
-		for (int i = 0; i < tempListSize; i++) {
+		for (int i = 0; i < tempListSize; i++) { // NEED TO UPDATE LOOP VARIABLE WITH SN CLASS IS DONE
 			
 			/*** Draw friend circle ***/
 			
@@ -462,7 +459,7 @@ public class Main extends Application {
 //		
 //		gc.translate(xTranslate, yTranslate);
 //		
-//		for (int i = 0; i < tempListSize; i++) {
+//		for (int i = 0; i < friendList.size(); i++) {
 //			
 //			//gc.translate(xTranslate, yTranslate);
 //			

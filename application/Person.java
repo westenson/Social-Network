@@ -28,6 +28,7 @@ import java.util.Arrays;
 public class Person {
     private String name;
     private String[] friends;
+    private boolean visited;
 
   
     // prints out friends name for testing purposes 
@@ -38,11 +39,13 @@ public class Person {
     
     public Person(String name) {
         this.name = name;
+        this.visited = false;
     }
     
     public Person(String name, String[] friends) {
         this.name = name;
         this.friends = friends;
+        this.visited = false;
     }
 
     public Person getPerson() {
@@ -55,6 +58,14 @@ public class Person {
 
     public String[] getFriends() {
         return this.friends;
+    }
+    
+    public boolean getVisited() {
+        return this.visited;
+    }
+    
+    public void setVisited(Boolean visited) {
+        this.visited = visited;
     }
 
     public void setName(String name) {

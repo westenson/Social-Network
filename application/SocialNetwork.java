@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Scanner;
 import java.util.Set;
@@ -36,6 +37,7 @@ public class SocialNetwork implements SocialNetworkADT {
 
 	public SocialNetwork() {
 		graph = new Graph();
+		numberOfConnectedComponents = 0;
 	}
 
 	@Override
@@ -111,48 +113,85 @@ public class SocialNetwork implements SocialNetworkADT {
 		return null;
 	}
 
-	// WORK IN PROGRESS
+	// work through each user in the graph
+	// for the first user, add all friends to first new graph
+	// then for each of the friends, add their friends to the first graph
+	// mark all the user nodes of the initial friends as visited
+	// do again on the first graph until no new friends are shown
+	// then move on to the next unvisited node in all nodes
 	@Override
 	public Set<Graph> getConnectedComponents() {
-		
-		Set <Person> allNodes = graph.getAllNodes();
-		Set<Graph> connectedComponents = null; 
-		Iterator<Person> iterator = allNodes.iterator();
-		
-		boolean[] visit = new boolean[graph.order()];
-		
-		while (iterator.hasNext()) {
-			Person user = iterator.next();
-			
 
+		Set<Graph> connectedComponents = null; // set containing graphs of the
+												// connected groups
+
+		Set<Person> allUsers = graph.getAllNodes(); // set containing all users
+													// in the network
+		
+		Iterator<Person> usersIterator = allUsers.iterator();
+		Iterator<Person> visitedReset = allUsers.iterator();
+
+		//make sure each node's visited value starts as false
+		while(visitedReset.hasNext()) visitedReset.next().setVisited(false); 
+		
+
+		//work through each users in the social network to build out all the connected components
+		while (usersIterator.hasNext()) {
+			Person user = usersIterator.next();
 			
+			//if the user hasn't been visited yet, conduct BFS and add the resulting graph to the components set
+			if (!user.getVisited()) {
+				connectedComponents.add(BFSearch(user));
+				numberOfConnectedComponents++;
+			}
+			
+			//move on to the next user if current has been visited
+			else usersIterator.next();	
 		}
-		
-		for (int i = 0; i < graph.order(); i++) {
-			//Set <Person> user1Neighbors = graph.getNeighbors(allNodes.)
-			if (visit[i] == false)
-				return DFSearch(i, visit); 
-		}	
-		
-		
+		//return graphs represents the disjoint user groups in the social network
 		return connectedComponents;
 	}
+
+	//BFS to return a graph representing a users network, including all path
+	//ie the returned graph will not include users that the specified user does not have a path to
+	private Graph BFSearch(Person user) {
+ 
+				Graph graph1 = null;
+		  
+		        // Create a queue for BFS 
+		        LinkedList<Person> queue = new LinkedList<Person>(); 
+		  
+		        // mark the current user as visited and add them to the queue 
+		        user.setVisited(true);
+		        queue.add(user); 
+		  
+		        //the queue represents the unvisited nodes
+		        while (queue.size() != 0) { 
+		            
+		        	// Dequeue the user at the front and add them to the new graph
+		            user = queue.poll(); 
+		            graph1.addNode(user);
+		           
+		  
+		            // Get all the users friends, add edges between them and the user, and add them to the queue 
+		            Iterator<Person> friendsIterator = graph.getNeighbors(user).iterator(); 
+		            while (friendsIterator.hasNext()) 
+		            { 
+		                Person friend = friendsIterator.next(); 
+		                if (!friend.getVisited()) 
+		                { 
+		                    friend.setVisited(true); 
+		                    graph1.addEdge(user, friend);
+		                    queue.add(friend); 
+		                } 
+		            } 
+		        }
+		        return graph1;
+		    } 
 
 	@Override
 	public int getNumberOfConnectedComponents() {
 		return numberOfConnectedComponents;
-	}
-
-	
-	//WORK IN PROGRESS - to be used for connected component method 
-	private Set<Graph> DFSearch(int i, boolean[] visit) {
-		visit[i] = true;// TODO Auto-generated method stub
-	
-		//for ()
-	
-		Graph graph1 = new Graph();
-		return null;
-	
 	}
 
 	@Override
@@ -181,7 +220,7 @@ public class SocialNetwork implements SocialNetworkADT {
 		scnr.close();
 	}
 
-	//Use getConnectedComponents method
+	// Use getConnectedComponents method
 	@Override
 	public void saveToFile(File file) {
 		// TODO Auto-generated method stub
@@ -210,3 +249,4 @@ public class SocialNetwork implements SocialNetworkADT {
 	}
 
 }
+

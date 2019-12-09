@@ -78,6 +78,13 @@ public interface SocialNetworkADT {
    * @return the connected components.
    */
   public Set<Graph> getConnectedComponents();
+  
+  /**
+   * Gets thes the number connected components.
+   * 
+   * @return the number of connected components.
+   */
+  public int getNumberOfConnectedComponents();
 
   public void loadFromFile(File file);
 

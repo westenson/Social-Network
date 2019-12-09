@@ -3,6 +3,7 @@ package application;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
@@ -153,6 +154,15 @@ public class Graph implements GraphADT {
   @Override
   public boolean removeNode(Person user) {
     if (personsMap.containsKey(user)) {
+    	Set <Person> userNeighbors = getNeighbors(user);
+		Iterator<Person> iterator = userNeighbors.iterator();
+		
+		//removes edges
+		while (iterator.hasNext()) {
+			Person friend = iterator.next();
+			removeEdge(user, friend);
+		}
+		
       personsMap.remove(user);
       order--;
       return true;

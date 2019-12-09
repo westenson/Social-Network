@@ -16,42 +16,56 @@ public class SocialNetwork implements SocialNetworkADT {
     
 	@Override
 	public boolean addFriends(String friend1, String friend2) {
-		// TODO Auto-generated method stub
-		return false;
+		Person person1 = new Person(friend1);
+		Person person2 = new Person(friend2);
+		
+		
+		return graph.addEdge(person1, person2);
 	}
 
 	@Override
 	public boolean removeFriends(String friend1, String friend2) {
-		// TODO Auto-generated method stub
-		return false;
+		Person person1 = new Person(friend1);
+		Person person2 = new Person(friend2);
+		
+		return graph.removeEdge(person1, person2);
 	}
 
 	@Override
 	public boolean addUser(String user) {
-		// TODO Auto-generated method stub
-		return false;
+		Person user1 = new Person(user);
+		return graph.addNode(user1);
 	}
 
 	@Override
 	public boolean removeUser(String user) {
-		// TODO Auto-generated method stub
-		return false;
+		Person user1 = new Person(user);
+		return graph.removeNode(user1);
 	}
 
 	@Override
 	public Set<Person> getFriend(String user) {
-		// TODO Auto-generated method stub
-		return null;
+		Person user1 = new Person(user);
+		return graph.getNeighbors(user1);
 	}
 
 	@Override
 	public Set<Person> getMutualFriends(String friend1, String friend2) {
 		// TODO Auto-generated method stub
+		Person user1 = new Person(friend1);
+		Person user2 = new Person(friend2);
+		
+		Set user1Neighbors = graph.getNeighbors(user1);
+		Set user2Neighbors = graph.getNeighbors(user1);
+		
+		//now compare the two set and return mutual friends
 		return null;
 	}
 
 	@Override
 	public List<Person> getShortestPath(String user1, String user2) {
+		//Person user1 = new Person(user1);
+		//Person user1 = new Person(user1);
 		// TODO Auto-generated method stub
 		return null;
 	}

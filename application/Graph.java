@@ -189,7 +189,7 @@ public class Graph implements GraphADT {
 
   @Override
   public Person getNode(Person user) {
-    return user;
+	  return user;
   }
 
   @Override
@@ -210,4 +210,3 @@ public class Graph implements GraphADT {
   }
 
 }
-

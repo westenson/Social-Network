@@ -46,11 +46,29 @@ import application.Person;
 
 public class Main extends Application {
 	
+	/*** Class Constants ***/
+	
+	final double CIRCLE_HEIGHT      = 50.0;
+	final double CIRCLE_WIDTH       = 50.0;
+	final double CIRCLE_MID		    =  CIRCLE_HEIGHT / 2;
+	final double START_X 	        = -CIRCLE_WIDTH  / 2;
+	final double START_Y	        = -CIRCLE_HEIGHT / 2;
+	final double FRIEND_X_OFFSET    = 125.0;
+	final double FRIEND_Y_OFFSET    = 125.0;
+	final double CENTERING_OFFSET_X = -10.0;
+	final double CENTERING_OFFSET_Y = 4.0;
+	final double CANVAS_X_SIZE = 350;
+	final double CANVAS_Y_SIZE = 350;
+	
 	/*** Class Variables ***/
 	
 	SocialNetwork sn = new SocialNetwork();
 	
 	ListView<String> lvFriends;
+	
+	Canvas canvas = new Canvas(CANVAS_X_SIZE, CANVAS_Y_SIZE);
+	
+	GraphicsContext gc = canvas.getGraphicsContext2D();
 	
 	@Override
 	public void start(Stage primaryStage) {
@@ -101,18 +119,9 @@ public class Main extends Application {
 	
 	private HBox createCanvasPane() {
 		
-		/*** Local Constants ***/
-		
-		final double CANVAS_X_SIZE = 350;
-		final double CANVAS_Y_SIZE = 350;
-		
 		/*** Local Variables ***/
 		
 		HBox mainBox = new HBox();		
-		
-		Canvas canvas = new Canvas(CANVAS_X_SIZE, CANVAS_Y_SIZE);
-		
-		GraphicsContext gc = canvas.getGraphicsContext2D();
 		
 		Label lblRadioChoice = new Label("All friends (default)");
 				
@@ -139,9 +148,11 @@ public class Main extends Application {
 		
 		/*** Add EXAMPLE FRIENDS ***/
 		
-		//drawExampleFriends(gc, CANVAS_X_SIZE, CANVAS_Y_SIZE);
+		//drawExampleFriends(CANVAS_X_SIZE, CANVAS_Y_SIZE);
 		
-		drawFriends(gc, CANVAS_X_SIZE, CANVAS_Y_SIZE, "USER");
+		//drawFriends("USER");
+		
+		drawMutualFriends("USER1", "USER2");
 		
 		/*** Add components to main pane ***/
 		
@@ -279,7 +290,7 @@ public class Main extends Application {
 	
 	/*** Canvas friend drawing method ***/
 	
-	private void drawExampleFriends(GraphicsContext gc, double x, double y) {
+	private void drawExampleFriends(double x, double y) {
 		
 		/*** Local Constants ***/
 		
@@ -350,28 +361,20 @@ public class Main extends Application {
 		gc.strokeLine(CIRCLE_WIDTH, CIRCLE_HEIGHT / 2, FRIEND_X_OFFSET, CIRCLE_HEIGHT / 2);		
 	}
 	
-	private void drawFriends(GraphicsContext gc, double x, double y, String user) {
-		
-		/*** Local Constants ***/
-		
-		final double CIRCLE_HEIGHT      = 50.0;
-		final double CIRCLE_WIDTH       = 50.0;
-		final double CIRCLE_MID		    =  CIRCLE_HEIGHT / 2;
-		final double START_X 	        = -CIRCLE_WIDTH  / 2;
-		final double START_Y	        = -CIRCLE_HEIGHT / 2;
-		final double FRIEND_X_OFFSET    = 125.0;
-		final double FRIEND_Y_OFFSET    = 125.0;
-		final double CENTERING_OFFSET_X = -10.0;
-		final double CENTERING_OFFSET_Y = 4.0;
-		
+	private void drawFriends(String user) {
+
 		/*** Local Variables ***/
 		
-		double centerX = x / 2.0;
-		double centerY = y / 2.0;
+		double centerX = CANVAS_X_SIZE / 2.0;
+		double centerY = CANVAS_Y_SIZE / 2.0;
 		
 		Set<Person> friendList;
 		
 		double rotation;
+		
+		/*** Clear any existing data from canvas ***/
+		
+		gc.clearRect(0, 0, CANVAS_X_SIZE, CANVAS_Y_SIZE);
 		
 		/*** Set drawing properties ***/
 		
@@ -381,10 +384,7 @@ public class Main extends Application {
 		
 		/*** Draw border ***/
 		
-		gc.strokeLine(0, 0, x, 0);
-		gc.strokeLine(x, 0, x, y);
-		gc.strokeLine(x, y, 0, y);
-		gc.strokeLine(0, y, 0, 0);
+		drawCanvasBorder(gc, CANVAS_X_SIZE, CANVAS_Y_SIZE);
 		
 //		/*** Draw lines to find center of canvas ***/
 //		
@@ -480,6 +480,50 @@ public class Main extends Application {
 ////			gc.translate(centerX, centerY);
 //
 //		}		
+	}
+	
+	private void drawMutualFriends(String user1, String user2) {
+		
+		/*** Local Variables ***/
+		
+		double leftMidX  = CANVAS_X_SIZE / 4.0; 
+		double rightMidX = (3 * CANVAS_X_SIZE) / 4.0;
+		double centerY   = CANVAS_Y_SIZE / 2.0;
+		
+		/*** Clear any existing data from canvas ***/
+		
+		gc.clearRect(0, 0, CANVAS_X_SIZE, CANVAS_Y_SIZE);
+		
+		/*** Set drawing properties ***/
+		
+		gc.setFill(Color.CRIMSON);
+		gc.setStroke(Color.BLACK);
+		gc.setLineWidth(1);
+		
+		/*** Draw border ***/
+		
+		drawCanvasBorder(gc, CANVAS_X_SIZE, CANVAS_Y_SIZE);
+
+		/*** Draw lines to find midpoints of halves ***/
+		
+		gc.strokeLine(leftMidX, 0, leftMidX, CANVAS_Y_SIZE);
+		gc.strokeLine(rightMidX, 0, rightMidX, CANVAS_Y_SIZE);
+		gc.strokeLine(0, CANVAS_Y_SIZE/2, CANVAS_X_SIZE, CANVAS_Y_SIZE/2);	
+		
+		/*** Move to left half center ***/
+		
+		gc.translate(leftMidX, centerY);
+		
+	}
+	
+	private void drawCanvasBorder(GraphicsContext gc, double width, double height) {
+		
+		/*** Draw border ***/
+		
+		gc.strokeLine(    0,      0, width,      0);
+		gc.strokeLine(width,      0, width, height);
+		gc.strokeLine(width, height,     0, height);
+		gc.strokeLine(    0, height,     0,      0);		
 	}
 	
 	private void updateFriendListBox(String user) {

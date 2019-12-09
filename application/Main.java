@@ -409,7 +409,7 @@ public class Main extends Application {
 		
 		/*** Get friend list ***/
 		
-		friendList = sn.getFriend(user);
+		//friendList = sn.getFriend(user);
 		
 		/*** Determine rotation based on friend list size ***/
 		
@@ -422,7 +422,7 @@ public class Main extends Application {
 //			rotation = (2 * Math.PI) / friendList.size();			
 //		}
 		
-		int tempListSize = 12; // USED JUST FOR TESTING PURPOSES
+		int tempListSize = 5; // USED JUST FOR TESTING PURPOSES
 		
 		rotation = Math.toDegrees((2 * Math.PI) / tempListSize);
 		
@@ -443,7 +443,8 @@ public class Main extends Application {
 			
 			/*** Rotate transform ***/			
 
-			gc.rotate(rotation);			
+			gc.rotate(rotation);	
+			
 		}
 		
 		gc.restore();
@@ -489,6 +490,7 @@ public class Main extends Application {
 		double leftMidX  = CANVAS_X_SIZE / 4.0; 
 		double rightMidX = (3 * CANVAS_X_SIZE) / 4.0;
 		double centerY   = CANVAS_Y_SIZE / 2.0;
+		double spacing   = 0;
 		
 		/*** Clear any existing data from canvas ***/
 		
@@ -504,15 +506,44 @@ public class Main extends Application {
 		
 		drawCanvasBorder(gc, CANVAS_X_SIZE, CANVAS_Y_SIZE);
 
-		/*** Draw lines to find midpoints of halves ***/
+		/*** Draw lines to find midpoints ***/
 		
 		gc.strokeLine(leftMidX, 0, leftMidX, CANVAS_Y_SIZE);
 		gc.strokeLine(rightMidX, 0, rightMidX, CANVAS_Y_SIZE);
 		gc.strokeLine(0, CANVAS_Y_SIZE/2, CANVAS_X_SIZE, CANVAS_Y_SIZE/2);	
+		gc.strokeLine(CANVAS_X_SIZE / 2, 0, CANVAS_X_SIZE / 2, CANVAS_Y_SIZE);
 		
 		/*** Move to left half center ***/
 		
 		gc.translate(leftMidX, centerY);
+		
+		/*** Draw left user ***/
+		
+		gc.fillOval(START_X, START_Y, CIRCLE_WIDTH, CIRCLE_HEIGHT);
+		
+		/*** Move to right half center and draw right user ***/
+		
+		gc.translate(rightMidX - leftMidX, 0);
+		gc.fillOval(START_X, START_Y, CIRCLE_WIDTH, CIRCLE_HEIGHT);
+		
+		/*** Move to middle ***/
+		
+		gc.translate(-leftMidX, 0);
+		
+		gc.fillOval(START_X, START_Y, CIRCLE_WIDTH, CIRCLE_HEIGHT);
+		
+		/*** Determine spacing based on friend list size ***/
+		
+//		if (friendList.size() > 12) {
+//			
+//			spacing = CANVAS_Y_SIZE / 12;
+//			
+//			//TODO: update user stating that there are too many to display on canvas
+//		} else {			
+//			spacing = CANVAS_Y_SIZE / friendList.size();			
+//		}
+		
+		int tempListSize = 5; // USED JUST FOR TESTING PURPOSES
 		
 	}
 	

@@ -348,14 +348,15 @@ public class Main extends Application {
 		
 		/*** Local Constants ***/
 		
-		final double CIRCLE_HEIGHT    = 50.0;
-		final double CIRCLE_WIDTH     = 50.0;
-		final double CIRCLE_MID		  =  CIRCLE_HEIGHT / 2;
-		final double START_X 	      = -CIRCLE_WIDTH  / 2;
-		final double START_Y	      = -CIRCLE_HEIGHT / 2;
-		final double FRIEND_X_OFFSET  = 75.0;
-		final double FRIEND_Y_OFFSET  = 75.0;
-		final double CENTERING_OFFSET = 10.0;
+		final double CIRCLE_HEIGHT      = 50.0;
+		final double CIRCLE_WIDTH       = 50.0;
+		final double CIRCLE_MID		    =  CIRCLE_HEIGHT / 2;
+		final double START_X 	        = -CIRCLE_WIDTH  / 2;
+		final double START_Y	        = -CIRCLE_HEIGHT / 2;
+		final double FRIEND_X_OFFSET    = 125.0;
+		final double FRIEND_Y_OFFSET    = 125.0;
+		final double CENTERING_OFFSET_X = -10.0;
+		final double CENTERING_OFFSET_Y = 4.0;
 		
 		/*** Local Variables ***/
 		
@@ -394,7 +395,7 @@ public class Main extends Application {
 		
 		/*** Label main user ***/
 		
-		gc.strokeText(user, CENTERING_OFFSET, CIRCLE_MID + CENTERING_OFFSET / 2);
+		gc.strokeText(user, CENTERING_OFFSET_X, CENTERING_OFFSET_Y);
 		
 		/*** Set color for friends ***/
 		
@@ -415,19 +416,30 @@ public class Main extends Application {
 //			rotation = (2 * Math.PI) / friendList.size();			
 //		}
 		
-		rotation = Math.toDegrees((2 * Math.PI) / 8);
+		int tempListSize = 5;
 		
-		for (int i = 0; i < 8; i++) {
+		rotation = Math.toDegrees((2 * Math.PI) / tempListSize);
+		
+		for (int i = 0; i < tempListSize; i++) {
 			
 			
 			gc.fillOval(START_X, START_Y - FRIEND_Y_OFFSET, CIRCLE_WIDTH, CIRCLE_HEIGHT);
-			gc.strokeText("TEST" + i, CENTERING_OFFSET, CIRCLE_MID - FRIEND_Y_OFFSET + CENTERING_OFFSET);
-			gc.strokeLine(CIRCLE_MID, 0, CIRCLE_MID, CIRCLE_HEIGHT - FRIEND_Y_OFFSET);
+			//gc.strokeText("TEST" + i, CENTERING_OFFSET, CIRCLE_MID - FRIEND_Y_OFFSET + CENTERING_OFFSET);
+			//gc.strokeLine(CIRCLE_MID, 0, CIRCLE_MID, CIRCLE_HEIGHT - FRIEND_Y_OFFSET);
 			
-			gc.rotate(rotation);
+			gc.strokeLine(START_X + CIRCLE_MID, START_Y, 0, -FRIEND_Y_OFFSET + CIRCLE_MID);
 			
+			if (i < 1) {
+				gc.rotate(-rotation);
+				gc.strokeText("USER", Math.cos(rotation) * CENTERING_OFFSET_X, Math.sin(rotation) * 
+							  (FRIEND_Y_OFFSET +  CENTERING_OFFSET_Y));
+				gc.rotate(rotation);
+			} else {
 			
+				gc.strokeText("Test" + i, CENTERING_OFFSET_X, - FRIEND_Y_OFFSET +  CENTERING_OFFSET_Y);
+			}
 			
+			gc.rotate(rotation);			
 		}
 
 

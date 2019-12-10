@@ -52,7 +52,7 @@ public interface SocialNetworkADT {
    * @param user the user to figure out the friends of.
    * @return the users friends.
    */
-  public Set<Person> getFriend(String user);
+  public Set<Person> getFriends(String user);
 
   /**
    * Gets the shared friendships between two users.

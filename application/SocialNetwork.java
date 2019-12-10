@@ -69,7 +69,7 @@ public class SocialNetwork implements SocialNetworkADT {
 	}
 
 	@Override
-	public Set<Person> getFriend(String user) {
+	public Set<Person> getFriends(String user) {
 		Person user1 = new Person(user);
 		return graph.getNeighbors(user1);
 	}

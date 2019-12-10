@@ -80,6 +80,9 @@ public class Main extends Application {
   Canvas canvas = new Canvas(CANVAS_X_SIZE, CANVAS_Y_SIZE);
 
   GraphicsContext gc = canvas.getGraphicsContext2D();
+  
+  ComboBox c1;
+  ComboBox c2;
 
   @Override
   public void start(Stage primaryStage) {
@@ -93,17 +96,16 @@ public class Main extends Application {
 
       HBox topPanel = new HBox();
       HBox bottomPanel = new HBox();
+      
+      /*** Create top and bottom panels ***/
+
+      topPanel = createTopPanel();
+      bottomPanel = createBottomPanel();
 
       /*** Add components to centerBox ***/
 
       centerBox.getChildren().add(createCanvasPane());
       centerBox.getChildren().add(createButtonPane());
-
-
-      /*** Create top and bottom panels ***/
-
-      topPanel = createTopPanel();
-      bottomPanel = createBottomPanel();
 
       /*** Add components to root ***/
 
@@ -162,9 +164,9 @@ public class Main extends Application {
 
     // drawExampleFriends(CANVAS_X_SIZE, CANVAS_Y_SIZE);
 
-    // drawFriends("USER");
+     drawFriends("USER");
 
-    drawMutualFriends("USER1", "USER2");
+    //drawMutualFriends("USER1", "USER2");
 
     /*** Add components to main pane ***/
 
@@ -252,7 +254,7 @@ public class Main extends Application {
     VBox v1 = new VBox();
     Label l1 = new Label("Main Profile");
     ObservableList<String> users = FXCollections.observableArrayList("User 1", "User 2", "User 3");
-    ComboBox c1 = new ComboBox(users);
+    c1 = new ComboBox<String>(users);
     v1.getChildren().addAll(l1, c1);
 
     // create combo box for friend
@@ -260,7 +262,7 @@ public class Main extends Application {
     Label l2 = new Label("Friend");
     ObservableList<String> friends =
         FXCollections.observableArrayList("Friend 1", "Friend 2", "Friend 3");
-    ComboBox c2 = new ComboBox(users);
+    c2 = new ComboBox<String>(friends);
     v2.getChildren().addAll(l2, c2);
 
     // create button for remove user and remove friendship
@@ -428,7 +430,7 @@ public class Main extends Application {
 
     gc.setFill(Color.INDIANRED);
 
-    /*** Get friend list ***/
+    /*** Get friend list ***/ //-----------------------------------------------------------------------------
 
     // friendList = sn.getFriends(user);
 
@@ -443,13 +445,11 @@ public class Main extends Application {
     // rotation = (2 * Math.PI) / friendList.size();
     // }
 
-    int tempListSize = 5; // USED JUST FOR TESTING PURPOSES
+    int tempListSize = 0; // USED JUST FOR TESTING PURPOSES --------------------------------------------------
 
     rotation = Math.toDegrees((2 * Math.PI) / tempListSize);
 
-    gc.save();
-
-    for (int i = 0; i < tempListSize; i++) { // NEED TO UPDATE LOOP VARIABLE WITH SN CLASS IS DONE
+    for (int i = 0; i < tempListSize; i++) { // NEED TO UPDATE LOOP VARIABLE WITH SN CLASS IS DONE -----------
 
       /*** Draw friend circle ***/
 
@@ -460,48 +460,17 @@ public class Main extends Application {
       /*** Draw friend name ***/
 
       gc.setFill(Color.BLACK);
-      gc.strokeText("ID" + i, CENTERING_OFFSET_X, -FRIEND_Y_OFFSET + CENTERING_OFFSET_Y);
+      gc.strokeText("ID" + i, CENTERING_OFFSET_X, -FRIEND_Y_OFFSET + CENTERING_OFFSET_Y); //---------------------
 
       /*** Rotate transform ***/
 
       gc.rotate(rotation);
 
     }
-
-    gc.restore();
-
-    double xTranslate = 0;
-    double yTranslate = 0;
-
-    // double radius = START_Y - FRIEND_Y_OFFSET + CIRCLE_MID;
-    //
-    // gc.moveTo(0, 0);
-    //
-    // //rotation = Math.toRadians(rotation);
-    //
-    // gc.translate(xTranslate, yTranslate);
-    //
-    // for (int i = 0; i < friendList.size(); i++) {
-    //
-    // //gc.translate(xTranslate, yTranslate);
-    //
-    // xTranslate = 0;
-    // yTranslate = 0;
-    //
-    //// gc.translate(xTranslate , yTranslate);
-    //
-    // gc.setFill(Color.BLACK);
-    // gc.setFont(Font.font("Arial", 15));
-    // gc.fillText("ID" + i, CENTERING_OFFSET_X, - FRIEND_Y_OFFSET + CENTERING_OFFSET_Y);
-    //
-    // gc.translate(-xTranslate, -yTranslate);
-    //
-    // xTranslate = Math.sin(rotation * i) * (START_Y - FRIEND_Y_OFFSET + CIRCLE_MID);
-    // yTranslate = Math.cos(rotation * i) * (START_Y - FRIEND_Y_OFFSET + CIRCLE_MID);
-    //
-    //// gc.translate(centerX, centerY);
-    //
-    // }
+    
+    if (tempListSize == 0) {
+        gc.strokeText("No friends", CENTERING_OFFSET_X * 2 - 4, -FRIEND_Y_OFFSET + CENTERING_OFFSET_Y); //--------
+    }
   }
 
   private void drawMutualFriends(String user1, String user2) {
@@ -528,12 +497,12 @@ public class Main extends Application {
 
     drawCanvasBorder(gc, CANVAS_X_SIZE, CANVAS_Y_SIZE);
 
-    /*** Draw lines to find midpoints ***/
-
-    gc.strokeLine(leftMidX, 0, leftMidX, CANVAS_Y_SIZE);
-    gc.strokeLine(rightMidX, 0, rightMidX, CANVAS_Y_SIZE);
- //   gc.strokeLine(0, CANVAS_Y_SIZE / 2, CANVAS_X_SIZE, CANVAS_Y_SIZE / 2);
- //   gc.strokeLine(CANVAS_X_SIZE / 2, 0, CANVAS_X_SIZE / 2, CANVAS_Y_SIZE);
+//    /*** Draw lines to find midpoints ***/
+//
+//    gc.strokeLine(leftMidX, 0, leftMidX, CANVAS_Y_SIZE);
+//    gc.strokeLine(rightMidX, 0, rightMidX, CANVAS_Y_SIZE);
+//    gc.strokeLine(0, CANVAS_Y_SIZE / 2, CANVAS_X_SIZE, CANVAS_Y_SIZE / 2);
+//    gc.strokeLine(CANVAS_X_SIZE / 2, 0, CANVAS_X_SIZE / 2, CANVAS_Y_SIZE);
 
     /*** Move to left half center ***/
 
@@ -542,21 +511,32 @@ public class Main extends Application {
     /*** Draw left user ***/
 
     gc.fillOval(START_X, START_Y, CIRCLE_WIDTH, CIRCLE_HEIGHT);
+    
+    c1.getSelectionModel().selectFirst();
+    c2.getSelectionModel().selectFirst();
+    
+    /*** Label left user ***/
+    
+    gc.strokeText(c1.getValue().toString(), -CIRCLE_MID / 2, 4);
 
     /*** Move to right half center and draw right user ***/
 
     gc.translate(rightMidX - leftMidX, 0);
     gc.fillOval(START_X, START_Y, CIRCLE_WIDTH, CIRCLE_HEIGHT);
     
+    /*** Label right user ***/
+    
+    gc.strokeText(c2.getValue().toString(), -CIRCLE_MID / 2, 4);
+    
     /*** Change color for friends ***/
     
-    gc.setFill(Color.YELLOW);
+    gc.setFill(Color.PURPLE);
     
     /*** Move to middle ***/
 
     gc.translate(-leftMidX, 0);
 
-    /*** Determine spacing based on friend list size ***/
+    /*** Determine spacing based on friend list size ***/ //-------------------------------------------------
 
     // if (friendList.size() > 12) {
     //
@@ -567,7 +547,7 @@ public class Main extends Application {
     // spacing = CANVAS_Y_SIZE / friendList.size();
     // }
 
-    int tempListSize = 7; // USED JUST FOR TESTING PURPOSES
+    int tempListSize = 0; // USED JUST FOR TESTING PURPOSES----------------------------------------------------
     
     spacing = CANVAS_Y_SIZE / tempListSize;
     
@@ -575,7 +555,9 @@ public class Main extends Application {
     	
     	/*** Translate up for spacing on non-centered friends ***/
     	
-    	gc.translate(0, -spacing / 2);
+    	double shift = -spacing / 2;
+    	
+    	gc.translate(0, shift);    	
     	
         for (int i = 0; i < tempListSize; i++) {
         	
@@ -584,7 +566,22 @@ public class Main extends Application {
         	gc.translate(0, spacing * i);
         	gc.fillOval(START_X, START_Y, CIRCLE_WIDTH, CIRCLE_HEIGHT);
         	
-
+        	/*** Draw connecting lines ***/
+        	
+        	if (i % 2 == 1) { // Bottom friends
+            	gc.strokeLine(-CIRCLE_MID, 0, -leftMidX + CIRCLE_MID, 
+            				 (-spacing * i) / 2.0); //left lines
+            	
+            	gc.strokeLine(CIRCLE_MID , 0,  leftMidX - CIRCLE_MID, 
+            			     (-spacing * i) / 2.0); //right lines
+        	} else { // Top friends
+        		gc.strokeLine(-CIRCLE_MID, 0, -leftMidX + CIRCLE_MID, (-spacing * i) / 2.0 - shift); //left
+        		gc.strokeLine( CIRCLE_MID, 0,  leftMidX - CIRCLE_MID, (-spacing * i) / 2.0 - shift); //right
+        	}
+        	
+        	/*** Draw name ***/
+        	
+        	gc.strokeText("ID" + i, START_X + 4 + CIRCLE_MID / 2, START_Y + CIRCLE_MID + 4); // -----------------
         	
         }
         
@@ -597,34 +594,44 @@ public class Main extends Application {
         	/*** Draw circles for friends ***/
         	
         	gc.translate(0, spacing * i);
+        	
         	gc.fillOval(START_X, START_Y, CIRCLE_WIDTH, CIRCLE_HEIGHT); 
-        	
-        	/*** Draw name ***/
-        	
-        	gc.strokeText("ID" + i, START_X, START_Y);
         	      	
         	/*** Draw connecting lines ***/
         	
         	if (i % 2 == 1) {
             	gc.strokeLine(-CIRCLE_MID, 0, -leftMidX + CIRCLE_MID, 
-            				((-spacing * i) / 2.0) - (CIRCLE_HEIGHT / 2.0)); //left lines
+            				((-spacing * i) / 2.0) - CIRCLE_MID); //left lines
             	
             	gc.strokeLine(CIRCLE_MID , 0,  leftMidX - CIRCLE_MID, 
-            			    ((-spacing * i) / 2.0) - (CIRCLE_HEIGHT / 2.0)); //right lines
+            			    ((-spacing * i) / 2.0) - CIRCLE_MID); //right lines
         	} else {
         		gc.strokeLine(-CIRCLE_MID, 0, -leftMidX + CIRCLE_MID, (-spacing * i) / 2.0); //left
         		gc.strokeLine( CIRCLE_MID, 0,  leftMidX - CIRCLE_MID, (-spacing * i) / 2.0); //right
-        	}        	
+        	}
+        	
+        	/*** Draw name ***/
+        	
+        	gc.strokeText("ID" + i, START_X + 4 + CIRCLE_MID / 2, START_Y + CIRCLE_MID + 4); //-----------------
         }
         
     } else if (tempListSize == 1) {
     	
     	/*** Add single friend ***/
     	
-    	gc.fillOval(START_X, START_Y, CIRCLE_WIDTH, CIRCLE_HEIGHT);    	
+    	gc.fillOval(START_X, START_Y, CIRCLE_WIDTH, CIRCLE_HEIGHT); 
     	
+    	/*** Draw connecting lines ***/
+    	
+		gc.strokeLine(-CIRCLE_MID, 0, -leftMidX + CIRCLE_MID, 0); //left
+		gc.strokeLine( CIRCLE_MID, 0,  leftMidX - CIRCLE_MID, 0); //right
+    	
+    	/*** Draw name ***/
+    	
+    	gc.strokeText("ID0" , CENTERING_OFFSET_X, CENTERING_OFFSET_Y); //-----------------------------------------
+
     } else {
-    	//TODO: display notice of no mutual friends
+    	gc.strokeText("No mutual friends", -CIRCLE_WIDTH + 4, CENTERING_OFFSET_Y);
     }
   }
 
@@ -664,13 +671,38 @@ public class Main extends Application {
 
     lvFriends.setItems(friendsList);
   }
+  
+  private void displayFriendsTwoUsers(String mainUser, String secondUser) {
 
+	    /*** Local Variables ***/
 
+	    ObservableList<String> friendsList = FXCollections.observableArrayList();
+
+	    Set<Person> mutualFriends;
+
+	    /*** Clear any existing data ***/
+
+	    lvFriends.getItems().clear();
+
+	    /*** Get friends of user ***/
+
+	    mutualFriends = sn.getMutualFriends(mainUser, secondUser);
+
+	    /*** Add friends from set to list ***/
+
+	    for (Person p : mutualFriends) {
+	      friendsList.add(p.getName());
+	    }
+
+	    /*** Add friendsList to listView ****/
+
+	    lvFriends.setItems(friendsList);
+	  }
 
   private void clickClear(Button Clear) {
     EventHandler<ActionEvent> event = new EventHandler<ActionEvent>() {
       public void handle(ActionEvent e) {
-        lvFriends.setItems(null);
+        lvFriends.getItems().clear();
       }
     };
     Clear.setOnAction(event);

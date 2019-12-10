@@ -577,7 +577,7 @@ public class Main extends Application {
     gc.strokeLine(0, height, 0, 0);
   }
 
-  private void updateFriendListBox(String user) {
+  private void displayFriendsOfOneUser(String user) {
 
     /*** Local Variables ***/
 

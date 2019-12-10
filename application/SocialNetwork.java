@@ -19,26 +19,18 @@ import java.util.Set;
  *
  * @author Wally Estenson, Cela Peterson
  *
- * @version 1.3
+ * @version 1.0
  *          <p>
  *
  *          File: SocialNetwork.java
  *          <p>
  *
- *          Date: December 10, 2019
+ *          Date: December 9, 2019
  *          <p>
  *
  *          Purpose: aTeam p3 - data structure implementation
  *
- *          Description: Social network ADT that utilizes the graph.java class.
- *          Class enables user to call all methods within the graph class to
- *          create the social network (adding and removing users, adding and
- *          removing friends, and getting a list of a user's friends). Further
- *          this class, has methods with new functionality that allow the user
- *          to get mutual friends between two users, get the shortest path
- *          between two users, get the connected components within the network
- *          (friend groups), use an external file to create the social network,
- *          and export a file with the social network.
+ *          Description: Social network adt that utilizes the graph.
  *
  *          Comment:
  *
@@ -49,54 +41,19 @@ public class SocialNetwork implements SocialNetworkADT {
 	private Graph graph;
 	private int numberOfConnectedComponents;
 
-	/**
-	 * Social network constructor. Creates an instance of graph.
-	 */
+	private int size;// number of edges
+	private int order;// number of users
+
 	public SocialNetwork() {
 		graph = new Graph();
 		numberOfConnectedComponents = 0;
 	}
 
-	/**
-	 * Creates a new user and calls the graph class to add that user as a new
-	 * node in the graph
-	 * 
-	 * @param String user to be added
-	 * @return true is user is added
-	 */
-	@Override
-	public boolean addUser(String user) {
-		Person user1 = new Person(user);
-		return graph.addNode(user1);
-	}
-
-	/**
-	 * Removes a user from the social network by calling the graph class method
-	 * to remove a node
-	 * 
-	 * @param String user to be removed
-	 * @return true is user is removed
-	 */
-	@Override
-	public boolean removeUser(String user) {
-		return graph.removeNode(graph.getNode(user));
-	}
-
-	/**
-	 * Adds a friendship/edge between two users. If either of the input users do
-	 * not yet exist, add them first by calling the method in the graph class to
-	 * add a new node.
-	 * 
-	 * @param String friend1 and String friend2
-	 * @return true if friendship is added
-	 */
 	@Override
 	public boolean addFriends(String friend1, String friend2) {
 		Person user1 = new Person(friend1);
 		Person user2 = new Person(friend2);
 
-		// if either of the input friends do not yet exist, add them as new
-		// nodes
 		if (graph.getNode(friend1) == null)
 			graph.addNode(user1);
 		if (graph.getNode(friend2) == null)
@@ -105,76 +62,60 @@ public class SocialNetwork implements SocialNetworkADT {
 		return graph.addEdge(graph.getNode(friend1), graph.getNode(friend2));
 	}
 
-	/**
-	 * Call the graph method to remove a friendship/edge between two users
-	 * 
-	 * @param String friend1 and String friend2
-	 * @return true if friendship is removed
-	 */
 	@Override
 	public boolean removeFriends(String friend1, String friend2) {
 		return graph.removeEdge(graph.getNode(friend1), graph.getNode(friend2));
 	}
 
-	/**
-	 * Call the graph method to get the friends of the specified user
-	 * 
-	 * @param String user
-	 * @return Set of friends of the user
-	 */
+	@Override
+	public boolean addUser(String user) {
+		Person user1 = new Person(user);
+		return graph.addNode(user1);
+	}
+
+	@Override
+	public boolean removeUser(String user) {
+		return graph.removeNode(graph.getNode(user));
+	}
+
 	@Override
 	public Set<Person> getFriends(String user) {
+
 		return graph.getNeighbors(graph.getNode(user));
 	}
 
-	/**
-	 * Method to get the mutual friends between two users. Utilizes the
-	 * getNeighbors method in the graph class for both users and compares these
-	 * sets to find mutual friends.
-	 * 
-	 * @param String friend1 and String friend2
-	 * @return Set of mutual friends
-	 */
 	@Override
 	public Set<Person> getMutualFriends(String friend1, String friend2) {
 
-		// create two sets of the specified users' friends
 		Set<Person> user1Neighbors = graph.getNeighbors(graph.getNode(friend1));
 		Set<Person> user2Neighbors = graph.getNeighbors(graph.getNode(friend2));
 
-		// create a third set that we will add mutual friends to
 		Set<Person> mutualFriends = new HashSet<Person>();
 
 		Iterator<Person> iterator = user1Neighbors.iterator();
 
-		// iterate through the first user's friends
 		while (iterator.hasNext()) {
-			// create a new person object of the first user's friend
 			Person compare1 = iterator.next();
 
 			Iterator<Person> iterator2 = user2Neighbors.iterator();
 
-			// iterate through the second user's friends
 			while (iterator2.hasNext()) {
-				// create a new person object of the second user's friend
+
 				Person compare2 = iterator2.next();
 
-				// compare the friends, if its a match, add to the mutual
-				// friends set
 				if (compare1.getName().equals(compare2.getName())) {
 					mutualFriends.add(compare2);
+				} else {
+
 				}
+
 			}
+
 		}
 		return mutualFriends;
 	}
 
-	/**
-	 * Method to get the shortest path between two users
-	 * 
-	 * @param String user1 and String user2
-	 * @return List of the person/s that are the shortest path between the users
-	 */
+	@SuppressWarnings("unchecked")
 	@Override
 	public List<Person> getShortestPath(String user1, String user2) {
 
@@ -254,22 +195,21 @@ public class SocialNetwork implements SocialNetworkADT {
 		return shortestPath;
 	}
 
-	/**
-	 * Method that returns a set of graphs representing the connected components
-	 * of the social network.
-	 * 
-	 * @return Set of graphs of the connected components
-	 */
+	// work through each user in the graph
+	// for the first user, add all friends to first new graph
+	// then for each of the friends, add their friends to the first graph
+	// mark all the user nodes of the initial friends as visited
+	// do again on the first graph until no new friends are shown
+	// then move on to the next unvisited node in all nodes
 	@Override
 	public Set<Graph> getConnectedComponents() {
-		// must rest the number of connected components each time its called
-		numberOfConnectedComponents = 0;
 
-		// set that we will be adding the connected components to
-		Set<Graph> connectedComponents = new HashSet<Graph>();
+		Set<Graph> connectedComponents = new HashSet<Graph>();// set containing
+																// graphs of the
+		// connected groups
 
-		// set containing all the users in the network
-		Set<Person> allUsers = graph.getAllNodes();
+		Set<Person> allUsers = graph.getAllNodes(); // set containing all users
+													// in the network
 
 		Iterator<Person> usersIterator = allUsers.iterator();
 		Iterator<Person> visitedReset = allUsers.iterator();
@@ -296,16 +236,12 @@ public class SocialNetwork implements SocialNetworkADT {
 		return connectedComponents;
 	}
 
-	/**
-	 * Breadth First Search method that returns a graph representing a users
-	 * network, including all paths ie. the returned graph will not include
-	 * users that the specififed user does not have a path to
-	 * 
-	 * @return Graph of users network
-	 */
+	// BFS to return a graph representing a users network, including all path
+	// ie the returned graph will not include users that the specified user does
+	// not have a path to
 	private Graph BFSearch(Person user) {
 
-		Graph usersNetwork = new Graph();
+		Graph graph1 = new Graph();
 
 		// Create a queue for BFS
 		LinkedList<Person> queue = new LinkedList<Person>();
@@ -319,42 +255,29 @@ public class SocialNetwork implements SocialNetworkADT {
 
 			// Dequeue the user at the front and add them to the new graph
 			user = queue.poll();
-			usersNetwork.addNode(user);
+			graph1.addNode(user);
 
+			// Get all the users friends, add edges between them and the user,
+			// and add them to the queue
 			Iterator<Person> friendsIterator = graph.getNeighbors(user)
 					.iterator();
-
-			// Get all the users friends, add edges between them and the
-			// user,and add them to the queue
 			while (friendsIterator.hasNext()) {
 				Person friend = friendsIterator.next();
 				if (!friend.getVisited()) {
 					friend.setVisited(true);
-					usersNetwork.addEdge(user, friend);
+					graph1.addEdge(user, friend);
 					queue.add(friend);
 				}
 			}
 		}
-		return usersNetwork;
+		return graph1;
 	}
 
-	/**
-	 * Gets the number of connected components in the social network. Must call
-	 * the getConnectedComponents method first which does the calculation.
-	 * 
-	 * @return int number of connected components 
-	 */
 	@Override
 	public int getNumberOfConnectedComponents() {
-		getConnectedComponents();
 		return numberOfConnectedComponents;
 	}
 
-	/**
-	 * Takes file and builds social network 
-	 * 
-	 * @param file 
-	 */
 	@Override
 	public void loadFromFile(File file) {
 		Scanner scnr = null;
@@ -364,28 +287,58 @@ public class SocialNetwork implements SocialNetworkADT {
 			e.printStackTrace();
 		}
 		while (scnr.hasNextLine()) {
+			
 			String[] commands = scnr.nextLine().trim().split(" ");
+			
 			switch (commands[0]) {
+			
 			case "r":
+				
+				// remove the user and all of their friendships
 				if (commands.length == 2) {
-					removeUser(commands[1]);
-				} else if (commands.length == 3) {
-					removeFriends(commands[1], commands[2]);
+					this.removeUser(commands[1]);
+				} 
+				// remove a single friendship
+				else if (commands.length == 3) {
+					this.removeFriends(commands[1],commands[2]);
 				}
+				break;
+				
 			case "a":
-				addUser(commands[1]);
-			case "s": // setCentralUser(commands[1]);
-
+				
+				// add a single user
+				if (commands.length==2) {
+					if(graph.getNode(commands[1])==null) {
+						addUser(commands[1]);
+					}
+				} 
+				
+				// add each user if not present, and add their friendship
+				else if (commands.length==3) {
+					if(graph.getNode(commands[1])==null) {
+						addUser(commands[1]);
+					}
+					if(graph.getNode(commands[2])==null) {
+						addUser(commands[2]);
+					}
+					graph.addEdge(graph.getNode(commands[2]), graph.getNode(commands[1]));
+				}
+				break;
+				
+			case "s":
+				
+				// set user as central screen in GUI
+				if (commands.length==2) {
+					//Main.setCentralUser(commands[1]);
+				}
+				break;
+				
 			}
 		}
 		scnr.close();
 	}
 
-	/**
-	 * Exports social network to a specified file 
-	 * 
-	 * @param file 
-	 */
+	// Use getConnectedComponents method
 	@Override
 	public void saveToFile(File file) {
 
@@ -426,45 +379,64 @@ public class SocialNetwork implements SocialNetworkADT {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
+
 	}
 
 	/**
-	 * Returns number of edges in the social network
-	 * 
-	 * @param int size
-	 */
+	// main method for testing purposes
+	public static void main(String[] args) {
+		SocialNetwork socialNetwork = new SocialNetwork();
+		Person wally = new Person("wally");
+		Person jack = new Person("jack");
+		Person bill = new Person("bill");
+		Person jake = new Person("jake");
+
+		socialNetwork.graph.addNode(wally);
+		socialNetwork.graph.addNode(jack);
+		socialNetwork.graph.addNode(bill);
+		socialNetwork.graph.addNode(jake);
+
+		socialNetwork.graph.addEdge(wally, jack);
+		socialNetwork.graph.addEdge(bill, jake);
+		socialNetwork.graph.addEdge(wally, jake);
+		socialNetwork.graph.addEdge(wally, bill);
+
+		System.out.println(socialNetwork.graph);
+
+		socialNetwork.graph.removeEdge(jack, wally);
+		System.out.println(socialNetwork.graph);
+
+		// socialNetwork.graph.removeNode(wally);
+
+		// System.out.println(socialNetwork.graph.order());
+		// System.out.println(socialNetwork.graph.size());
+		System.out.println(
+				socialNetwork.getMutualFriends("jake", "bill").toString());
+		System.out.println(socialNetwork.getConnectedComponents().toString());
+		// System.out.print(socialNetwork.graph);
+
+	}
+
+	*/
+	
+	// size = number of edges/friendships
 	public int size() {
 		return graph.size();
 	}
 
-	/**
-	 * Returns number of users in the social network
-	 * 
-	 * @param int order
-	 */
+	// order = number of users/nodes
 	public int order() {
 		return graph.order();
 	}
 
-	/**
-	 * Prints social network
-	 * For testing purposes 
-	 * 
-	 * @return String of social network
-	 */
+	// prints out personsMap for testing purposes
 	@Override
 	public String toString() {
 		return graph.toString();
 
 	}
 
-	/**
-	 * Gets person object 
-	 * For testing purposes 
-	 * 
-	 * @param String user
-	 * @return Person user 
-	 */
+	// gets user for testing purposes 
 	public Person getUser(String user) {
 		return graph.getNode(user);
 

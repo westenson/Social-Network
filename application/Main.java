@@ -1,5 +1,6 @@
 package application;
 	
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Set;
 
@@ -9,6 +10,8 @@ import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
+import javafx.stage.FileChooser;
+import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
@@ -24,6 +27,7 @@ import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
+import javafx.scene.text.Text;
 import application.SocialNetwork;
 import application.Person;
 
@@ -213,6 +217,11 @@ public class Main extends Application {
 		}
 		
 		clickClear(btnClear);
+		clickNewUser(btnNewUser);
+		clickLoad(btnLoad);
+		clickExport(btnExport);
+		clickExit(btnExit);
+		
 		
 		return buttonPane;
 	}
@@ -269,6 +278,8 @@ public class Main extends Application {
 		
 		topPanel.setPadding(new Insets(15, 15, 0, 15));
 
+		clickRemoveUser(btnRmUser, c1);
+		
 		return topPanel;
 		
 	}
@@ -602,8 +613,22 @@ public class Main extends Application {
 
 	}
 	
-	private void clickNewUser() {
-		
+	  private void clickNewUser(Button newUser) {
+	    EventHandler<ActionEvent> event = new EventHandler<ActionEvent>() {
+	      public void handle(ActionEvent e) {
+	        Stage stage = (Stage) newUser.getScene().getWindow();
+	        final Stage dialog = new Stage();
+	        dialog.initModality(Modality.APPLICATION_MODAL);
+	        dialog.initOwner(stage);
+	        VBox dialogVbox = new VBox(20);
+	        dialogVbox.getChildren().add(new Text("Type in a new user:"));
+	        Scene dialogScene = new Scene(dialogVbox, 300, 200);
+	        dialog.setScene(dialogScene);
+	        dialog.show();
+
+	      }
+	    };
+	    newUser.setOnAction(event);
 	}
 	
 	private void clickUndo() {
@@ -614,23 +639,52 @@ public class Main extends Application {
 		
 	}
 	
-	private void clickLoad() {
-		
-	}
-	
-	private void clickExport() {
-		
-	}
-	
-	private void clickExit() {
-		
-	}
-	
-	
 
-	private void clickRemoveUser() {
-		
-	}
+	  private void clickLoad(Button load) {
+	    EventHandler<ActionEvent> event = new EventHandler<ActionEvent>() {
+	      public void handle(ActionEvent e) {
+
+	        FileChooser fileChooser = new FileChooser();
+	        fileChooser.setTitle("Choose file");
+
+	        Stage stage = (Stage) load.getScene().getWindow();
+
+	        File file = fileChooser.showOpenDialog(stage);
+
+	        if (file != null)
+	          sn.loadFromFile(file);
+	      }
+	    };
+
+	    load.setOnAction(event);
+	  }
+
+	  private void clickExport(Button export) {
+
+	  }
+
+	  private void clickExit(Button exit) {
+	    EventHandler<ActionEvent> event = new EventHandler<ActionEvent>() {
+	      public void handle(ActionEvent e) {
+
+	        Stage stage = (Stage) exit.getScene().getWindow();
+	        stage.close();
+	      }
+	    };
+
+	    exit.setOnAction(event);
+	  }
+
+	  private void clickRemoveUser(Button RemoveUser, ComboBox c1) {
+	    EventHandler<ActionEvent> event = new EventHandler<ActionEvent>() {
+	      public void handle(ActionEvent e) { 
+	         
+	        sn.removeUser((String)c1.getValue());
+	        System.out.println(c1.getValue());
+	      }
+	    };
+	    RemoveUser.setOnAction(event);
+	  }
 	
 	private void clickRemoveFriendship() {
 		

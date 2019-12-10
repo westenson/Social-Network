@@ -95,12 +95,15 @@ public class Graph implements GraphADT {
 	@Override
 	public boolean removeEdge(Person user1, Person user2) {
 		// if either input is null, cannot remove edge
-		if (user1 == (null) || user2 ==(null))
+		if (user1 == (null) || user2 ==(null)) {
+			System.out.print("null");
 			return false;
-
+		}
+		
 		// if either input is not in the network, cannot remove edge
-		if (!personsMap.containsKey(user1) || !personsMap.containsKey(user2))
+		if (!personsMap.containsKey(user1)|| !personsMap.containsKey(user2)) {
 			return false;
+		}
 
 		// remove the edges
 		personsMap.get(user1).remove(user2);
@@ -188,6 +191,7 @@ public class Graph implements GraphADT {
 	@Override
 	public Set<Person> getNeighbors(Person user) {
 		Set<Person> neighbors = new HashSet<Person>();
+		
 
 		// iterate through the users neighbors and add them to the neighbors
 		// list

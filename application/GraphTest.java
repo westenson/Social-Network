@@ -189,4 +189,15 @@ class GraphTest {
 		assertEquals(0,graphInstance.order());
 		assertEquals(0,graphInstance.size());
 	}	
+	
+	//Figure out how to test - but this works correctly
+	@Test
+	public void test010_AddUser_RemoveUser() {
+		Person Person = new Person("testUser1");
+		Person Person1 = new Person("testUser2");
+		graphInstance.addEdge(Person, Person1);
+		graphInstance.addNode(Person);
+		graphInstance.addNode(Person1);
+		graphInstance.removeNode(Person);
+	}	
 }

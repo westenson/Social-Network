@@ -51,18 +51,18 @@ public class SocialNetwork implements SocialNetworkADT {
 
 	@Override
 	public boolean addFriends(String friend1, String friend2) {
-		Person person1 = new Person(friend1);
-		Person person2 = new Person(friend2);
-
-		return graph.addEdge(person1, person2);
+		Person user1 = new Person(friend1);
+		Person user2 = new Person(friend2);
+		
+		if (graph.getNode(friend1) == null) graph.addNode(user1);
+		if (graph.getNode(friend2) == null) graph.addNode(user2);
+		
+		return graph.addEdge(graph.getNode(friend1), graph.getNode(friend2));
 	}
 
 	@Override
 	public boolean removeFriends(String friend1, String friend2) {
-		Person person1 = new Person(friend1);
-		Person person2 = new Person(friend2);
-
-		return graph.removeEdge(person1, person2);
+		return graph.removeEdge(graph.getNode(friend1), graph.getNode(friend2));
 	}
 
 	@Override
@@ -73,14 +73,13 @@ public class SocialNetwork implements SocialNetworkADT {
 
 	@Override
 	public boolean removeUser(String user) {
-		Person user1 = new Person(user);
-		return graph.removeNode(user1);
+		return graph.removeNode(graph.getNode(user));
 	}
 
 	@Override
 	public Set<Person> getFriends(String user) {
-		Person user1 = new Person(user);
-		return graph.getNeighbors(user1);
+	
+		return graph.getNeighbors(graph.getNode(user));
 	}
 
 	@Override
@@ -388,5 +387,11 @@ public class SocialNetwork implements SocialNetworkADT {
 		return graph.order();
 	}
 	
+	// prints out personsMap for testing purposes
+		@Override
+		public String toString() {
+			return graph.toString();
+			
+		}
 
 }

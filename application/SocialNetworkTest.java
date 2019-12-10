@@ -82,6 +82,22 @@ class SocialNetworkTest {
 		assertEquals(0, graphInstance.order());
 	}
 	
+	
+	@Test
+	public void test06_add10Users_remove10Users_OrderEquals00() {
+		String user = "testUser";
+		
+		for(int i = 0; i < 10; i++) {
+			graphInstance.addUser(user + i);
+		}
+		assertEquals(10, graphInstance.order());
+		
+		for(int i = 0; i < 10; i++) {
+			graphInstance.removeUser(user + i);	
+		}
+		assertEquals(0, graphInstance.order());
+	}
+	
 	@Test
 	public void test05_add01Friendship_SizeEquals01_OrderEquals02() {
 		String user1 = "testUser1";
@@ -91,6 +107,23 @@ class SocialNetworkTest {
 		assertEquals(2, graphInstance.order());
 		assertEquals(1, graphInstance.size());
 	}
+	
+	//Figure out how to test - but this works correctly
+	@Test
+	public void test010_AddUser_RemoveUser() {
+		//Person Person = new Person("testUser1");
+		//Person Person1 = new Person("testUser2");
+		graphInstance.addUser("testUser3");
+		graphInstance.addFriends("testUser1", "testUser2");
+		//graphInstance.addUser(Person);
+		
+		//graphInstance.addNode(Person1);
+		graphInstance.removeUser("testUser1");
+	
+		//if (graphInstance.) {
+			//fail("Failed to remove edge between users when user was removed.");	
+		//}
+	}	
 	
 
 }

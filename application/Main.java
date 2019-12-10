@@ -6,6 +6,8 @@ import java.util.Set;
 import javafx.application.Application;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.stage.Stage;
 import javafx.scene.Scene;
@@ -17,6 +19,7 @@ import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
 import javafx.scene.control.RadioButton;
 import javafx.scene.control.ToggleGroup;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
@@ -194,6 +197,7 @@ public class Main extends Application {
 		buttonList.add(btnExport );
 		buttonList.add(btnExit   );	
 		
+		
 		/*** Set spacing for buttons ***/
 		
 		buttonPane.setPadding(new Insets(0, 15, 0, 15));
@@ -207,6 +211,8 @@ public class Main extends Application {
 			
 			buttonPane.getChildren().add(b);
 		}
+		
+		clickClear(btnClear);
 		
 		return buttonPane;
 	}
@@ -584,10 +590,16 @@ public class Main extends Application {
 		lvFriends.setItems(friendsList);		
 	}
 	
-	/*** Click event methods ***/
 	
-	private void clickClear() {
-		
+	
+	private void clickClear(Button Clear) {
+		EventHandler<ActionEvent> event = new EventHandler<ActionEvent>() {
+			public void handle(ActionEvent e) {
+				lvFriends.setItems(null);
+			}
+		};
+		Clear.setOnAction(event);
+
 	}
 	
 	private void clickNewUser() {
@@ -613,6 +625,8 @@ public class Main extends Application {
 	private void clickExit() {
 		
 	}
+	
+	
 
 	private void clickRemoveUser() {
 		

@@ -457,7 +457,7 @@ public class Main extends Application {
       gc.fillOval(START_X, START_Y - FRIEND_Y_OFFSET, CIRCLE_WIDTH, CIRCLE_HEIGHT);
       gc.strokeLine(START_X + CIRCLE_MID, START_Y, 0, -FRIEND_Y_OFFSET + CIRCLE_MID);
 
-      /*** CDraw friend name ***/
+      /*** Draw friend name ***/
 
       gc.setFill(Color.BLACK);
       gc.strokeText("ID" + i, CENTERING_OFFSET_X, -FRIEND_Y_OFFSET + CENTERING_OFFSET_Y);
@@ -508,10 +508,11 @@ public class Main extends Application {
 
     /*** Local Variables ***/
 
-    double leftMidX = CANVAS_X_SIZE / 4.0;
+    double leftMidX  = CANVAS_X_SIZE / 4.0;
     double rightMidX = (3 * CANVAS_X_SIZE) / 4.0;
-    double centerY = CANVAS_Y_SIZE / 2.0;
-    double spacing = 0;
+    double centerY   = CANVAS_Y_SIZE / 2.0;
+    double centerX   = CANVAS_X_SIZE / 2.0;
+    double spacing   = 0.0;
 
     /*** Clear any existing data from canvas ***/
 
@@ -531,8 +532,8 @@ public class Main extends Application {
 
     gc.strokeLine(leftMidX, 0, leftMidX, CANVAS_Y_SIZE);
     gc.strokeLine(rightMidX, 0, rightMidX, CANVAS_Y_SIZE);
-    gc.strokeLine(0, CANVAS_Y_SIZE / 2, CANVAS_X_SIZE, CANVAS_Y_SIZE / 2);
-    gc.strokeLine(CANVAS_X_SIZE / 2, 0, CANVAS_X_SIZE / 2, CANVAS_Y_SIZE);
+ //   gc.strokeLine(0, CANVAS_Y_SIZE / 2, CANVAS_X_SIZE, CANVAS_Y_SIZE / 2);
+ //   gc.strokeLine(CANVAS_X_SIZE / 2, 0, CANVAS_X_SIZE / 2, CANVAS_Y_SIZE);
 
     /*** Move to left half center ***/
 
@@ -549,15 +550,11 @@ public class Main extends Application {
     
     /*** Change color for friends ***/
     
-    gc.setFill(Color.MEDIUMAQUAMARINE);
+    gc.setFill(Color.YELLOW);
     
-
-
     /*** Move to middle ***/
 
     gc.translate(-leftMidX, 0);
-
-    gc.fillOval(START_X, START_Y, CIRCLE_WIDTH, CIRCLE_HEIGHT);
 
     /*** Determine spacing based on friend list size ***/
 
@@ -570,24 +567,64 @@ public class Main extends Application {
     // spacing = CANVAS_Y_SIZE / friendList.size();
     // }
 
-    int tempListSize = 5; // USED JUST FOR TESTING PURPOSES
+    int tempListSize = 7; // USED JUST FOR TESTING PURPOSES
     
     spacing = CANVAS_Y_SIZE / tempListSize;
     
-    if (tempListSize > 1) {
+    if (tempListSize > 1 && tempListSize % 2 == 0) { //even number of friends
+    	
+    	/*** Translate up for spacing on non-centered friends ***/
+    	
+    	gc.translate(0, -spacing / 2);
+    	
         for (int i = 0; i < tempListSize; i++) {
         	
+        	spacing = spacing * - 1;
         	
+        	gc.translate(0, spacing * i);
+        	gc.fillOval(START_X, START_Y, CIRCLE_WIDTH, CIRCLE_HEIGHT);
+        	
+
         	
         }
+        
+    } else if (tempListSize > 1 && tempListSize % 2 == 1) { //odd number of friends
+    	
+        for (int i = 0; i < tempListSize; i++) {
+        	
+        	spacing = spacing * - 1.0;        	
+        	
+        	/*** Draw circles for friends ***/
+        	
+        	gc.translate(0, spacing * i);
+        	gc.fillOval(START_X, START_Y, CIRCLE_WIDTH, CIRCLE_HEIGHT); 
+        	
+        	/*** Draw name ***/
+        	
+        	gc.strokeText("ID" + i, START_X, START_Y);
+        	      	
+        	/*** Draw connecting lines ***/
+        	
+        	if (i % 2 == 1) {
+            	gc.strokeLine(-CIRCLE_MID, 0, -leftMidX + CIRCLE_MID, 
+            				((-spacing * i) / 2.0) - (CIRCLE_HEIGHT / 2.0)); //left lines
+            	
+            	gc.strokeLine(CIRCLE_MID , 0,  leftMidX - CIRCLE_MID, 
+            			    ((-spacing * i) / 2.0) - (CIRCLE_HEIGHT / 2.0)); //right lines
+        	} else {
+        		gc.strokeLine(-CIRCLE_MID, 0, -leftMidX + CIRCLE_MID, (-spacing * i) / 2.0); //left
+        		gc.strokeLine( CIRCLE_MID, 0,  leftMidX - CIRCLE_MID, (-spacing * i) / 2.0); //right
+        	}        	
+        }
+        
     } else if (tempListSize == 1) {
     	
     	/*** Add single friend ***/
     	
-    	gc.fillOval(START_X, START_Y, CIRCLE_WIDTH, CIRCLE_HEIGHT);
+    	gc.fillOval(START_X, START_Y, CIRCLE_WIDTH, CIRCLE_HEIGHT);    	
     	
-    	
-    	
+    } else {
+    	//TODO: display notice of no mutual friends
     }
   }
 

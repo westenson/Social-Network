@@ -40,9 +40,9 @@ public class SocialNetwork implements SocialNetworkADT {
 
 	private Graph graph;
 	private int numberOfConnectedComponents;
-	
-	private int size;//number of edges
-	private int order;//number of users
+
+	private int size;// number of edges
+	private int order;// number of users
 
 	public SocialNetwork() {
 		graph = new Graph();
@@ -53,10 +53,12 @@ public class SocialNetwork implements SocialNetworkADT {
 	public boolean addFriends(String friend1, String friend2) {
 		Person user1 = new Person(friend1);
 		Person user2 = new Person(friend2);
-		
-		if (graph.getNode(friend1) == null) graph.addNode(user1);
-		if (graph.getNode(friend2) == null) graph.addNode(user2);
-		
+
+		if (graph.getNode(friend1) == null)
+			graph.addNode(user1);
+		if (graph.getNode(friend2) == null)
+			graph.addNode(user2);
+
 		return graph.addEdge(graph.getNode(friend1), graph.getNode(friend2));
 	}
 
@@ -78,7 +80,7 @@ public class SocialNetwork implements SocialNetworkADT {
 
 	@Override
 	public Set<Person> getFriends(String user) {
-	
+
 		return graph.getNeighbors(graph.getNode(user));
 	}
 
@@ -116,76 +118,80 @@ public class SocialNetwork implements SocialNetworkADT {
 	@SuppressWarnings("unchecked")
 	@Override
 	public List<Person> getShortestPath(String user1, String user2) {
-				
+
 		Person start = graph.getNode(user1);
 		Person end = graph.getNode(user2);
 
 		class Pair implements Comparable {
 			int weight;
 			Person vertex;
-			
-			Pair(int weight,Person vertex) {
+
+			Pair(int weight, Person vertex) {
 				this.weight = weight;
 				this.vertex = vertex;
 			}
-			
+
 			@Override
 			public int compareTo(Object o) {
 				return 0;
 			}
 		}
-				
-		HashMap<Person,Integer> visited = new HashMap<Person,Integer>();
-		HashMap<Person,Integer> weight = new HashMap<Person,Integer>();
-		HashMap<Person,Person> pred = new HashMap<Person,Person>();
+
+		HashMap<Person, Integer> visited = new HashMap<Person, Integer>();
+		HashMap<Person, Integer> weight = new HashMap<Person, Integer>();
+		HashMap<Person, Person> pred = new HashMap<Person, Person>();
 
 		Set<Person> people = graph.getAllNodes();
 
-		// initialize visited to false (0), weight to infinity (1000), pred to null
+		// initialize visited to false (0), weight to infinity (1000), pred to
+		// null
 		for (Person p : people) {
 			visited.put(p, 0);
-			weight.put(p,1000);
-			pred.put(p,null);
+			weight.put(p, 1000);
+			pred.put(p, null);
 		}
-		
+
 		// set start vertex(user 1) total weight to 0
 		weight.put(start, 0);
-		
+
 		// create new priority queue
 		PriorityQueue<Pair> pq = new PriorityQueue<Pair>();
 		pq.add(new Pair(0, start));
-		
+
 		while (!pq.isEmpty()) {
-			
+
 			// remove minimum of PQ (C) and set to visited
 			Pair min = pq.remove();
 			visited.put(min.vertex, 1);
-			
+
 			// for each unvisited successor (S) of C
-			for (Person S: graph.getNeighbors(min.vertex)) {
-				if ((Integer)visited.get(S)==0) {
+			for (Person S : graph.getNeighbors(min.vertex)) {
+				if ((Integer) visited.get(S) == 0) {
 					// if S's total weight can be reduced
-					if ((Integer)weight.get(S) > (Integer)weight.get(min.vertex) + 1) {
-						// S's total weight = C's total weight + edge weight from C to S
+					if ((Integer) weight
+							.get(S) > (Integer) weight.get(min.vertex) + 1) {
+						// S's total weight = C's total weight + edge weight
+						// from C to S
 						// S's predecessor = C
-						weight.put(S, (Integer)weight.get(min.vertex)+1);
-						pred.put(S,min.vertex);
+						weight.put(S, (Integer) weight.get(min.vertex) + 1);
+						pred.put(S, min.vertex);
 						// pq.insert( [S's total weight, S] )
 						pq.remove(S);
-						pq.add(new Pair((Integer)weight.get(min.vertex)+1, S));
+						pq.add(new Pair((Integer) weight.get(min.vertex) + 1,
+								S));
 					}
 				}
-			}	
+			}
 		}
-		
+
 		ArrayList<Person> shortestPath = new ArrayList<Person>();
 		shortestPath.add(end);
 		while (!end.equals(start)) {
-			Person predesessor = (Person)pred.get(end);
+			Person predesessor = (Person) pred.get(end);
 			shortestPath.add(predesessor);
 			end = predesessor;
 		}
-		
+
 		return shortestPath;
 	}
 
@@ -223,7 +229,6 @@ public class SocialNetwork implements SocialNetworkADT {
 				connectedComponents.add(BFSearch(user));
 				numberOfConnectedComponents++;
 			}
-
 
 		}
 		// return graphs represents the disjoint user groups in the social
@@ -302,47 +307,48 @@ public class SocialNetwork implements SocialNetworkADT {
 	// Use getConnectedComponents method
 	@Override
 	public void saveToFile(File file) {
-		
-        Writer outFile;
-        
-        try {
-        	
+
+		Writer outFile;
+
+		try {
+
 			outFile = new FileWriter(file);
-        
-	        Set<Graph> graphs = getConnectedComponents();
-	        
-	        for (Graph g: graphs) {
-	        	
-	        	Set<Person> people = g.getAllNodes();
-	        	HashSet<String> visited = new HashSet<String>();
-	        	
-	        	int i = 0;
-	        	// visit each person in each graph
-	        	for (Person p: people) {
-	        		
-	        		Set<Person> friends = g.getNeighbors(p);
-	        		
-		        	for (Person f: friends) {
-		        		outFile.write(i);
-		        		if (!visited.contains(f.getName())) {
-				        	outFile.write("a " + p.getName() + f.getName());
-		        		}
-		        	}
-		        	// mark as visited
-		        	visited.add(p.getName());
-		        	i++;
-	        	}
-	        	
-	        }
-        						
-	        outFile.close();
-			
+
+			Set<Graph> graphs = getConnectedComponents();
+
+			for (Graph g : graphs) {
+
+				Set<Person> people = g.getAllNodes();
+				HashSet<String> visited = new HashSet<String>();
+
+				int i = 0;
+				// visit each person in each graph
+				for (Person p : people) {
+
+					Set<Person> friends = g.getNeighbors(p);
+
+					for (Person f : friends) {
+						outFile.write(i);
+						if (!visited.contains(f.getName())) {
+							outFile.write("a " + p.getName() + f.getName());
+						}
+					}
+					// mark as visited
+					visited.add(p.getName());
+					i++;
+				}
+
+			}
+
+			outFile.close();
+
 		} catch (IOException e) {
 			e.printStackTrace();
-		} 
-		
+		}
+
 	}
 
+	/**
 	// main method for testing purposes
 	public static void main(String[] args) {
 		SocialNetwork socialNetwork = new SocialNetwork();
@@ -376,22 +382,29 @@ public class SocialNetwork implements SocialNetworkADT {
 		// System.out.print(socialNetwork.graph);
 
 	}
+
+	*/
 	
-	//size = number of edges/friendships
+	// size = number of edges/friendships
 	public int size() {
 		return graph.size();
 	}
-	
-	//order = number of users/nodes
+
+	// order = number of users/nodes
 	public int order() {
 		return graph.order();
 	}
-	
-	// prints out personsMap for testing purposes
-		@Override
-		public String toString() {
-			return graph.toString();
-			
-		}
 
+	// prints out personsMap for testing purposes
+	@Override
+	public String toString() {
+		return graph.toString();
+
+	}
+
+	// gets user for testing purposes 
+	public Person getUser(String user) {
+		return graph.getNode(user);
+
+	}
 }

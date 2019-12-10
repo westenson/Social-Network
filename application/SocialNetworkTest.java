@@ -53,18 +53,27 @@ class SocialNetworkTest {
 
 	/*** Tests ***/
 
+	/**
+	 * Check if instance of social network is created and the order and size is 0
+	 */
 	@Test
 	public void test00_NewSocialNetworkIsEmpty() {
 		assertEquals(0, socialNetworkInstance.order());
 		assertEquals(0, socialNetworkInstance.size());
 	}
 
+	/**
+	 * Check order is correct after 1 user add
+	 */
 	@Test
 	public void test01_add01User_OrderEquals01() {
 		socialNetworkInstance.addUser("user");
 		assertEquals(1, socialNetworkInstance.order());
 	}
 
+	/**
+	 * Check that order is correct after 10 user adds
+	 */
 	@Test
 	public void test02_add10Users_OrderEquals10() {
 		for (int i = 0; i < 10; i++) {
@@ -73,6 +82,9 @@ class SocialNetworkTest {
 		assertEquals(10, socialNetworkInstance.order());
 	}
 
+	/**
+	 * Check that order is correct after add and removal of user
+	 */
 	@Test
 	public void test03_add01User_remove01User_OrderEquals00() {
 		String user = "testUser";
@@ -84,6 +96,9 @@ class SocialNetworkTest {
 		assertEquals(0, socialNetworkInstance.order());
 	}
 
+	/**
+	 * Check that order is correct after add and removal of 10 users
+	 */
 	@Test
 	public void test04_add10Users_remove10Users_OrderEquals00() {
 		String user = "testUser";
@@ -99,6 +114,9 @@ class SocialNetworkTest {
 		assertEquals(0, socialNetworkInstance.order());
 	}
 
+	/**
+	 * Check that order and size is correct after adding friendship
+	 */
 	@Test
 	public void test05_add01Friendship_SizeEquals01_OrderEquals02() {
 		String user1 = "testUser1";
@@ -109,6 +127,9 @@ class SocialNetworkTest {
 		assertEquals(1, socialNetworkInstance.size());
 	}
 
+	/**
+	 * Check that order and size is correct after adding and removing friendships 
+	 */
 	@Test
 	public void test06_add10Users_remove10Users_OrderEquals00() {
 		String user = "testUser";
@@ -124,6 +145,9 @@ class SocialNetworkTest {
 		assertEquals(0, socialNetworkInstance.order());
 	}
 
+	/**
+	 * Check that user does not exist as friend after removal 
+	 */
 	@Test
 	public void test07_AddFriends_RemoveUser() {
 		socialNetworkInstance.addUser("testUser3");
@@ -131,11 +155,14 @@ class SocialNetworkTest {
 
 		socialNetworkInstance.removeUser("testUser1");
 
-		if (socialNetworkInstance.getUser("testUser1") != null) {
+		if (socialNetworkInstance.getFriends("testUser3").contains(socialNetworkInstance.getUser("testUser1"))) {
 			fail("Failed to remove user.");
 		}
 	}
 
+	/**
+	 * Check that user does not exist after removal 
+	 */
 	@Test
 	public void test08_AddUser_RemoveUser() {
 		socialNetworkInstance.addUser("testUser3");
@@ -149,6 +176,9 @@ class SocialNetworkTest {
 		}
 	}
 
+	/**
+	 * Check that edges are deleted after removing friends 
+	 */
 	@Test
 	public void test09_AddUsers_RemoveFriends() {
 		socialNetworkInstance.addUser("testUser3");
@@ -167,6 +197,9 @@ class SocialNetworkTest {
 		}
 	}
 
+	/**
+	 * Check that mutual friends correctly returns 
+	 */
 	@Test
 	public void test010_GetMutualFriends() {
 		socialNetworkInstance.addUser("1");
@@ -188,6 +221,9 @@ class SocialNetworkTest {
 		}
 	}
 
+	/**
+	 * Check that shortest path correctly returns
+	 */
 	@Test
 	public void test011_GetShortestPath() {
 		socialNetworkInstance.addUser("1");
@@ -219,6 +255,9 @@ class SocialNetworkTest {
 		}
 	}
 
+	/**
+	 * Check that the number of connected components in the social network is correct 
+	 */
 	@Test
 	public void test012_connectedComponentsNumber() {
 		socialNetworkInstance.addUser("1");

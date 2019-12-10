@@ -51,7 +51,7 @@ class GraphTest {
 	}
 	
 	@Test
-	public void test02_AddNode1_RemoveNode1_OrderEquals1() {
+	public void test02_AddNode1_RemoveNode1_OrderEquals00() {
 		Person Person1 = new Person ("testUser");
 		
 		graphInstance.addNode(Person1);
@@ -108,9 +108,9 @@ class GraphTest {
 	}
 	
 	@Test
-	public void test07_Add05Edges_Remove05Edges_SizeEquals00_OrderEquals06() {
+	public void test07_Add05Edges_Remove05Edges_SizeEquals05_OrderEquals00() {
 		Person Person1 = new Person("testUser");
-		Person Person2 = new Person("testUser2");
+		//Person Person2 = new Person("testUser2");
 		
 		for (int i = 0; i<5; i++) {
 			graphInstance.addEdge(Person1, new Person("testUser" + i));
@@ -141,11 +141,6 @@ class GraphTest {
 		assertEquals(0,graphInstance.size());
 	}
 	
-	@Test
-	public void test10_AddNullNode_OrderEquals00() {
-		graphInstance.addNode(null);
-		assertEquals(0,graphInstance.order());
-	}
-	
+
 	
 }

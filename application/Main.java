@@ -99,12 +99,8 @@ public class Main extends Application {
       centerBox.getChildren().add(createCanvasPane());
       centerBox.getChildren().add(createButtonPane());
 
-<<<<<<< HEAD
+
       /*** Create top and bottom panels ***/
-=======
-	  private void clickExport(Button export) {
-		  
->>>>>>> stash
 
       topPanel = createTopPanel();
       bottomPanel = createBottomPanel();
@@ -117,7 +113,6 @@ public class Main extends Application {
 
       /*** Set scene ***/
 
-<<<<<<< HEAD
       Scene scene = new Scene(root, 725, 550);
       scene.getStylesheets().add(getClass().getResource("application.css").toExternalForm());
 
@@ -551,6 +546,12 @@ public class Main extends Application {
 
     gc.translate(rightMidX - leftMidX, 0);
     gc.fillOval(START_X, START_Y, CIRCLE_WIDTH, CIRCLE_HEIGHT);
+    
+    /*** Change color for friends ***/
+    
+    gc.setFill(Color.MEDIUMAQUAMARINE);
+    
+
 
     /*** Move to middle ***/
 
@@ -570,7 +571,24 @@ public class Main extends Application {
     // }
 
     int tempListSize = 5; // USED JUST FOR TESTING PURPOSES
-
+    
+    spacing = CANVAS_Y_SIZE / tempListSize;
+    
+    if (tempListSize > 1) {
+        for (int i = 0; i < tempListSize; i++) {
+        	
+        	
+        	
+        }
+    } else if (tempListSize == 1) {
+    	
+    	/*** Add single friend ***/
+    	
+    	gc.fillOval(START_X, START_Y, CIRCLE_WIDTH, CIRCLE_HEIGHT);
+    	
+    	
+    	
+    }
   }
 
   private void drawCanvasBorder(GraphicsContext gc, double width, double height) {
@@ -703,31 +721,6 @@ public class Main extends Application {
   }
 
   private void clickRemoveUser(Button RemoveUser, ComboBox c1) {
-    EventHandler<ActionEvent> event = new EventHandler<ActionEvent>() {
-      public void handle(ActionEvent e) {
-
-        sn.removeUser((String) c1.getValue());
-
-      }
-    };
-    RemoveUser.setOnAction(event);
-  }
-
-  private void clickRemoveFriendship() {
-
-  }
-
-  private void clickFriendListBox() {
-
-  }
-
-  /*** Application ***/
-
-  public static void main(String[] args) {
-    launch(args);
-  }
-=======
-	  private void clickRemoveUser(Button RemoveUser, ComboBox c1) {
 	    EventHandler<ActionEvent> event = new EventHandler<ActionEvent>() {
 	      public void handle(ActionEvent e) { 
 	         
@@ -754,5 +747,4 @@ public class Main extends Application {
 	public static void main(String[] args) {
 		launch(args);
 	}
->>>>>>> stash
 }

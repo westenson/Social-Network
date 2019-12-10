@@ -99,7 +99,12 @@ public class Main extends Application {
       centerBox.getChildren().add(createCanvasPane());
       centerBox.getChildren().add(createButtonPane());
 
+<<<<<<< HEAD
       /*** Create top and bottom panels ***/
+=======
+	  private void clickExport(Button export) {
+		  
+>>>>>>> stash
 
       topPanel = createTopPanel();
       bottomPanel = createBottomPanel();
@@ -112,6 +117,7 @@ public class Main extends Application {
 
       /*** Set scene ***/
 
+<<<<<<< HEAD
       Scene scene = new Scene(root, 725, 550);
       scene.getStylesheets().add(getClass().getResource("application.css").toExternalForm());
 
@@ -720,4 +726,33 @@ public class Main extends Application {
   public static void main(String[] args) {
     launch(args);
   }
+=======
+	  private void clickRemoveUser(Button RemoveUser, ComboBox c1) {
+	    EventHandler<ActionEvent> event = new EventHandler<ActionEvent>() {
+	      public void handle(ActionEvent e) { 
+	         
+	        sn.removeUser((String)c1.getValue());
+	        System.out.println(c1.getValue());
+	      }
+	    };
+	    RemoveUser.setOnAction(event);
+	  }
+	
+	private void clickRemoveFriendship(Button RemoveFriendship, ComboBox c1, ComboBox c2) {
+		EventHandler<ActionEvent> event = new EventHandler<ActionEvent>() {
+			public void handle(ActionEvent e) {
+			}
+		};
+	}
+	
+	private void clickFriendListBox() {
+		
+	}
+	
+	/*** Application ***/
+	
+	public static void main(String[] args) {
+		launch(args);
+	}
+>>>>>>> stash
 }

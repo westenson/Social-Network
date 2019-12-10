@@ -66,7 +66,7 @@ public class Graph implements GraphADT {
 	@Override
 	public boolean addEdge(Person user1, Person user2) {
 		// if the inputs are null, cannot add edge
-		if (user1.equals(null) || user2.equals(null))
+		if (user1 == (null) || user2 == (null))
 			return false;
 
 		// if either of the users do not already exist, add them as new persons
@@ -95,7 +95,7 @@ public class Graph implements GraphADT {
 	@Override
 	public boolean removeEdge(Person user1, Person user2) {
 		// if either input is null, cannot remove edge
-		if (user1.equals(null) || user2.equals(null))
+		if (user1 == (null) || user2 ==(null))
 			return false;
 
 		// if either input is not in the network, cannot remove edge
@@ -124,8 +124,8 @@ public class Graph implements GraphADT {
 	@Override
 	public boolean addNode(Person user) {
 
-		// paramenter is invalid/null
-		if (user.equals(null))
+		// parameter is invalid/null
+		if (user == (null))
 			return false;
 
 		// network already contains the user

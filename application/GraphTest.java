@@ -101,9 +101,51 @@ class GraphTest {
 	}
 **/
 	
+//Must finish Test	
 	@Test
 	public void test06_RemoveNode_RemovesEdgeBetweenNodes() {
 		
 	}
+	
+	@Test
+	public void test07_Add05Edges_Remove05Edges_SizeEquals00_OrderEquals06() {
+		Person Person1 = new Person("testUser");
+		Person Person2 = new Person("testUser2");
+		
+		for (int i = 0; i<5; i++) {
+			graphInstance.addEdge(Person1, new Person("testUser" + i));
+		}
+		assertEquals(6, graphInstance.order());
+		assertEquals(5, graphInstance.size());
+		
+		for (int i = 0; i<5; i++) {
+			graphInstance.removeEdge(Person1, new Person("testUser" + i));
+		}
+		assertEquals(6,graphInstance.order());
+		assertEquals(0, graphInstance.size());
+	}
 
+	@Test
+	public void test08_AddNullNode_OrderEquals00() {
+		graphInstance.addNode(null);
+		
+		assertEquals(0,graphInstance.order());
+	}
+	
+	@Test
+	public void test09_AddNullEdge_SizeEquals00() {
+		Person Person = new Person("testUser1");
+		graphInstance.addEdge(Person, null);
+		
+		assertEquals(0,graphInstance.order());
+		assertEquals(0,graphInstance.size());
+	}
+	
+	@Test
+	public void test10_AddNullNode_OrderEquals00() {
+		graphInstance.addNode(null);
+		assertEquals(0,graphInstance.order());
+	}
+	
+	
 }

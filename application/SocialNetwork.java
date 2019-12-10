@@ -40,6 +40,9 @@ public class SocialNetwork implements SocialNetworkADT {
 
 	private Graph graph;
 	private int numberOfConnectedComponents;
+	
+	private int size;//number of edges
+	private int order;//number of users
 
 	public SocialNetwork() {
 		graph = new Graph();
@@ -374,5 +377,16 @@ public class SocialNetwork implements SocialNetworkADT {
 		// System.out.print(socialNetwork.graph);
 
 	}
+	
+	//size = number of edges/friendships
+	public int size() {
+		return graph.size();
+	}
+	
+	//order = number of users/nodes
+	public int order() {
+		return graph.order();
+	}
+	
 
 }

@@ -237,18 +237,18 @@ public class Graph implements GraphADT {
 	}
 
 	/**
-	 * Return the number of users in the social network
+	 * Return the number of edges in the social network
 	 *
-	 * @return int number of users
+	 * @return int number of edges
 	 */
 	public int size() {
 		return size;
 	}
 
 	/**
-	 * Return the number of edges in the social network
+	 * Return the number of users in the social network
 	 *
-	 * @return int number of friendships/edges
+	 * @return int number of users
 	 */
 	public int order() {
 		return order;

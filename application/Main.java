@@ -284,7 +284,8 @@ public class Main extends Application {
 
     topPanel.setPadding(new Insets(15, 15, 0, 15));
 
-    clickRemoveUser(btnRmUser, c1);
+    clickRemoveUser(btnRmUser);
+    clickRemoveFriendship(btnRmFriend);
 
     return topPanel;
 
@@ -674,6 +675,7 @@ public class Main extends Application {
   
   private void displayFriendsTwoUsers(String mainUser, String secondUser) {
 
+<<<<<<< HEAD
 	    /*** Local Variables ***/
 
 	    ObservableList<String> friendsList = FXCollections.observableArrayList();
@@ -699,6 +701,8 @@ public class Main extends Application {
 	    lvFriends.setItems(friendsList);
 	  }
 
+=======
+>>>>>>> branch 'master' of https://github.com/celapeterson/ateam-GUI.git
   private void clickClear(Button Clear) {
     EventHandler<ActionEvent> event = new EventHandler<ActionEvent>() {
       public void handle(ActionEvent e) {
@@ -731,8 +735,9 @@ public class Main extends Application {
 
         EventHandler<ActionEvent> event = new EventHandler<ActionEvent>() {
           public void handle(ActionEvent e) {
-            
+
             sn.addUser(field.getText());
+            // updateFriendListBox(field.getText());
             dialog.close();
           }
         };
@@ -789,27 +794,115 @@ public class Main extends Application {
     exit.setOnAction(event);
   }
 
-  private void clickRemoveUser(Button RemoveUser, ComboBox c1) {
-	    EventHandler<ActionEvent> event = new EventHandler<ActionEvent>() {
-	      public void handle(ActionEvent e) { 
-	         
-	        sn.removeUser((String)c1.getValue());
-	        System.out.println(c1.getValue());
-	      }
-	    };
-	    RemoveUser.setOnAction(event);
-	  }
-	
-	private void clickRemoveFriendship(Button RemoveFriendship, ComboBox c1, ComboBox c2) {
-		EventHandler<ActionEvent> event = new EventHandler<ActionEvent>() {
-			public void handle(ActionEvent e) {
-			}
-		};
-	}
-	
-	private void clickFriendListBox() {
-		
-	}
+  private void clickRemoveUser(Button removeUser) {
+   
+    EventHandler<ActionEvent> event = new EventHandler<ActionEvent>() {
+      public void handle(ActionEvent e) {
+        Stage stage = (Stage) removeUser.getScene().getWindow();
+        final Stage dialog = new Stage();
+        dialog.initModality(Modality.APPLICATION_MODAL);
+        dialog.initOwner(stage);
+
+        Label label = new Label("Click a user to remove:");
+        // users will have to be a list of all the users in the network.
+        ObservableList<String> users1 =
+            FXCollections.observableArrayList("User 1", "User 2", "User 3");
+        ComboBox comboBox1 = new ComboBox(users1);
+
+        BorderPane root = new BorderPane();
+        HBox box = new HBox();
+        HBox box2 = new HBox();
+
+        box.getChildren().add(label);
+        box.setSpacing(10);
+        box.setPadding(new Insets(10, 20, 20, 20));
+
+        Button btnSubmit = new Button("Submit");
+        box2.getChildren().addAll(comboBox1, btnSubmit);
+        box2.setSpacing(10);
+        box2.setPadding(new Insets(0, 0, 0, 20));
+
+        root.setTop(box);
+        root.setCenter(box2);
+
+
+        Scene dialogScene = new Scene(root, 200, 100);
+
+
+        EventHandler<ActionEvent> event = new EventHandler<ActionEvent>() {
+          public void handle(ActionEvent e) {
+            
+            sn.removeUser((String)comboBox1.getValue());
+            dialog.close();
+          }
+        };
+        btnSubmit.setOnAction(event);
+
+        dialog.setScene(dialogScene);
+        dialog.show();
+      }
+    };
+    removeUser.setOnAction(event);
+  }
+
+  private void clickRemoveFriendship(Button rmFriendship) {
+    EventHandler<ActionEvent> event = new EventHandler<ActionEvent>() {
+      public void handle(ActionEvent e) {
+        Stage stage = (Stage) rmFriendship.getScene().getWindow();
+        final Stage dialog = new Stage();
+        dialog.initModality(Modality.APPLICATION_MODAL);
+        dialog.initOwner(stage);
+
+        Label label = new Label("Enter two users to remove friendship:");
+        // users will have to be a list of all the users in the network.
+        ObservableList<String> users1 =
+            FXCollections.observableArrayList("User 1", "User 2", "User 3");
+        ComboBox comboBox1 = new ComboBox(users1);
+       
+        // users will have to be a list of all the users in the network.
+        ObservableList<String> users2 =
+            FXCollections.observableArrayList("User 1", "User 2", "User 3");
+        ComboBox comboBox2 = new ComboBox(users2);
+
+        BorderPane root = new BorderPane();
+        HBox box = new HBox();
+        HBox box2 = new HBox();
+
+        box.getChildren().add(label);
+        box.setSpacing(10);
+        box.setPadding(new Insets(10, 20, 20, 20));
+
+        Button btnSubmit = new Button("Submit");
+        box2.getChildren().addAll(comboBox1, comboBox2, btnSubmit);
+        box2.setSpacing(10);
+        box2.setPadding(new Insets(0, 0, 0, 20));
+
+        root.setTop(box);
+        root.setCenter(box2);
+
+
+        Scene dialogScene = new Scene(root, 290, 100);
+
+
+        EventHandler<ActionEvent> event = new EventHandler<ActionEvent>() {
+          public void handle(ActionEvent e) {
+            
+            sn.removeFriends((String)comboBox1.getValue(), (String)comboBox2.getValue());
+            dialog.close();
+          }
+        };
+        btnSubmit.setOnAction(event);
+
+        dialog.setScene(dialogScene);
+        dialog.show();
+      }
+    };
+    rmFriendship.setOnAction(event);
+  }
+
+  private void clickFriendListBox() {
+
+  }
 	
 	/*** Application ***/
 	

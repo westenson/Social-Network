@@ -34,7 +34,7 @@ import application.Person;
 
 /***************************************************************************************************
  *
- * @author Dan Gerstl, Cecelia Peterson
+ * @author Dan Gerstl, Cecelia Peterson, Drew Zimmerman, Andrew Irvine
  *
  * @version 1.0
  *          <p>
@@ -675,7 +675,6 @@ public class Main extends Application {
   
   private void displayFriendsTwoUsers(String mainUser, String secondUser) {
 
-<<<<<<< HEAD
 	    /*** Local Variables ***/
 
 	    ObservableList<String> friendsList = FXCollections.observableArrayList();
@@ -701,8 +700,7 @@ public class Main extends Application {
 	    lvFriends.setItems(friendsList);
 	  }
 
-=======
->>>>>>> branch 'master' of https://github.com/celapeterson/ateam-GUI.git
+
   private void clickClear(Button Clear) {
     EventHandler<ActionEvent> event = new EventHandler<ActionEvent>() {
       public void handle(ActionEvent e) {

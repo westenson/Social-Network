@@ -49,6 +49,7 @@ public class SocialNetwork implements SocialNetworkADT {
 
 	private Graph graph;
 	private int numberOfConnectedComponents;
+	private String centralUser;
 
 	/**
 	 * Social network constructor. Creates an instance of graph.
@@ -56,6 +57,7 @@ public class SocialNetwork implements SocialNetworkADT {
 	public SocialNetwork() {
 		graph = new Graph();
 		numberOfConnectedComponents = 0;
+		centralUser = null;
 	}
 
 	/**
@@ -400,8 +402,10 @@ public class SocialNetwork implements SocialNetworkADT {
 				
 			case "s":
 				
+				
 				// set user as central screen in GUI
 				if (commands.length==2) {
+					setCentralUser(commands[1]);
 					//Main.setCentralUser(commands[1]);
 				}
 				break;
@@ -409,6 +413,17 @@ public class SocialNetwork implements SocialNetworkADT {
 			}
 		}
 		scnr.close();
+	}
+	
+
+	public void setCentralUser(String user) {
+		centralUser = user;
+	
+	}
+	
+	public String getCentralUser() {
+		return centralUser;
+	
 	}
 
 	/**

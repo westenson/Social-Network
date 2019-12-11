@@ -62,717 +62,749 @@ import application.Person;
  */
 public class Main extends Application {
 
-  /*** Class Constants ***/
+	/*** Class Constants ***/
 
-  final double CIRCLE_HEIGHT = 50.0;
-  final double CIRCLE_WIDTH = 50.0;
-  final double CIRCLE_MID = CIRCLE_HEIGHT / 2;
-  final double START_X = -CIRCLE_WIDTH / 2;
-  final double START_Y = -CIRCLE_HEIGHT / 2;
-  final double FRIEND_X_OFFSET = 125.0;
-  final double FRIEND_Y_OFFSET = 125.0;
-  final double CENTERING_OFFSET_X = -10.0;
-  final double CENTERING_OFFSET_Y = 4.0;
-  final double CANVAS_X_SIZE = 350;
-  final double CANVAS_Y_SIZE = 350;
+	final double CIRCLE_HEIGHT = 50.0;
+	final double CIRCLE_WIDTH = 50.0;
+	final double CIRCLE_MID = CIRCLE_HEIGHT / 2;
+	final double START_X = -CIRCLE_WIDTH / 2;
+	final double START_Y = -CIRCLE_HEIGHT / 2;
+	final double FRIEND_X_OFFSET = 125.0;
+	final double FRIEND_Y_OFFSET = 125.0;
+	final double CENTERING_OFFSET_X = -10.0;
+	final double CENTERING_OFFSET_Y = 4.0;
+	final double CANVAS_X_SIZE = 350;
+	final double CANVAS_Y_SIZE = 350;
 
-  final int OVERFLOW_LIMIT = 12;
+	final int OVERFLOW_LIMIT = 12;
 
-  final ToggleGroup tGroup = new ToggleGroup();
+	final ToggleGroup tGroup = new ToggleGroup();
 
-  /*** Class Variables ***/
+	/*** Class Variables ***/
 
-  SocialNetwork sn = new SocialNetwork();
+	SocialNetwork sn = new SocialNetwork();
 
-  ListView<String> lvFriends;
+	ListView<String> lvFriends;
 
-  Canvas canvas = new Canvas(CANVAS_X_SIZE, CANVAS_Y_SIZE);
-  Canvas border = new Canvas(CANVAS_X_SIZE, CANVAS_Y_SIZE);
+	Canvas canvas = new Canvas(CANVAS_X_SIZE, CANVAS_Y_SIZE);
+	Canvas border = new Canvas(CANVAS_X_SIZE, CANVAS_Y_SIZE);
 
-  GraphicsContext gc = canvas.getGraphicsContext2D();
-  GraphicsContext gcBorder = border.getGraphicsContext2D();
+	GraphicsContext gc = canvas.getGraphicsContext2D();
+	GraphicsContext gcBorder = border.getGraphicsContext2D();
 
-  ComboBox<String> c1;
-  ComboBox<String> c2;
+	ComboBox<String> c1;
+	ComboBox<String> c2;
 
-  RadioButton rb1;
-  RadioButton rb2;
-  RadioButton rb3;
+	RadioButton rb1;
+	RadioButton rb2;
+	RadioButton rb3;
 
-  Label lblRadioChoice;
-  Label lblUserOverflow;
-  Label lblLastAction;
-  Label lblGroupCount;
-  Label lblUsersCount;
+	Label lblRadioChoice;
+	Label lblUserOverflow;
+	Label lblLastAction;
+	Label lblGroupCount;
+	Label lblUsersCount;
 
-  @Override
-  public void start(Stage primaryStage) {
-    try {
+	@Override
+	public void start(Stage primaryStage) {
+		try {
 
-      /*** Local Variables ***/
+			/*** Local Variables ***/
 
-      BorderPane root = new BorderPane();
+			BorderPane root = new BorderPane();
 
-      VBox centerBox = new VBox();
+			VBox centerBox = new VBox();
 
-      HBox topPanel = new HBox();
+			HBox topPanel = new HBox();
 
-      BorderPane bottomPanel = new BorderPane();
+			BorderPane bottomPanel = new BorderPane();
 
-      /*** Create top and bottom panels ***/
+			/*** Create top and bottom panels ***/
 
-      topPanel = createTopPanel();
-      bottomPanel = createBottomPanel();
+			topPanel = createTopPanel();
+			bottomPanel = createBottomPanel();
 
-      /*** Add components to centerBox ***/
+			/*** Add components to centerBox ***/
 
-      centerBox.getChildren().add(createCanvasPane());
-      centerBox.getChildren().add(createButtonPane());
+			centerBox.getChildren().add(createCanvasPane());
+			centerBox.getChildren().add(createButtonPane());
 
-      /*** Add components to root ***/
+			/*** Add components to root ***/
 
-      root.setTop(topPanel);
-      root.setCenter(centerBox);
-      root.setBottom(bottomPanel);
+			root.setTop(topPanel);
+			root.setCenter(centerBox);
+			root.setBottom(bottomPanel);
 
-      /*** Set scene ***/
+			/*** Set scene ***/
 
-      Scene scene = new Scene(root, 725, 550);
-      scene.getStylesheets().add(getClass().getResource("application.css").toExternalForm());
+			Scene scene = new Scene(root, 725, 550);
+			scene.getStylesheets().add(
+					getClass().getResource("application.css").toExternalForm());
 
-      /*** Set Stage and show ***/
+			/*** Set Stage and show ***/
 
-      primaryStage.setTitle("Network Visualizer");
-      primaryStage.setScene(scene);
-      primaryStage.show();
+			primaryStage.setTitle("Network Visualizer");
+			primaryStage.setScene(scene);
+			primaryStage.show();
 
-    } catch (Exception e) {
-      e.printStackTrace();
-    }
-  }
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
 
-  /***** PANEL CREATION METHODS *****/
+	/***** PANEL CREATION METHODS *****/
 
-  /**
-   * Creates an HBox containing the canvas and listView that displays the users and friendships
-   * contained in the Social Network and the associated labels
-   * 
-   * @return mainBox - an HBox containing a Canvas and ListView
-   */
-  private HBox createCanvasPane() {
+	/**
+	 * Creates an HBox containing the canvas and listView that displays the
+	 * users and friendships contained in the Social Network and the associated
+	 * labels
+	 * 
+	 * @return mainBox - an HBox containing a Canvas and ListView
+	 */
+	private HBox createCanvasPane() {
 
-    /*** Local Variables ***/
+		/*** Local Variables ***/
 
-    HBox mainBox = new HBox();
+		HBox mainBox = new HBox();
 
-    lblRadioChoice = new Label("All friends");
-    lblUserOverflow =
-        new Label("Unable to display all relationships. Displaying first " + OVERFLOW_LIMIT);
+		lblRadioChoice = new Label("All friends");
+		lblUserOverflow = new Label(
+				"Unable to display all relationships. Displaying first "
+						+ OVERFLOW_LIMIT);
 
-    VBox rightBox = new VBox();
-    VBox leftBox = new VBox();
+		VBox rightBox = new VBox();
+		VBox leftBox = new VBox();
 
-    lvFriends = new ListView<String>();
+		lvFriends = new ListView<String>();
 
-    Pane canvasPane = new Pane();
+		Pane canvasPane = new Pane();
 
-    /*** Add EventHandler ***/
+		/*** Add EventHandler ***/
 
-    lvFriends.getSelectionModel().selectedItemProperty().addListener(new ChangeListener<String>() {
-      public void changed(ObservableValue<? extends String> observable, String oldValue,
-          String newValue) {
-        clickFriendListBox();
-      }
-    });
+		lvFriends.getSelectionModel().selectedItemProperty()
+				.addListener(new ChangeListener<String>() {
+					public void changed(
+							ObservableValue<? extends String> observable,
+							String oldValue, String newValue) {
+						clickFriendListBox();
+					}
+				});
 
-    /*** Hide overflow label ***/
+		/*** Hide overflow label ***/
 
-    lblUserOverflow.setVisible(false);
+		lblUserOverflow.setVisible(false);
 
-    // /*** HARDCODED DATA FOR TESTING ***/
-    //
-    // ObservableList<String> friendsList =
-    // FXCollections.observableArrayList("Friend 1", "Friend 2", "Friend 3", "Friend 4");
-    //
-    // lvFriends.setItems(friendsList);
+		// /*** HARDCODED DATA FOR TESTING ***/
+		//
+		// ObservableList<String> friendsList =
+		// FXCollections.observableArrayList("Friend 1", "Friend 2", "Friend 3",
+		// "Friend 4");
+		//
+		// lvFriends.setItems(friendsList);
 
-    /*** Add components to right VBox ***/
+		/*** Add components to right VBox ***/
 
-    rightBox.getChildren().add(lblRadioChoice);
-    rightBox.getChildren().add(lvFriends);
+		rightBox.getChildren().add(lblRadioChoice);
+		rightBox.getChildren().add(lvFriends);
 
-    /*** Set padding ***/
+		/*** Set padding ***/
 
-    mainBox.setPadding(new Insets(15, 15, 15, 15));
-    mainBox.setSpacing(130);
+		mainBox.setPadding(new Insets(15, 15, 15, 15));
+		mainBox.setSpacing(130);
 
-    /*** Draw canvas border ***/
+		/*** Draw canvas border ***/
 
-    drawCanvasBorder();
+		drawCanvasBorder();
 
-    /*** Add EXAMPLE FRIENDS ***/
+		/*** Add EXAMPLE FRIENDS ***/
 
-    // drawExampleFriends(CANVAS_X_SIZE, CANVAS_Y_SIZE);
+		// drawExampleFriends(CANVAS_X_SIZE, CANVAS_Y_SIZE);
 
-    // drawFriends("USER");
+		// drawFriends("USER");
 
-    // drawMutualFriends("USER1", "USER2");
+		// drawMutualFriends("USER1", "USER2");
 
-    /*** Add canvases to pane ***/
+		/*** Add canvases to pane ***/
 
-    canvasPane.getChildren().add(border);
-    canvasPane.getChildren().add(canvas);
+		canvasPane.getChildren().add(border);
+		canvasPane.getChildren().add(canvas);
 
-    /*** Add components to left VBox ***/
+		/*** Add components to left VBox ***/
 
-    leftBox.getChildren().addAll(canvasPane, lblUserOverflow);
+		leftBox.getChildren().addAll(canvasPane, lblUserOverflow);
 
-    /*** Add components to main pane ***/
+		/*** Add components to main pane ***/
 
-    mainBox.getChildren().add(leftBox);
-    mainBox.getChildren().add(rightBox);
+		mainBox.getChildren().add(leftBox);
+		mainBox.getChildren().add(rightBox);
 
-    return mainBox;
-  }
+		return mainBox;
+	}
 
-  /**
-   * Creates an HBox that contains buttons that allows the user to interact with the modeled Social
-   * Network.
-   * 
-   * @return buttonPane - an HBox containing a row of buttons for user interaction
-   */
-  private HBox createButtonPane() {
+	/**
+	 * Creates an HBox that contains buttons that allows the user to interact
+	 * with the modeled Social Network.
+	 * 
+	 * @return buttonPane - an HBox containing a row of buttons for user
+	 *         interaction
+	 */
+	private HBox createButtonPane() {
 
-    /*** Local Constants ***/
+		/*** Local Constants ***/
 
-    final double BUTTON_HEIGHT = 20.0;
-    final double BUTTON_WIDTH = 100.0;
-    final double BUTTON_SPACING = 10.0;
+		final double BUTTON_HEIGHT = 20.0;
+		final double BUTTON_WIDTH = 100.0;
+		final double BUTTON_SPACING = 10.0;
 
-    /*** Local Variables ***/
+		/*** Local Variables ***/
 
-    HBox buttonPane = new HBox();
+		HBox buttonPane = new HBox();
 
-    ArrayList<Button> buttonList = new ArrayList<Button>();
+		ArrayList<Button> buttonList = new ArrayList<Button>();
 
-    Button btnClear = new Button("Clear");
-    Button btnNewUser = new Button("New User");
-    Button btnAddFrnd = new Button("Add Friendship");
-    Button btnRedo = new Button("Redo");
-    Button btnLoad = new Button("Load");
-    Button btnExport = new Button("Export");
-    Button btnExit = new Button("Exit");
+		Button btnClear = new Button("Clear");
+		Button btnNewUser = new Button("New User");
+		Button btnAddFrnd = new Button("Add Friendship");
+		Button btnRedo = new Button("Redo");
+		Button btnLoad = new Button("Load");
+		Button btnExport = new Button("Export");
+		Button btnExit = new Button("Exit");
 
-    /*** Add buttons to Array ***/
+		/*** Add buttons to Array ***/
 
-    buttonList.add(btnClear);
-    buttonList.add(btnNewUser);
-    buttonList.add(btnAddFrnd);
-   // buttonList.add(btnRedo);
-    buttonList.add(btnLoad);
-    buttonList.add(btnExport);
-    buttonList.add(btnExit);
+		buttonList.add(btnClear);
+		buttonList.add(btnNewUser);
+		buttonList.add(btnAddFrnd);
+		// buttonList.add(btnRedo);
+		buttonList.add(btnLoad);
+		buttonList.add(btnExport);
+		buttonList.add(btnExit);
 
+		/*** Set spacing for buttons ***/
 
-    /*** Set spacing for buttons ***/
+		buttonPane.setPadding(new Insets(0, 15, 0, 15));
+		buttonPane.setSpacing(BUTTON_SPACING);
 
-    buttonPane.setPadding(new Insets(0, 15, 0, 15));
-    buttonPane.setSpacing(BUTTON_SPACING);
+		/*** Set button size and add to pane ***/
 
-    /*** Set button size and add to pane ***/
+		for (Button b : buttonList) {
 
-    for (Button b : buttonList) {
+			b.setPrefSize(BUTTON_WIDTH, BUTTON_HEIGHT);
 
-      b.setPrefSize(BUTTON_WIDTH, BUTTON_HEIGHT);
+			buttonPane.getChildren().add(b);
+		}
 
-      buttonPane.getChildren().add(b);
-    }
+		clickClear(btnClear);
+		clickNewUser(btnNewUser);
+		clickLoad(btnLoad);
+		clickExport(btnExport);
+		clickExit(btnExit);
+		clickAddFriendship(btnAddFrnd);
 
-    clickClear(btnClear);
-    clickNewUser(btnNewUser);
-    clickLoad(btnLoad);
-    clickExport(btnExport);
-    clickExit(btnExit);
-    clickAddFriendship(btnAddFrnd);
+		return buttonPane;
+	}
 
+	/**
+	 * Creates an HBox that contains RadioButtons, ComboBoxes, and Buttons that
+	 * allows the user to interact with the modeled Social Network.
+	 * 
+	 * @return topPanel - an HBox multiple Objects for user interaction
+	 */
 
-    return buttonPane;
-  }
+	private HBox createTopPanel() {
 
-  /**
-   * Creates an HBox that contains RadioButtons, ComboBoxes, and Buttons that allows the user to
-   * interact with the modeled Social Network.
-   * 
-   * @return topPanel - an HBox multiple Objects for user interaction
-   */
+		HBox topPanel = new HBox();
 
-  private HBox createTopPanel() {
+		// instantiate radio buttons for left-most feature
+		rb1 = new RadioButton("Show all friends");
+		rb2 = new RadioButton("Show mutual friends");
+		rb3 = new RadioButton("Show shortest path");
 
-    HBox topPanel = new HBox();
+		VBox tGroupContainer = new VBox(rb1, rb2, rb3);
 
-    // instantiate radio buttons for left-most feature
-    rb1 = new RadioButton("Show all friends");
-    rb2 = new RadioButton("Show mutual friends");
-    rb3 = new RadioButton("Show shortest path");
+		rb1.setSelected(true);
+		rb1.setToggleGroup(tGroup);
+		rb2.setToggleGroup(tGroup);
+		rb3.setToggleGroup(tGroup);
 
-    VBox tGroupContainer = new VBox(rb1, rb2, rb3);
+		// create combo box for main profile
+		VBox v1 = new VBox();
+		Label l1 = new Label("Main Profile");
+		// ObservableList<String> users =
+		// FXCollections.observableArrayList(sn.getAllUsers());
+		ObservableList<String> users = FXCollections
+				.observableArrayList("          ");
+		c1 = new ComboBox<String>(users);
+		v1.getChildren().addAll(l1, c1);
 
-    rb1.setSelected(true);
-    rb1.setToggleGroup(tGroup);
-    rb2.setToggleGroup(tGroup);
-    rb3.setToggleGroup(tGroup);
+		// create combo box for friend
+		VBox v2 = new VBox();
+		Label l2 = new Label("Friend");
+		ObservableList<String> friends = FXCollections
+				.observableArrayList("          ");
+		c2 = new ComboBox<String>(friends);
+		v2.getChildren().addAll(l2, c2);
+		c2.setDisable(true);
 
-    // create combo box for main profile
-    VBox v1 = new VBox();
-    Label l1 = new Label("Main Profile");
-    // ObservableList<String> users = FXCollections.observableArrayList(sn.getAllUsers());
-    ObservableList<String> users = FXCollections.observableArrayList("          ");
-    c1 = new ComboBox<String>(users);
-    v1.getChildren().addAll(l1, c1);
+		// create button for remove user and remove friendship
+		VBox v3 = new VBox();
+		Button btnRmUser = new Button("Remove User");
+		v3.getChildren().add(btnRmUser);
+		v3.snappedBottomInset();
+		VBox v4 = new VBox();
+		Button btnRmFriend = new Button("Remove Friendship");
+		v4.getChildren().add(btnRmFriend);
+		v4.snappedBottomInset();
 
-    // create combo box for friend
-    VBox v2 = new VBox();
-    Label l2 = new Label("Friend");
-    ObservableList<String> friends = FXCollections.observableArrayList("          ");
-    c2 = new ComboBox<String>(friends);
-    v2.getChildren().addAll(l2, c2);
-    c2.setDisable(true);
+		btnRmUser.setPrefSize(150.0, 40.0);
+		btnRmFriend.setPrefSize(150.0, 40.0);
 
-    // create button for remove user and remove friendship
-    VBox v3 = new VBox();
-    Button btnRmUser = new Button("Remove User");
-    v3.getChildren().add(btnRmUser);
-    v3.snappedBottomInset();
-    VBox v4 = new VBox();
-    Button btnRmFriend = new Button("Remove Friendship");
-    v4.getChildren().add(btnRmFriend);
-    v4.snappedBottomInset();
+		// add all nodes to top panel
+		topPanel.getChildren().addAll(tGroupContainer, v1, v2, btnRmUser,
+				btnRmFriend);
+		topPanel.setSpacing(20);
 
-    btnRmUser.setPrefSize(150.0, 40.0);
-    btnRmFriend.setPrefSize(150.0, 40.0);
+		topPanel.setPadding(new Insets(15, 15, 0, 15));
 
-    // add all nodes to top panel
-    topPanel.getChildren().addAll(tGroupContainer, v1, v2, btnRmUser, btnRmFriend);
-    topPanel.setSpacing(20);
+		/*** Add EventHandlers ***/
 
-    topPanel.setPadding(new Insets(15, 15, 0, 15));
+		c1.setOnAction(new EventHandler<ActionEvent>() {
+			public void handle(ActionEvent e) {
+				clickMainComboBox();
+			}
+		});
 
-    /*** Add EventHandlers ***/
+		c2.setOnAction(new EventHandler<ActionEvent>() {
+			public void handle(ActionEvent e) {
+				clickFriendComboBox();
+			}
+		});
 
-    c1.setOnAction(new EventHandler<ActionEvent>() {
-      public void handle(ActionEvent e) {
-        clickMainComboBox();
-      }
-    });
+		tGroup.selectedToggleProperty()
+				.addListener(new ChangeListener<Toggle>() {
+					public void changed(ObservableValue<? extends Toggle> ov,
+							Toggle old_toggle, Toggle new_toggle) {
+						if (tGroup.getSelectedToggle() != null) {
+							clickRadioButton();
+						}
+					}
+				});
 
-    c2.setOnAction(new EventHandler<ActionEvent>() {
-      public void handle(ActionEvent e) {
-        clickFriendComboBox();
-      }
-    });
+		clickRemoveUser(btnRmUser);
+		clickRemoveFriendship(btnRmFriend);
 
-    tGroup.selectedToggleProperty().addListener(new ChangeListener<Toggle>() {
-      public void changed(ObservableValue<? extends Toggle> ov, Toggle old_toggle,
-          Toggle new_toggle) {
-        if (tGroup.getSelectedToggle() != null) {
-          clickRadioButton();
-        }
-      }
-    });
+		return topPanel;
 
-    clickRemoveUser(btnRmUser);
-    clickRemoveFriendship(btnRmFriend);
+	}
 
-    return topPanel;
+	/**
+	 * Creates a BorderPane that contains labels that track the last action
+	 * taken and the current number of users in the Social Network
+	 * 
+	 * @return bottomPanel - BorderPane containing informational labels
+	 */
 
-  }
+	private BorderPane createBottomPanel() {
 
-  /**
-   * Creates a BorderPane that contains labels that track the last action taken and the current
-   * number of users in the Social Network
-   * 
-   * @return bottomPanel - BorderPane containing informational labels
-   */
+		BorderPane bottomPanel = new BorderPane();
 
-  private BorderPane createBottomPanel() {
+		// create variable for previous action
+		String prevAction = "Program loaded";
+		lblLastAction = new Label(prevAction);
 
-    BorderPane bottomPanel = new BorderPane();
+		// create variable for number of current users
+		int currentGroups = 0;
+		int currentUsers = 0;
+		lblGroupCount = new Label("Group count: " + currentGroups);
+		lblUsersCount = new Label("User count: " + currentUsers);
 
-    // create variable for previous action
-    String prevAction = "Program loaded";
-    lblLastAction = new Label(prevAction);
+		bottomPanel.setLeft(lblLastAction);
+		VBox vbox = new VBox();
 
-    // create variable for number of current users
-    int currentGroups = 0;
-    int currentUsers = 0;
-    lblGroupCount = new Label("Group count: " + currentGroups);
-    lblUsersCount = new Label("User count: " + currentUsers);
+		vbox.getChildren().addAll(lblGroupCount, lblUsersCount);
+		bottomPanel.setRight(vbox);
+		// bottomPanel.setRight(lblGroupCount);
+		// bottomPanel.setRight(lblUsersCount);
 
-    bottomPanel.setLeft(lblLastAction);
-    VBox vbox = new VBox();
+		bottomPanel.setPadding(new Insets(15, 15, 15, 15));
 
-    vbox.getChildren().addAll(lblGroupCount, lblUsersCount);
-    bottomPanel.setRight(vbox);
-    // bottomPanel.setRight(lblGroupCount);
-    // bottomPanel.setRight(lblUsersCount);
+		return bottomPanel;
+	}
 
-    bottomPanel.setPadding(new Insets(15, 15, 15, 15));
+	/***** CANVAS DRAWING METHODS *****/
 
-    return bottomPanel;
-  }
+	private void drawExampleFriends(double x, double y) { // For testing
+															// purposes only
 
-  /***** CANVAS DRAWING METHODS *****/
+		/*** Local Constants ***/
 
-  private void drawExampleFriends(double x, double y) { // For testing purposes only
+		final double CIRCLE_HEIGHT = 50.0;
+		final double CIRCLE_WIDTH = 50.0;
+		final double CIRCLE_MID = CIRCLE_HEIGHT / 2;
+		final double START_X = 0.0;
+		final double START_Y = 0.0;
+		final double FRIEND_X_OFFSET = 75.0;
+		final double FRIEND_Y_OFFSET = 75.0;
+		final double CENTERING_OFFSET = 4.0;
 
-    /*** Local Constants ***/
+		/*** Local Variables ***/
 
-    final double CIRCLE_HEIGHT = 50.0;
-    final double CIRCLE_WIDTH = 50.0;
-    final double CIRCLE_MID = CIRCLE_HEIGHT / 2;
-    final double START_X = 0.0;
-    final double START_Y = 0.0;
-    final double FRIEND_X_OFFSET = 75.0;
-    final double FRIEND_Y_OFFSET = 75.0;
-    final double CENTERING_OFFSET = 4.0;
+		double centerX = x / 2.0;
+		double centerY = y / 2.0;
 
-    /*** Local Variables ***/
+		/*** Set drawing properties ***/
 
-    double centerX = x / 2.0;
-    double centerY = y / 2.0;
+		gc.setFill(Color.CRIMSON);
+		gc.setStroke(Color.BLACK);
+		gc.setLineWidth(1);
 
-    /*** Set drawing properties ***/
+		/*** Move to center of canvas ***/
 
-    gc.setFill(Color.CRIMSON);
-    gc.setStroke(Color.BLACK);
-    gc.setLineWidth(1);
+		gc.translate(centerX, centerY);
 
-    /*** Move to center of canvas ***/
+		/*** Draw main user ***/
 
-    gc.translate(centerX, centerY);
+		gc.fillOval(START_X, START_Y, CIRCLE_WIDTH, CIRCLE_HEIGHT);
 
-    /*** Draw main user ***/
+		/*** Label main user ***/
 
-    gc.fillOval(START_X, START_Y, CIRCLE_WIDTH, CIRCLE_HEIGHT);
+		gc.strokeText("Current", CENTERING_OFFSET,
+				CIRCLE_MID + CENTERING_OFFSET);
 
-    /*** Label main user ***/
+		/*** Set color for friends ***/
 
-    gc.strokeText("Current", CENTERING_OFFSET, CIRCLE_MID + CENTERING_OFFSET);
+		gc.setFill(Color.INDIANRED);
 
-    /*** Set color for friends ***/
+		/*** Draw vertical friends ***/
 
-    gc.setFill(Color.INDIANRED);
+		gc.fillOval(START_X, START_Y - FRIEND_Y_OFFSET, CIRCLE_WIDTH,
+				CIRCLE_HEIGHT);
+		gc.fillOval(START_X, START_Y + FRIEND_Y_OFFSET, CIRCLE_WIDTH,
+				CIRCLE_HEIGHT);
 
-    /*** Draw vertical friends ***/
+		/*** Label vertical friends ***/
 
-    gc.fillOval(START_X, START_Y - FRIEND_Y_OFFSET, CIRCLE_WIDTH, CIRCLE_HEIGHT);
-    gc.fillOval(START_X, START_Y + FRIEND_Y_OFFSET, CIRCLE_WIDTH, CIRCLE_HEIGHT);
+		gc.strokeText("Friend 1", CENTERING_OFFSET,
+				CIRCLE_MID - FRIEND_Y_OFFSET + CENTERING_OFFSET);
+		gc.strokeText("Friend 3", CENTERING_OFFSET,
+				CIRCLE_MID + FRIEND_Y_OFFSET + CENTERING_OFFSET);
 
-    /*** Label vertical friends ***/
+		/*** Draw lines to vertical friends ***/
 
-    gc.strokeText("Friend 1", CENTERING_OFFSET, CIRCLE_MID - FRIEND_Y_OFFSET + CENTERING_OFFSET);
-    gc.strokeText("Friend 3", CENTERING_OFFSET, CIRCLE_MID + FRIEND_Y_OFFSET + CENTERING_OFFSET);
+		gc.strokeLine(CIRCLE_MID, 0, CIRCLE_MID,
+				CIRCLE_HEIGHT - FRIEND_Y_OFFSET);
+		gc.strokeLine(CIRCLE_MID, CIRCLE_HEIGHT, CIRCLE_MID, FRIEND_Y_OFFSET);
 
-    /*** Draw lines to vertical friends ***/
+		/*** Draw horizontal friends ***/
 
-    gc.strokeLine(CIRCLE_MID, 0, CIRCLE_MID, CIRCLE_HEIGHT - FRIEND_Y_OFFSET);
-    gc.strokeLine(CIRCLE_MID, CIRCLE_HEIGHT, CIRCLE_MID, FRIEND_Y_OFFSET);
+		gc.fillOval(START_X - FRIEND_X_OFFSET, START_Y, CIRCLE_WIDTH,
+				CIRCLE_HEIGHT);
+		gc.fillOval(START_X + FRIEND_X_OFFSET, START_Y, CIRCLE_WIDTH,
+				CIRCLE_HEIGHT);
 
-    /*** Draw horizontal friends ***/
+		/*** Label horizontal friends ***/
 
-    gc.fillOval(START_X - FRIEND_X_OFFSET, START_Y, CIRCLE_WIDTH, CIRCLE_HEIGHT);
-    gc.fillOval(START_X + FRIEND_X_OFFSET, START_Y, CIRCLE_WIDTH, CIRCLE_HEIGHT);
+		gc.strokeText("Friend 2", -FRIEND_X_OFFSET + CENTERING_OFFSET,
+				CIRCLE_MID + CENTERING_OFFSET);
+		gc.strokeText("Friend 4", FRIEND_X_OFFSET + CENTERING_OFFSET,
+				CIRCLE_MID + CENTERING_OFFSET);
 
-    /*** Label horizontal friends ***/
+		/*** Draw lines to horizontal friends ***/
 
-    gc.strokeText("Friend 2", -FRIEND_X_OFFSET + CENTERING_OFFSET, CIRCLE_MID + CENTERING_OFFSET);
-    gc.strokeText("Friend 4", FRIEND_X_OFFSET + CENTERING_OFFSET, CIRCLE_MID + CENTERING_OFFSET);
+		gc.strokeLine(0, CIRCLE_HEIGHT / 2, CIRCLE_WIDTH - FRIEND_X_OFFSET,
+				CIRCLE_HEIGHT / 2);
+		gc.strokeLine(CIRCLE_WIDTH, CIRCLE_HEIGHT / 2, FRIEND_X_OFFSET,
+				CIRCLE_HEIGHT / 2);
+	}
 
-    /*** Draw lines to horizontal friends ***/
+	private void drawFriends(String user) {
 
-    gc.strokeLine(0, CIRCLE_HEIGHT / 2, CIRCLE_WIDTH - FRIEND_X_OFFSET, CIRCLE_HEIGHT / 2);
-    gc.strokeLine(CIRCLE_WIDTH, CIRCLE_HEIGHT / 2, FRIEND_X_OFFSET, CIRCLE_HEIGHT / 2);
-  }
+		/*** Local Variables ***/
 
-  private void drawFriends(String user) {
+		double centerX = CANVAS_X_SIZE / 2.0;
+		double centerY = CANVAS_Y_SIZE / 2.0;
 
-    /*** Local Variables ***/
+		double currentX = 0.0;
+		double currentY = 0.0;
 
-    double centerX = CANVAS_X_SIZE / 2.0;
-    double centerY = CANVAS_Y_SIZE / 2.0;
-    
-    double currentX = 0.0;
-    double currentY = 0.0;
+		int listSize = 0;
 
-    int listSize = 0;
+		Set<Person> friendSet;
 
-    Set<Person> friendSet;
+		double rotation;
 
-    double rotation;
+		/*** Clear Canvas ***/
 
-    /*** Clear Canvas ***/
+		clearCanvas();
 
-    clearCanvas();
+		/*** Reset overflow label ***/
 
-    /*** Reset overflow label ***/
+		lblUserOverflow.setVisible(false);
 
-    lblUserOverflow.setVisible(false);
+		/*** Set drawing properties ***/
 
-    /*** Set drawing properties ***/
+		gc.setFill(Color.CRIMSON);
+		gc.setStroke(Color.BLACK);
+		gc.setLineWidth(1);
 
-    gc.setFill(Color.CRIMSON);
-    gc.setStroke(Color.BLACK);
-    gc.setLineWidth(1);
+		// /*** Draw lines to find center of canvas ***/ //Used for
+		// orientation/testing
+		//
+		// gc.strokeLine(x / 2, 0, x/2, y);
+		// gc.strokeLine(0, y/2, x, y/2);
 
-    // /*** Draw lines to find center of canvas ***/ //Used for orientation/testing
-    //
-    // gc.strokeLine(x / 2, 0, x/2, y);
-    // gc.strokeLine(0, y/2, x, y/2);
+		/*** Move to center of canvas ***/
 
-    /*** Move to center of canvas ***/
+		gc.translate(centerX, centerY);
+		currentX += centerX;
+		currentY += centerY;
 
-    gc.translate(centerX, centerY);
-    currentX += centerX;
-    currentY += centerY;
+		/*** Draw main user ***/
 
-    /*** Draw main user ***/
+		gc.fillOval(START_X, START_Y, CIRCLE_WIDTH, CIRCLE_HEIGHT);
 
-    gc.fillOval(START_X, START_Y, CIRCLE_WIDTH, CIRCLE_HEIGHT);
+		/*** Label main user ***/
 
-    /*** Label main user ***/
+		gc.strokeText(user, CENTERING_OFFSET_X, CENTERING_OFFSET_Y);
 
-    gc.strokeText(user, CENTERING_OFFSET_X, CENTERING_OFFSET_Y);
+		/*** Set color for friends ***/
 
-    /*** Set color for friends ***/
+		gc.setFill(Color.PURPLE);
 
-    gc.setFill(Color.PURPLE);
+		/*** Get friend list ***/
 
-    /*** Get friend list ***/
+		friendSet = sn.getFriends(user);
 
-    friendSet = sn.getFriends(user);
+		/*** Convert set to list for displaying the names ***/
+		if (friendSet != null) {
 
-    /*** Convert set to list for displaying the names ***/
-    if (friendSet != null) {
+			List<Person> friendList = new ArrayList<Person>(friendSet);
 
-      List<Person> friendList = new ArrayList<Person>(friendSet);
+			/*** Determine rotation based on friend list size ***/
 
-      /*** Determine rotation based on friend list size ***/
+			listSize = friendList.size();
 
-      listSize = friendList.size();
+			if (listSize > OVERFLOW_LIMIT) {
 
-      if (listSize > OVERFLOW_LIMIT) {
+				rotation = Math.toDegrees((2 * Math.PI) / OVERFLOW_LIMIT);
 
-        rotation = Math.toDegrees((2 * Math.PI) / OVERFLOW_LIMIT);
+				lblUserOverflow.setVisible(true);
 
-        lblUserOverflow.setVisible(true);
+			} else {
+				rotation = Math.toDegrees((2 * Math.PI) / listSize);
+			}
 
-      } else {
-        rotation = Math.toDegrees((2 * Math.PI) / listSize);
-      }
+			for (int i = 0; i < listSize; i++) {
 
-      for (int i = 0; i < listSize; i++) {
+				/*** Draw friend circle ***/
 
-        /*** Draw friend circle ***/
+				gc.setFill(Color.INDIANRED);
+				gc.fillOval(START_X, START_Y - FRIEND_Y_OFFSET, CIRCLE_WIDTH,
+						CIRCLE_HEIGHT);
+				gc.strokeLine(START_X + CIRCLE_MID, START_Y, 0,
+						-FRIEND_Y_OFFSET + CIRCLE_MID);
 
-        gc.setFill(Color.INDIANRED);
-        gc.fillOval(START_X, START_Y - FRIEND_Y_OFFSET, CIRCLE_WIDTH, CIRCLE_HEIGHT);
-        gc.strokeLine(START_X + CIRCLE_MID, START_Y, 0, -FRIEND_Y_OFFSET + CIRCLE_MID);
+				/*** Draw friend name ***/
 
-        /*** Draw friend name ***/
+				gc.setFill(Color.BLACK);
+				gc.strokeText(friendList.get(i).getName(), CENTERING_OFFSET_X,
+						-FRIEND_Y_OFFSET + CENTERING_OFFSET_Y);
 
-        gc.setFill(Color.BLACK);
-        gc.strokeText(friendList.get(i).getName(), CENTERING_OFFSET_X,
-            -FRIEND_Y_OFFSET + CENTERING_OFFSET_Y);
+				/*** Rotate transform ***/
 
-        /*** Rotate transform ***/
+				gc.rotate(rotation);
+			}
+		}
 
-        gc.rotate(rotation);
-      }
-    }
+		if (listSize == 0) {
+			gc.strokeText("No friends", CENTERING_OFFSET_X * 2 - 4,
+					-FRIEND_Y_OFFSET + CENTERING_OFFSET_Y);
+		}
 
-    if (listSize == 0) {
-      gc.strokeText("No friends", CENTERING_OFFSET_X * 2 - 4,
-          -FRIEND_Y_OFFSET + CENTERING_OFFSET_Y);
-    }
-    
-    /*** Move back to origin ***/
-    
-    gc.translate(-currentX, -currentY);
-  }
+		/*** Move back to origin ***/
 
-  private void drawMutualFriends(String user1, String user2) {
+		gc.translate(-currentX, -currentY);
+	}
 
-    /*** Local Variables ***/
+	private void drawMutualFriends(String user1, String user2) {
 
-    double leftMidX = CANVAS_X_SIZE / 4.0;
-    double rightMidX = (3 * CANVAS_X_SIZE) / 4.0;
-    double centerY = CANVAS_Y_SIZE / 2.0;
-    double spacing = 0.0;
-    double currentX = 0.0;
-    double currentY = 0.0;
+		/*** Local Variables ***/
 
-    int listSize;
+		double leftMidX = CANVAS_X_SIZE / 4.0;
+		double rightMidX = (3 * CANVAS_X_SIZE) / 4.0;
+		double centerY = CANVAS_Y_SIZE / 2.0;
+		double spacing = 0.0;
+		double currentX = 0.0;
+		double currentY = 0.0;
 
-    Set<Person> friendSet;
+		int listSize;
 
-    /*** Clear any existing data from canvas ***/
+		Set<Person> friendSet;
 
-    clearCanvas();
-    
-    /*** Reset overflow label ***/
+		/*** Clear any existing data from canvas ***/
 
-    lblUserOverflow.setVisible(false);
+		clearCanvas();
 
-    /*** Set drawing properties ***/
+		/*** Reset overflow label ***/
 
-    gc.setFill(Color.CRIMSON);
-    gc.setStroke(Color.BLACK);
-    gc.setLineWidth(1);
+		lblUserOverflow.setVisible(false);
 
-     /*** Draw lines to find midpoints ***/ //Used for orientation/testing
-    
-     gc.strokeLine(leftMidX, 0, leftMidX, CANVAS_Y_SIZE);
-     gc.strokeLine(rightMidX, 0, rightMidX, CANVAS_Y_SIZE);
-     gc.strokeLine(0, CANVAS_Y_SIZE / 2, CANVAS_X_SIZE, CANVAS_Y_SIZE / 2);
-     gc.strokeLine(CANVAS_X_SIZE / 2, 0, CANVAS_X_SIZE / 2, CANVAS_Y_SIZE);
+		/*** Set drawing properties ***/
 
-    /*** Move to left half center ***/
+		gc.setFill(Color.CRIMSON);
+		gc.setStroke(Color.BLACK);
+		gc.setLineWidth(1);
 
-    gc.translate(leftMidX, centerY);
-    
-    currentX += leftMidX;
-    currentY += centerY;
+		/*** Draw lines to find midpoints ***/ // Used for orientation/testing
 
-    /*** Draw left user ***/
+		gc.strokeLine(leftMidX, 0, leftMidX, CANVAS_Y_SIZE);
+		gc.strokeLine(rightMidX, 0, rightMidX, CANVAS_Y_SIZE);
+		gc.strokeLine(0, CANVAS_Y_SIZE / 2, CANVAS_X_SIZE, CANVAS_Y_SIZE / 2);
+		gc.strokeLine(CANVAS_X_SIZE / 2, 0, CANVAS_X_SIZE / 2, CANVAS_Y_SIZE);
 
-    gc.fillOval(START_X, START_Y, CIRCLE_WIDTH, CIRCLE_HEIGHT);
+		/*** Move to left half center ***/
 
-    c1.getSelectionModel().selectFirst();
-    c2.getSelectionModel().selectFirst();
+		gc.translate(leftMidX, centerY);
 
-    /*** Label left user ***/
+		currentX += leftMidX;
+		currentY += centerY;
 
-    gc.strokeText(c1.getValue().toString(), -CIRCLE_MID / 2, 4);
+		/*** Draw left user ***/
 
-    /*** Move to right half center and draw right user ***/
+		gc.fillOval(START_X, START_Y, CIRCLE_WIDTH, CIRCLE_HEIGHT);
 
-    gc.translate(rightMidX - leftMidX, 0);
-    gc.fillOval(START_X, START_Y, CIRCLE_WIDTH, CIRCLE_HEIGHT);
-    
-    currentX += rightMidX - leftMidX;
+		c1.getSelectionModel().selectFirst();
+		c2.getSelectionModel().selectFirst();
 
-    /*** Label right user ***/
+		/*** Label left user ***/
 
-    gc.strokeText(c2.getValue().toString(), -CIRCLE_MID / 2, 4);
+		gc.strokeText(c1.getValue().toString(), -CIRCLE_MID / 2, 4);
 
-    /*** Change color for friends ***/
+		/*** Move to right half center and draw right user ***/
 
-    gc.setFill(Color.PURPLE);
+		gc.translate(rightMidX - leftMidX, 0);
+		gc.fillOval(START_X, START_Y, CIRCLE_WIDTH, CIRCLE_HEIGHT);
 
-    /*** Move to middle ***/
+		currentX += rightMidX - leftMidX;
 
-    gc.translate(-leftMidX, 0);    
-    currentX += -leftMidX;
-    
-    /*** Get mutual friends ***/
+		/*** Label right user ***/
 
-    friendSet = sn.getMutualFriends(user1, user2);
+		gc.strokeText(c2.getValue().toString(), -CIRCLE_MID / 2, 4);
 
-    /*** Convert set to list for displaying the names ***/
+		/*** Change color for friends ***/
 
-    List<Person> friendList = new ArrayList<Person>(friendSet);
+		gc.setFill(Color.PURPLE);
 
-    /*** Determine spacing based on friend list size ***/
+		/*** Move to middle ***/
 
-    if (friendSet.size() > OVERFLOW_LIMIT) {
+		gc.translate(-leftMidX, 0);
+		currentX += -leftMidX;
 
-      spacing = CANVAS_Y_SIZE / OVERFLOW_LIMIT;
+		/*** Get mutual friends ***/
 
-      lblUserOverflow.setVisible(false);
+		friendSet = sn.getMutualFriends(user1, user2);
 
-    } else {
-      spacing = CANVAS_Y_SIZE / friendSet.size();
-    }
+		/*** Convert set to list for displaying the names ***/
 
-    listSize = friendList.size();
+		List<Person> friendList = new ArrayList<Person>(friendSet);
 
-    spacing = CANVAS_Y_SIZE / listSize;
-    
-    System.out.println(listSize);
+		/*** Determine spacing based on friend list size ***/
 
-    if (listSize >= 1 && listSize % 2 == 0) { // even number of friends
-    	
-    	System.out.println("even friends");
+		if (friendSet.size() > OVERFLOW_LIMIT) {
 
+			spacing = CANVAS_Y_SIZE / OVERFLOW_LIMIT;
 
-      /*** Translate up for spacing on non-centered friends ***/
+			lblUserOverflow.setVisible(false);
 
-      double shift = -spacing / 2;
+		} else {
+			spacing = CANVAS_Y_SIZE / friendSet.size();
+		}
 
-      gc.translate(0, shift);
-      currentY += shift;
+		listSize = friendList.size();
 
-      for (int i = 0; i < listSize; i++) {
+		spacing = CANVAS_Y_SIZE / listSize;
 
-        spacing = spacing * -1;
+		System.out.println(listSize);
 
-        gc.translate(0, spacing * i);
-        gc.fillOval(START_X, START_Y, CIRCLE_WIDTH, CIRCLE_HEIGHT);
+		if (listSize >= 1 && listSize % 2 == 0) { // even number of friends
 
-        currentY += (spacing * i);
+			System.out.println("even friends");
 
-        /*** Draw connecting lines ***/
+			/*** Translate up for spacing on non-centered friends ***/
 
-        if (i % 2 == 1) { // Bottom friends
-          gc.strokeLine(-CIRCLE_MID, 0, -leftMidX + CIRCLE_MID, (-spacing * i) / 2.0); // left lines
+			double shift = -spacing / 2;
 
-          gc.strokeLine(CIRCLE_MID, 0, leftMidX - CIRCLE_MID, (-spacing * i) / 2.0); // right lines
-        } else { // Top friends
-          gc.strokeLine(-CIRCLE_MID, 0, -leftMidX + CIRCLE_MID, (-spacing * i) / 2.0 - shift); // left
-          gc.strokeLine(CIRCLE_MID, 0, leftMidX - CIRCLE_MID, (-spacing * i) / 2.0 - shift); // right
-        }
+			gc.translate(0, shift);
+			currentY += shift;
 
-        /*** Draw name ***/
+			for (int i = 0; i < listSize; i++) {
 
-        gc.strokeText(friendList.get(i).getName(), START_X + 4 + CIRCLE_MID / 2,
-            START_Y + CIRCLE_MID + 4);
+				spacing = spacing * -1;
 
-      }
+				gc.translate(0, spacing * i);
+				gc.fillOval(START_X, START_Y, CIRCLE_WIDTH, CIRCLE_HEIGHT);
 
-    } else if (listSize >= 1 && listSize % 2 == 1) { // odd number of friends
-    	
-    	System.out.println("odd friends");
+				currentY += (spacing * i);
 
+				/*** Draw connecting lines ***/
 
-      for (int i = 0; i < listSize; i++) {
+				if (i % 2 == 1) { // Bottom friends
+					gc.strokeLine(-CIRCLE_MID, 0, -leftMidX + CIRCLE_MID,
+							(-spacing * i) / 2.0); // left lines
 
-        spacing = spacing * -1.0;
+					gc.strokeLine(CIRCLE_MID, 0, leftMidX - CIRCLE_MID,
+							(-spacing * i) / 2.0); // right lines
+				} else { // Top friends
+					gc.strokeLine(-CIRCLE_MID, 0, -leftMidX + CIRCLE_MID,
+							(-spacing * i) / 2.0 - shift); // left
+					gc.strokeLine(CIRCLE_MID, 0, leftMidX - CIRCLE_MID,
+							(-spacing * i) / 2.0 - shift); // right
+				}
 
-        /*** Draw circles for friends ***/
+				/*** Draw name ***/
 
-        gc.translate(0, spacing * i);        
-        currentY += (spacing * i);
+				gc.strokeText(friendList.get(i).getName(),
+						START_X + 4 + CIRCLE_MID / 2, START_Y + CIRCLE_MID + 4);
 
-        gc.fillOval(START_X, START_Y, CIRCLE_WIDTH, CIRCLE_HEIGHT);
+			}
 
-        /*** Draw connecting lines ***/
+		} else if (listSize >= 1 && listSize % 2 == 1) { // odd number of
+															// friends
 
-        if (i % 2 == 1) {
-          gc.strokeLine(-CIRCLE_MID, 0, -leftMidX + CIRCLE_MID,
-              ((-spacing * i) / 2.0) - CIRCLE_MID); // left lines
+			System.out.println("odd friends");
 
-          gc.strokeLine(CIRCLE_MID, 0, leftMidX - CIRCLE_MID, ((-spacing * i) / 2.0) - CIRCLE_MID); // right
-                                                                                                    // lines
-        } else {
-          gc.strokeLine(-CIRCLE_MID, 0, -leftMidX + CIRCLE_MID, (-spacing * i) / 2.0); // left
-          gc.strokeLine(CIRCLE_MID, 0, leftMidX - CIRCLE_MID, (-spacing * i) / 2.0); // right
-        }
+			for (int i = 0; i < listSize; i++) {
 
-        /*** Draw name ***/
+				spacing = spacing * -1.0;
 
-        gc.strokeText(friendList.get(i).getName(), START_X + 4 + CIRCLE_MID / 2,
-            START_Y + CIRCLE_MID + 4);
-      }
+				/*** Draw circles for friends ***/
+
+				gc.translate(0, spacing * i);
+				currentY += (spacing * i);
+
+				gc.fillOval(START_X, START_Y, CIRCLE_WIDTH, CIRCLE_HEIGHT);
+
+				/*** Draw connecting lines ***/
+
+				if (i % 2 == 1) {
+					gc.strokeLine(-CIRCLE_MID, 0, -leftMidX + CIRCLE_MID,
+							((-spacing * i) / 2.0) - CIRCLE_MID); // left lines
+
+					gc.strokeLine(CIRCLE_MID, 0, leftMidX - CIRCLE_MID,
+							((-spacing * i) / 2.0) - CIRCLE_MID); // right
+																	// lines
+				} else {
+					gc.strokeLine(-CIRCLE_MID, 0, -leftMidX + CIRCLE_MID,
+							(-spacing * i) / 2.0); // left
+					gc.strokeLine(CIRCLE_MID, 0, leftMidX - CIRCLE_MID,
+							(-spacing * i) / 2.0); // right
+				}
+
+				/*** Draw name ***/
+
+				gc.strokeText(friendList.get(i).getName(),
+						START_X + 4 + CIRCLE_MID / 2, START_Y + CIRCLE_MID + 4);
+			}
 
 //    } else if (listSize == 1 ) {
 //    	
@@ -792,976 +824,1012 @@ public class Main extends Application {
 //
 //      gc.strokeText(friendList.get(0).getName(), CENTERING_OFFSET_X, CENTERING_OFFSET_Y);
 
-    } else if (listSize == 0){
-    	
-    	System.out.println("no friends " + listSize);
+		} else if (listSize == 0) {
 
-      gc.strokeText("No mutual friends", -CIRCLE_WIDTH + 4, CENTERING_OFFSET_Y);
-    }
-    
-    /*** Move back to origin ***/
-    
-   gc.translate(-currentX, -currentY);
-  }
+			System.out.println("no friends " + listSize);
 
-  private void displayFriendsOfOneUser(String user) {
+			gc.strokeText("No mutual friends", -CIRCLE_WIDTH + 4,
+					CENTERING_OFFSET_Y);
+		}
 
-    /*** Local Variables ***/
+		/*** Move back to origin ***/
 
-    ObservableList<String> friendsList = FXCollections.observableArrayList();
+		gc.translate(-currentX, -currentY);
+	}
 
-    Set<Person> friendSet;
+	private void displayFriendsOfOneUser(String user) {
 
-    /*** Clear any existing data ***/
+		/*** Local Variables ***/
 
-    lvFriends.getItems().clear();
+		ObservableList<String> friendsList = FXCollections
+				.observableArrayList();
 
-    /*** Get friends of user ***/
+		Set<Person> friendSet;
 
-    friendSet = sn.getFriends(user);
+		/*** Clear any existing data ***/
 
-    /*** Add friends from set to list ***/
+		lvFriends.getItems().clear();
 
-    for (Person p : friendSet) {
-      friendsList.add(p.getName());
-    }
+		/*** Get friends of user ***/
 
-    /*** Add friendsList to listView ****/
+		friendSet = sn.getFriends(user);
 
-    lvFriends.setItems(friendsList);
-  }
+		/*** Add friends from set to list ***/
 
-  private void displayFriendsTwoUsers(String mainUser, String secondUser) {
+		for (Person p : friendSet) {
+			friendsList.add(p.getName());
+		}
 
-    /*** Local Variables ***/
+		/*** Add friendsList to listView ****/
 
-    ObservableList<String> friendsList = FXCollections.observableArrayList();
+		lvFriends.setItems(friendsList);
+	}
 
-    Set<Person> mutualFriends;
+	private void displayFriendsTwoUsers(String mainUser, String secondUser) {
 
-    /*** Clear any existing data ***/
+		/*** Local Variables ***/
 
-    lvFriends.getItems().clear();
+		ObservableList<String> friendsList = FXCollections
+				.observableArrayList();
 
-    /*** Get friends of user ***/
+		Set<Person> mutualFriends;
 
-    mutualFriends = sn.getMutualFriends(mainUser, secondUser);
+		/*** Clear any existing data ***/
 
-    /*** Add friends from set to list ***/
+		lvFriends.getItems().clear();
 
-    for (Person p : mutualFriends) {
-      friendsList.add(p.getName());
-    }
+		/*** Get friends of user ***/
 
-    /*** Add friendsList to listView ****/
+		mutualFriends = sn.getMutualFriends(mainUser, secondUser);
 
-    lvFriends.setItems(friendsList);
-  }
+		/*** Add friends from set to list ***/
 
-  private void displayShortestPath(String main, String friend) {
+		for (Person p : mutualFriends) {
+			friendsList.add(p.getName());
+		}
 
-    /*** Local Variables ***/
+		/*** Add friendsList to listView ****/
 
-    List<Person> path;
-    ObservableList<String> observablePath = FXCollections.observableArrayList();
+		lvFriends.setItems(friendsList);
+	}
 
-    /*** Clear canvas ***/
+	private void displayShortestPath(String main, String friend) {
 
-    clearCanvas();
+		/*** Local Variables ***/
 
-    /*** Check for invalid input ***/
+		List<Person> path;
+		ObservableList<String> observablePath = FXCollections
+				.observableArrayList();
 
-    if (main.isEmpty() || friend.isEmpty()) {
-      return;
-    }
+		/*** Clear canvas ***/
 
-    /*** Clear friend listView ***/
+		clearCanvas();
 
-    lvFriends.getItems().clear();
+		/*** Check for invalid input ***/
 
-    /*** Get list of shortest path ***/
+		if (main.isEmpty() || friend.isEmpty()) {
+			return;
+		}
 
-    path = sn.getShortestPath(main, friend);
+		/*** Clear friend listView ***/
 
-    /*** Add list of users to observableList ***/
+		lvFriends.getItems().clear();
 
-    for (Person p : path) {
-      observablePath.add(p.getName());
-    }
+		/*** Get list of shortest path ***/
 
-    /*** Update listBox label with user names ***/
+		path = sn.getShortestPath(main, friend);
 
-    lblRadioChoice.setText("Shortest path between " + main + " and " + friend + ".");
+		/*** Add list of users to observableList ***/
 
-    /*** Update listView with shortest path between two users ***/
+		for (Person p : path) {
+			observablePath.add(p.getName());
+		}
 
-    lvFriends.setItems(observablePath);
-  }
+		/*** Update listBox label with user names ***/
 
-  private void updateMainComboBox() {
+		lblRadioChoice.setText(
+				"Shortest path between " + main + " and " + friend + ".");
 
-    /*** Local Variables ***/
+		/*** Update listView with shortest path between two users ***/
 
-    List<String> userArray = sn.getAllUsers();
-    ObservableList<String> userList = FXCollections.observableArrayList();
+		lvFriends.setItems(observablePath);
+	}
 
-    /*** Add all users to ObservableList ***/
+	private void updateMainComboBox() {
 
-    for (String user : userArray) {
-      userList.add(user);
-    }
+		/*** Local Variables ***/
 
-    /*** Clear current data ***/
+		List<String> userArray = sn.getAllUsers();
+		ObservableList<String> userList = FXCollections.observableArrayList();
 
-    c1.getItems().clear();
+		/*** Add all users to ObservableList ***/
 
-    /*** Update comboBox with new user data ***/
+		for (String user : userArray) {
+			userList.add(user);
+		}
 
-    c1.setItems(userList);
-  }
-  
-  public void setCentralUser(String user) {
-	  updateMainComboBox();
-	  
-	  displayFriendsOfOneUser(user);
-	  drawFriends(user);
-	  
-	  c1.setValue(user);
-  }
+		/*** Clear current data ***/
 
-  private void updateFriendComboBoxAllUsers() {
+		c1.getItems().clear();
 
-    /*** Local Variables ***/
+		/*** Update comboBox with new user data ***/
 
-    List<String> userArray = sn.getAllUsers();
-    ObservableList<String> userList = FXCollections.observableArrayList();
+		c1.setItems(userList);
+	}
 
-    /*** Add all users to ObservableList ***/
+	public void setCentralUser(String user) {
+		updateMainComboBox();
 
-    for (String user : userArray) {
-      userList.add(user);
-    }
+		displayFriendsOfOneUser(user);
+		drawFriends(user);
 
-    /*** Clear current data ***/
+		c1.setValue(user);
+	}
 
-    c2.getItems().clear();
+	private void updateFriendComboBoxAllUsers() {
 
-    /*** Update comboBox with new user data ***/
+		/*** Local Variables ***/
 
-    c2.setItems(userList);
-  }
+		List<String> userArray = sn.getAllUsers();
+		ObservableList<String> userList = FXCollections.observableArrayList();
 
-  private void updateFriendComboBox(String user) {
+		/*** Add all users to ObservableList ***/
 
-    /*** Local Variables ***/
+		for (String user : userArray) {
+			userList.add(user);
+		}
 
-    Set<Person> userSet = sn.getFriends(user);
-    ObservableList<String> userList = FXCollections.observableArrayList();
+		/*** Clear current data ***/
 
-    /*** Convert set to list ***/
+		c2.getItems().clear();
 
-    List<Person> userArray = new ArrayList<Person>(userSet);
+		/*** Update comboBox with new user data ***/
 
-    /*** Add all users to ObservableList ***/
+		c2.setItems(userList);
+	}
 
-    for (Person p : userArray) {
-      userList.add(p.getName());
-    }
+	private void updateFriendComboBox(String user) {
 
-    /*** Clear current data ***/
+		/*** Local Variables ***/
 
-    c2.getItems().clear();
+		Set<Person> userSet = sn.getFriends(user);
+		ObservableList<String> userList = FXCollections.observableArrayList();
 
-    /*** Update comboBox with new user data ***/
+		/*** Convert set to list ***/
 
-    c2.setItems(userList);
-  }
+		List<Person> userArray = new ArrayList<Person>(userSet);
 
-  /***** GUI HELPER METHODS ****/
+		/*** Add all users to ObservableList ***/
 
-  private void drawCanvasBorder() {
+		for (Person p : userArray) {
+			userList.add(p.getName());
+		}
 
-    /*** Draw border ***/
+		/*** Clear current data ***/
 
-    gcBorder.strokeLine(0, 0, CANVAS_X_SIZE, 0);
-    gcBorder.strokeLine(CANVAS_X_SIZE, 0, CANVAS_X_SIZE, CANVAS_Y_SIZE);
-    gcBorder.strokeLine(CANVAS_X_SIZE, CANVAS_Y_SIZE, 0, CANVAS_Y_SIZE);
-    gcBorder.strokeLine(0, CANVAS_Y_SIZE, 0, 0);
-  }
+		c2.getItems().clear();
 
-  private void clearCanvas() {
+		/*** Update comboBox with new user data ***/
 
-    /*** Clear canvas contents by brute force ***/
+		c2.setItems(userList);
+	}
 
-    gc.clearRect(-CANVAS_X_SIZE, -CANVAS_Y_SIZE, CANVAS_X_SIZE * 2, CANVAS_Y_SIZE * 2);
-  }
-  
-  private void clearAllData() {
-	  sn = new SocialNetwork();
-	  c1.getItems().clear();
-	  c2.getItems().clear();
-	  resetGUI();
-  }
+	/***** GUI HELPER METHODS ****/
 
-  private void resetGUI() {
+	private void drawCanvasBorder() {
 
-    /*** Set radio button group to first selection ***/
+		/*** Draw border ***/
 
-    rb1.setSelected(true);
+		gcBorder.strokeLine(0, 0, CANVAS_X_SIZE, 0);
+		gcBorder.strokeLine(CANVAS_X_SIZE, 0, CANVAS_X_SIZE, CANVAS_Y_SIZE);
+		gcBorder.strokeLine(CANVAS_X_SIZE, CANVAS_Y_SIZE, 0, CANVAS_Y_SIZE);
+		gcBorder.strokeLine(0, CANVAS_Y_SIZE, 0, 0);
+	}
 
-    /*** Clear comboBoxes and disable friend comboBox ***/
+	private void clearCanvas() {
 
-    c1.getSelectionModel().clearSelection();
-    c2.getSelectionModel().clearSelection();
-    c2.setDisable(true);
+		/*** Clear canvas contents by brute force ***/
 
-    /*** Clear canvas ***/
+		gc.clearRect(-CANVAS_X_SIZE, -CANVAS_Y_SIZE, CANVAS_X_SIZE * 2,
+				CANVAS_Y_SIZE * 2);
+	}
 
-    clearCanvas();
+	private void clearAllData() {
+		sn = new SocialNetwork();
+		c1.getItems().clear();
+		c2.getItems().clear();
+		resetGUI();
+	}
 
-    /*** Clear friends listBox ***/
+	private void resetGUI() {
 
-    lvFriends.getItems().clear();
+		/*** Set radio button group to first selection ***/
 
-    /*** Reset overflow label ***/
+		rb1.setSelected(true);
 
-    lblUserOverflow.setVisible(false);
-  }
+		/*** Clear comboBoxes and disable friend comboBox ***/
 
-  /***** ACTION EVENT/CLICK METHODS *****/
-  /**
-   * Handles what happens when the user clicks clear.
-   * 
-   * @param Clear the reference to the button.
-   */
-  private void clickClear(Button Clear) {
-    EventHandler<ActionEvent> event = new EventHandler<ActionEvent>() {
-      public void handle(ActionEvent e) {
-    	clearAllData();
+		c1.getSelectionModel().clearSelection();
+		c2.getSelectionModel().clearSelection();
+		c2.setDisable(true);
 
-        updateLastActionAndGroupAndUserCount("Cleared all data");
-      }
-    };
-    Clear.setOnAction(event);
-  }
+		/*** Clear canvas ***/
 
-  /**
-   * Handles what happens when the user clicks New User.
-   * 
-   * @param newUser reference to the new user button.
-   */
-  private void clickNewUser(Button newUser) {
-    // When the user clicks the new user button, a pop-up will appear.
-    EventHandler<ActionEvent> event = new EventHandler<ActionEvent>() {
-      public void handle(ActionEvent e) {
-        Stage stage = (Stage) newUser.getScene().getWindow();
-        final Stage dialog = new Stage();
-        dialog.initModality(Modality.APPLICATION_MODAL);
-        dialog.initOwner(stage);
+		clearCanvas();
 
-        /*** Set title on pop-up ***/
+		/*** Clear friends listBox ***/
 
-        dialog.setTitle("Add new user");
+		lvFriends.getItems().clear();
 
-        Label label = new Label("Enter name of user:");
-        TextField field = new TextField();
+		/*** Reset overflow label ***/
 
-        VBox vbox = new VBox();
-        HBox hbox = new HBox();
+		lblUserOverflow.setVisible(false);
+	}
 
-        Button btnSubmit = new Button("Submit");
-        Button btnCancel = new Button("Cancel");
+	/***** ACTION EVENT/CLICK METHODS *****/
+	/**
+	 * Handles what happens when the user clicks clear.
+	 * 
+	 * @param Clear the reference to the button.
+	 */
+	private void clickClear(Button Clear) {
+		EventHandler<ActionEvent> event = new EventHandler<ActionEvent>() {
+			public void handle(ActionEvent e) {
+				clearAllData();
 
-        vbox.getChildren().addAll(label, field);
-        vbox.setPadding(new Insets(0, 10, 0, 10));
-        vbox.setSpacing(10);
+				updateLastActionAndGroupAndUserCount("Cleared all data");
+			}
+		};
+		Clear.setOnAction(event);
+	}
 
-        btnSubmit.setPrefSize(90, 20);
-        btnCancel.setPrefSize(90, 20);
+	/**
+	 * Handles what happens when the user clicks New User.
+	 * 
+	 * @param newUser reference to the new user button.
+	 */
+	private void clickNewUser(Button newUser) {
+		// When the user clicks the new user button, a pop-up will appear.
+		EventHandler<ActionEvent> event = new EventHandler<ActionEvent>() {
+			public void handle(ActionEvent e) {
+				Stage stage = (Stage) newUser.getScene().getWindow();
+				final Stage dialog = new Stage();
+				dialog.initModality(Modality.APPLICATION_MODAL);
+				dialog.initOwner(stage);
 
-        hbox.getChildren().add(btnSubmit);
-        hbox.getChildren().add(btnCancel);
-        hbox.setPadding(new Insets(0, 10, 0, 10));
-        hbox.setSpacing(50);
+				/*** Set title on pop-up ***/
 
-        vbox.getChildren().add(hbox);
+				dialog.setTitle("Add new user");
 
-        Scene dialogScene = new Scene(vbox, 240, 100);
+				Label label = new Label("Enter name of user:");
+				TextField field = new TextField();
 
-        EventHandler<ActionEvent> submit = new EventHandler<ActionEvent>() {
-          public void handle(ActionEvent e) {
-            // If the user types in valid input, add them to the network.
-            if (!(field.getText().equals(""))) {
-              sn.addUser(field.getText());
-              updateLastActionAndGroupAndUserCount("Added new user: " + field.getText());
-              updateMainComboBox();
+				VBox vbox = new VBox();
+				HBox hbox = new HBox();
 
+				Button btnSubmit = new Button("Submit");
+				Button btnCancel = new Button("Cancel");
 
-            } else {
-              // informs the user that adding user failed if input is invalid.
-              dialog.close();
-              Stage stage2 = (Stage) newUser.getScene().getWindow();
-              final Stage dialog2 = new Stage();
-              dialog2.initModality(Modality.APPLICATION_MODAL);
-              dialog2.initOwner(stage2);
+				vbox.getChildren().addAll(label, field);
+				vbox.setPadding(new Insets(0, 10, 0, 10));
+				vbox.setSpacing(10);
 
-              dialog2.setTitle("Failed");
+				btnSubmit.setPrefSize(90, 20);
+				btnCancel.setPrefSize(90, 20);
 
-              VBox box3 = new VBox();
-              Label label3 = new Label("Adding user failed.");
-              box3.setPadding(new Insets(10, 10, 10, 50));
-              box3.setSpacing(10);
+				hbox.getChildren().add(btnSubmit);
+				hbox.getChildren().add(btnCancel);
+				hbox.setPadding(new Insets(0, 10, 0, 10));
+				hbox.setSpacing(50);
 
-              Button btnCancel2 = new Button("Cancel");
-              btnCancel2.setPrefSize(90, 20);
-              box3.getChildren().addAll(label3, btnCancel2);
+				vbox.getChildren().add(hbox);
 
-              Scene dialogScene2 = new Scene(box3, 200, 100);
+				Scene dialogScene = new Scene(vbox, 240, 100);
 
-              dialog2.setScene(dialogScene2);
-              dialog2.show();
-              // The cancel button for the invalid input pop-up
-              EventHandler<ActionEvent> cancel2 = new EventHandler<ActionEvent>() {
-                public void handle(ActionEvent e) {
-                  dialog2.close();
-                }
-              };
-              btnCancel2.setOnAction(cancel2);
-            }
-            dialog.close();
-          }
-        };
-        // The cancel button for the add new user pop-up
-        EventHandler<ActionEvent> cancel = new EventHandler<ActionEvent>() {
-          public void handle(ActionEvent e) {
-            dialog.close();
-          }
-        };
-        btnSubmit.setOnAction(submit);
-        btnCancel.setOnAction(cancel);
+				EventHandler<ActionEvent> submit = new EventHandler<ActionEvent>() {
+					public void handle(ActionEvent e) {
+						// If the user types in valid input, add them to the
+						// network.
+						if (!(field.getText().equals(""))) {
+							sn.addUser(field.getText());
+							updateLastActionAndGroupAndUserCount(
+									"Added new user: " + field.getText());
+							updateMainComboBox();
 
-        dialog.setScene(dialogScene);
-        dialog.show();
-      }
-    };
+						} else {
+							// informs the user that adding user failed if input
+							// is invalid.
+							dialog.close();
+							Stage stage2 = (Stage) newUser.getScene()
+									.getWindow();
+							final Stage dialog2 = new Stage();
+							dialog2.initModality(Modality.APPLICATION_MODAL);
+							dialog2.initOwner(stage2);
 
-    newUser.setOnAction(event);
+							dialog2.setTitle("Failed");
 
-  }
+							VBox box3 = new VBox();
+							Label label3 = new Label("Adding user failed.");
+							box3.setPadding(new Insets(10, 10, 10, 50));
+							box3.setSpacing(10);
 
-  /**
-   * Handles when a user clicks add friendship
-   * 
-   * @param btnAddFrnd reference to the add friend button.
-   */
-  private void clickAddFriendship(Button btnAddFrnd) {
-    EventHandler<ActionEvent> event = new EventHandler<ActionEvent>() {
-      public void handle(ActionEvent e) {
-        Stage stage = (Stage) btnAddFrnd.getScene().getWindow();
-        final Stage dialog = new Stage();
-        dialog.initModality(Modality.APPLICATION_MODAL);
-        dialog.initOwner(stage);
+							Button btnCancel2 = new Button("Cancel");
+							btnCancel2.setPrefSize(90, 20);
+							box3.getChildren().addAll(label3, btnCancel2);
 
-        // Set title
-        dialog.setTitle("Add Friendship");
+							Scene dialogScene2 = new Scene(box3, 200, 100);
 
-        Label label = new Label("Enter two users to add friendship:");
-        // users will have to be a list of all the users in the network.
-        ObservableList<String> users1 = FXCollections.observableArrayList(sn.getAllUsers()); // TODO:
-                                                                                             // UPDATE
-                                                                                             // THIS
-                                                                                             // WITH
-                                                                                             // USERS
-                                                                                             // FROM
-                                                                                             // SOCIAL
-                                                                                             // NETWORK
-        ComboBox<String> comboBox1 = new ComboBox<String>(users1);
+							dialog2.setScene(dialogScene2);
+							dialog2.show();
+							// The cancel button for the invalid input pop-up
+							EventHandler<ActionEvent> cancel2 = new EventHandler<ActionEvent>() {
+								public void handle(ActionEvent e) {
+									dialog2.close();
+								}
+							};
+							btnCancel2.setOnAction(cancel2);
+						}
+						dialog.close();
+					}
+				};
+				// The cancel button for the add new user pop-up
+				EventHandler<ActionEvent> cancel = new EventHandler<ActionEvent>() {
+					public void handle(ActionEvent e) {
+						dialog.close();
+					}
+				};
+				btnSubmit.setOnAction(submit);
+				btnCancel.setOnAction(cancel);
 
-        // users will have to be a list of all the users in the network.
-        ObservableList<String> users2 = FXCollections.observableArrayList(sn.getAllUsers()); // TODO:
-                                                                                             // UPDATE
-                                                                                             // THIS
-                                                                                             // WITH
-                                                                                             // USERS
-                                                                                             // FROM
-                                                                                             // SOCIAL
-                                                                                             // NETWORK
-        ComboBox<String> comboBox2 = new ComboBox<String>(users2);
+				dialog.setScene(dialogScene);
+				dialog.show();
+			}
+		};
 
-        comboBox1.setPrefSize(100, 20);
-        comboBox2.setPrefSize(100, 20);
+		newUser.setOnAction(event);
 
-        BorderPane root = new BorderPane();
-        HBox box = new HBox();
-        HBox box2 = new HBox();
-        HBox box3 = new HBox();
-        VBox vbox = new VBox();
+	}
 
-        box.getChildren().add(label);
-        box.setSpacing(10);
-        box.setPadding(new Insets(10, 20, 20, 20));
+	/**
+	 * Handles when a user clicks add friendship
+	 * 
+	 * @param btnAddFrnd reference to the add friend button.
+	 */
+	private void clickAddFriendship(Button btnAddFrnd) {
+		EventHandler<ActionEvent> event = new EventHandler<ActionEvent>() {
+			public void handle(ActionEvent e) {
+				Stage stage = (Stage) btnAddFrnd.getScene().getWindow();
+				final Stage dialog = new Stage();
+				dialog.initModality(Modality.APPLICATION_MODAL);
+				dialog.initOwner(stage);
 
-        Button btnSubmit = new Button("Submit");
-        Button btnCancel = new Button("Cancel");
-        btnSubmit.setPrefSize(75, 20);
-        btnCancel.setPrefSize(75, 20);
+				// Set title
+				dialog.setTitle("Add Friendship");
 
-        box2.getChildren().addAll(comboBox1, comboBox2);
-        box2.setSpacing(30);
-        box2.setPadding(new Insets(0, 0, 0, 20));
+				Label label = new Label("Enter two users to add friendship:");
+				// users will have to be a list of all the users in the network.
+				ObservableList<String> users1 = FXCollections
+						.observableArrayList(sn.getAllUsers()); // TODO:
+																// UPDATE
+																// THIS
+																// WITH
+																// USERS
+																// FROM
+																// SOCIAL
+																// NETWORK
+				ComboBox<String> comboBox1 = new ComboBox<String>(users1);
 
-        box3.getChildren().addAll(btnSubmit, btnCancel);
-        box3.setSpacing(55);
-        box3.setPadding(new Insets(10, 30, 10, 30));
+				// users will have to be a list of all the users in the network.
+				ObservableList<String> users2 = FXCollections
+						.observableArrayList(sn.getAllUsers()); // TODO:
+																// UPDATE
+																// THIS
+																// WITH
+																// USERS
+																// FROM
+																// SOCIAL
+																// NETWORK
+				ComboBox<String> comboBox2 = new ComboBox<String>(users2);
 
-        vbox.getChildren().addAll(box, box2, box3);
+				comboBox1.setPrefSize(100, 20);
+				comboBox2.setPrefSize(100, 20);
 
-        root.setCenter(vbox);
+				BorderPane root = new BorderPane();
+				HBox box = new HBox();
+				HBox box2 = new HBox();
+				HBox box3 = new HBox();
+				VBox vbox = new VBox();
 
+				box.getChildren().add(label);
+				box.setSpacing(10);
+				box.setPadding(new Insets(10, 20, 20, 20));
 
-        Scene dialogScene = new Scene(root, 270, 120);
+				Button btnSubmit = new Button("Submit");
+				Button btnCancel = new Button("Cancel");
+				btnSubmit.setPrefSize(75, 20);
+				btnCancel.setPrefSize(75, 20);
 
+				box2.getChildren().addAll(comboBox1, comboBox2);
+				box2.setSpacing(30);
+				box2.setPadding(new Insets(0, 0, 0, 20));
 
-        EventHandler<ActionEvent> submit = new EventHandler<ActionEvent>() {
-          public void handle(ActionEvent e) {
+				box3.getChildren().addAll(btnSubmit, btnCancel);
+				box3.setSpacing(55);
+				box3.setPadding(new Insets(10, 30, 10, 30));
 
-            sn.addFriends((String) comboBox1.getValue(), (String) comboBox2.getValue());
-            dialog.close();
+				vbox.getChildren().addAll(box, box2, box3);
 
-            updateLastActionAndGroupAndUserCount("Added friendship between: " + comboBox1.getValue()
-                + " and " + comboBox2.getValue());
-          }
-        };
+				root.setCenter(vbox);
 
-        EventHandler<ActionEvent> cancel = new EventHandler<ActionEvent>() {
-          public void handle(ActionEvent e) {
-            dialog.close();
-          }
-        };
-        btnSubmit.setOnAction(submit);
-        btnCancel.setOnAction(cancel);
+				Scene dialogScene = new Scene(root, 270, 120);
 
-        dialog.setScene(dialogScene);
-        dialog.show();
-        
-        displayFriendsOfOneUser(comboBox1.getValue());
-      }
-    };
-    btnAddFrnd.setOnAction(event);
-  }
+				EventHandler<ActionEvent> submit = new EventHandler<ActionEvent>() {
+					public void handle(ActionEvent e) {
 
-  private void clickRedo() {
-    // TODO: implement if there is time
-  }
+						sn.addFriends((String) comboBox1.getValue(),
+								(String) comboBox2.getValue());
+						dialog.close();
 
-  /**
-   * Handles when a user selects load.
-   * 
-   * @param load reference to the button.
-   */
-  private void clickLoad(Button load) {
-    EventHandler<ActionEvent> event = new EventHandler<ActionEvent>() {
-      public void handle(ActionEvent e) {
+						if (comboBox1.getValue().equals(comboBox2.getValue())) {
+							updateLastActionAndGroupAndUserCount(
+									"Invalid Action: Cannot add friendship between same user");
 
-    	String centralUser = null;
-    	  
-        FileChooser fileChooser = new FileChooser();
-        fileChooser.setTitle("Choose file");
+						} else {
+							updateLastActionAndGroupAndUserCount(
+									"Added friendship between: "
+											+ comboBox1.getValue() + " and "
+											+ comboBox2.getValue());
+						}
+					}
+				};
 
-        Stage stage = (Stage) load.getScene().getWindow();
-
-        File file = fileChooser.showOpenDialog(stage);
-
-        if (file != null)
-          sn.loadFromFile(file);
-
-        updateMainComboBox();
-
-        updateLastActionAndGroupAndUserCount("Loaded data from file");
-        
-        centralUser = sn.getCentralUser();
-        
-        if (centralUser != null) {
-        	setCentralUser(centralUser);
-        }        
-      }
-    };
-
-    load.setOnAction(event);
-  }
-
-  /**
-   * Handles what happens when the user chooses export
-   * 
-   * @param export reference to the button.
-   */
-  private void clickExport(Button export) {
-    EventHandler<ActionEvent> event = new EventHandler<ActionEvent>() {
-      public void handle(ActionEvent e) {
-        FileChooser fileChooser = new FileChooser();
-        FileChooser.ExtensionFilter extension =
-            new FileChooser.ExtensionFilter("txt files (*.txt)", "*.txt");
-
-        fileChooser.getExtensionFilters().add(extension);
-
-        File destination = fileChooser.showSaveDialog((Stage) export.getScene().getWindow());
-
-        if (destination != null)
-          sn.saveToFile(destination);
-      }
-    };
-    export.setOnAction(event);
-
-  }
-
-  /**
-   * Handles what happens when the user selects exit.
-   * 
-   * @param exit reference to the exit button.
-   */
-  private void clickExit(Button exit) {
-    EventHandler<ActionEvent> event = new EventHandler<ActionEvent>() {
-      public void handle(ActionEvent e) {
-
-        // ask if the user wants to save before exiting with a pop-up.
-        Stage stage = (Stage) exit.getScene().getWindow();
-        final Stage dialog = new Stage();
-        dialog.initModality(Modality.APPLICATION_MODAL);
-        dialog.initOwner(stage);
-
-        // Set title
-        dialog.setTitle("Exit");
-
-        Label label = new Label("Do you want to save your work?");
-        Button btnSave = new Button("Save");
-        Button btnDontSave = new Button("Dont Save");
-
-        VBox box = new VBox();
-        HBox box2 = new HBox();
-
-        box.getChildren().add(label);
-        box.setSpacing(10);
-        box2.getChildren().addAll(btnSave, btnDontSave);
-        box2.setSpacing(10);
-        box.setPadding(new Insets(10, 0, 0, 20));
-        box2.setPadding(new Insets(0, 0, 0, 20));
-
-        box.getChildren().add(box2);
-
-        Scene scene = new Scene(box, 210, 80);
-
-        dialog.setScene(scene);
-        dialog.show();
-        // if the user chooses save it'll prompt them to save their file.
-        EventHandler<ActionEvent> eventSave = new EventHandler<ActionEvent>() {
-          public void handle(ActionEvent e) {
-            
-            FileChooser fileChooser = new FileChooser();
-            FileChooser.ExtensionFilter extension =
-                new FileChooser.ExtensionFilter("txt files (*.txt)", "*.txt");
-
-            fileChooser.getExtensionFilters().add(extension);
-
-            File destination = fileChooser.showSaveDialog((Stage) btnSave.getScene().getWindow());
-
-            if (destination != null)
-              sn.saveToFile(destination);
-            stage.close();
-            
-          }
-        };
-        btnSave.setOnAction(eventSave);
-        
-        // If the user selected don't save the program will close.
-        EventHandler<ActionEvent> eventDontSave = new EventHandler<ActionEvent>() {
-          public void handle(ActionEvent e) {
-            stage.close();
-          }
-        };
-        btnDontSave.setOnAction(eventDontSave);
-      }
-    };
-
-    exit.setOnAction(event);
-  }
-
-  /**
-   * Handles what happens when the user selects remove user.
-   * 
-   * @param removeUser reference to the button.
-   */
-  private void clickRemoveUser(Button removeUser) {
-
-    EventHandler<ActionEvent> event = new EventHandler<ActionEvent>() {
-      public void handle(ActionEvent e) {
-        Stage stage = (Stage) removeUser.getScene().getWindow();
-        final Stage dialog = new Stage();
-        dialog.initModality(Modality.APPLICATION_MODAL);
-        dialog.initOwner(stage);
-
-        // Set title
-        dialog.setTitle("Remove user");
-
-        Label label = new Label("Select a user to remove:");
-        // users will have to be a list of all the users in the network.
-        ObservableList<String> users1 = FXCollections.observableArrayList(sn.getAllUsers()); // TODO:
-                                                                                             // UPDATE
-                                                                                             // THIS
-                                                                                             // WITH
-                                                                                             // USERS
-                                                                                             // FROM
-                                                                                             // SOCIAL
-                                                                                             // NETWORK
-        ComboBox<String> comboBox1 = new ComboBox<String>(users1);
-        comboBox1.setPrefSize(75, 20);
-
-        BorderPane root = new BorderPane();
-        HBox box = new HBox();
-        HBox box2 = new HBox();
-
-        box.getChildren().add(label);
-        box.setSpacing(10);
-        box.setPadding(new Insets(10, 20, 20, 20));
-
-        Button btnSubmit = new Button("Submit");
-        Button btnCancel = new Button("Cancel");
-        btnSubmit.setPrefSize(75, 20);
-        btnCancel.setPrefSize(75, 20);
-
-        box2.getChildren().addAll(comboBox1, btnSubmit, btnCancel);
-        box2.setSpacing(10);
-        box2.setPadding(new Insets(0, 0, 0, 20));
-
-        root.setTop(box);
-        root.setCenter(box2);
-
-        Scene dialogScene = new Scene(root, 275, 100);
-
-        EventHandler<ActionEvent> submit = new EventHandler<ActionEvent>() {
-          public void handle(ActionEvent e) {
-
-            sn.removeUser((String) comboBox1.getValue());
-            dialog.close();
-
-            updateLastActionAndGroupAndUserCount("Removed user: " + comboBox1.getValue());
-
-            updateMainComboBox();
-          }
-        };
-
-        EventHandler<ActionEvent> cancel = new EventHandler<ActionEvent>() {
-          public void handle(ActionEvent e) {
-            dialog.close();
-          }
-        };
-        btnSubmit.setOnAction(submit);
-        btnCancel.setOnAction(cancel);
-
-        dialog.setScene(dialogScene);
-        dialog.show();
-      }
-    };
-    removeUser.setOnAction(event);
-
-  }
-
-  /**
-   * Handles what happens when the user selects remove friendship.
-   * 
-   * @param rmFriendship reference to the button.
-   */
-  private void clickRemoveFriendship(Button rmFriendship) {
-    // when the user clicks remove friendship, a pop-up appears.
-    EventHandler<ActionEvent> event = new EventHandler<ActionEvent>() {
-      public void handle(ActionEvent e) {
-        Stage stage = (Stage) rmFriendship.getScene().getWindow();
-        final Stage dialog = new Stage();
-        dialog.initModality(Modality.APPLICATION_MODAL);
-        dialog.initOwner(stage);
-
-        // Set title
-        dialog.setTitle("Remove friendship");
-
-        Label label = new Label("Enter two users to remove friendship:");
-        // users will have to be a list of all the users in the network.
-        ObservableList<String> users1 = FXCollections.observableArrayList(sn.getAllUsers()); // TODO:
-                                                                                             // UPDATE
-                                                                                             // THIS
-                                                                                             // WITH
-                                                                                             // USERS
-                                                                                             // FROM
-                                                                                             // SOCIAL
-                                                                                             // NETWORK
-        ComboBox<String> comboBox1 = new ComboBox<String>(users1);
-
-        // users will have to be a list of all the users in the network.
-        ObservableList<String> users2 = FXCollections.observableArrayList(sn.getAllUsers()); // TODO:
-                                                                                             // UPDATE
-                                                                                             // THIS
-                                                                                             // WITH
-                                                                                             // USERS
-                                                                                             // FROM
-                                                                                             // SOCIAL
-                                                                                             // NETWORK
-        ComboBox<String> comboBox2 = new ComboBox<String>(users2);
-
-        comboBox1.setPrefSize(100, 20);
-        comboBox2.setPrefSize(100, 20);
-
-        BorderPane root = new BorderPane();
-        HBox box = new HBox();
-        HBox box2 = new HBox();
-        HBox box3 = new HBox();
-        VBox vbox = new VBox();
-
-        box.getChildren().add(label);
-        box.setSpacing(10);
-        box.setPadding(new Insets(10, 20, 20, 20));
-
-        Button btnSubmit = new Button("Submit");
-        Button btnCancel = new Button("Cancel");
-        btnSubmit.setPrefSize(75, 20);
-        btnCancel.setPrefSize(75, 20);
-
-        box2.getChildren().addAll(comboBox1, comboBox2);
-        box2.setSpacing(30);
-        box2.setPadding(new Insets(0, 0, 0, 20));
-
-        box3.getChildren().addAll(btnSubmit, btnCancel);
-        box3.setSpacing(55);
-        box3.setPadding(new Insets(10, 30, 10, 30));
-
-        vbox.getChildren().addAll(box, box2, box3);
-
-        root.setCenter(vbox);
-
-
-        Scene dialogScene = new Scene(root, 270, 120);
-
-        // the submit button action.
-        EventHandler<ActionEvent> submit = new EventHandler<ActionEvent>() {
-          public void handle(ActionEvent e) {
-
-            sn.removeFriends((String) comboBox1.getValue(), (String) comboBox2.getValue());
-            dialog.close();
+				EventHandler<ActionEvent> cancel = new EventHandler<ActionEvent>() {
+					public void handle(ActionEvent e) {
+						dialog.close();
+					}
+				};
+				btnSubmit.setOnAction(submit);
+				btnCancel.setOnAction(cancel);
 
-            updateLastActionAndGroupAndUserCount("Removed friendship between: "
-                + comboBox1.getValue() + " and " + comboBox2.getValue());
-          }
-        };
-        // the cancel button action.
-        EventHandler<ActionEvent> cancel = new EventHandler<ActionEvent>() {
-          public void handle(ActionEvent e) {
-            dialog.close();
-          }
-        };
-        btnSubmit.setOnAction(submit);
-        btnCancel.setOnAction(cancel);
+				dialog.setScene(dialogScene);
+				dialog.show();
 
-        dialog.setScene(dialogScene);
-        dialog.show();
-      }
-    };
-    rmFriendship.setOnAction(event);
-  }
+				displayFriendsOfOneUser(comboBox1.getValue());
+			}
+		};
+		btnAddFrnd.setOnAction(event);
+	}
 
-  private void clickMainComboBox() {
+	private void clickRedo() {
+		// TODO: implement if there is time
+	}
 
-    /*** Local Variables ***/
+	/**
+	 * Handles when a user selects load.
+	 * 
+	 * @param load reference to the button.
+	 */
+	private void clickLoad(Button load) {
+		EventHandler<ActionEvent> event = new EventHandler<ActionEvent>() {
+			public void handle(ActionEvent e) {
 
-    String selection = c1.getValue();
+				String centralUser = null;
 
-    if (rb1.isSelected()) { // All friends
+				FileChooser fileChooser = new FileChooser();
+				fileChooser.setTitle("Choose file");
 
-      /*** Disable Friend comboBox ***/
+				Stage stage = (Stage) load.getScene().getWindow();
 
-      c2.setDisable(true);
+				File file = fileChooser.showOpenDialog(stage);
 
-      /*** Clear current data ***/
+				if (file != null)
+					sn.loadFromFile(file);
 
-      clearCanvas();
+				updateMainComboBox();
 
-      /*** Update listBox with all friends ***/
+				updateLastActionAndGroupAndUserCount("Loaded data from file");
 
-      displayFriendsOfOneUser(selection);
+				centralUser = sn.getCentralUser();
 
-      /*** Update canvas with all friends ***/
+				if (centralUser != null) {
+					setCentralUser(centralUser);
+				}
+			}
+		};
 
-      drawFriends(selection);
+		load.setOnAction(event);
+	}
 
-      /*** Update last action ***/
+	/**
+	 * Handles what happens when the user chooses export
+	 * 
+	 * @param export reference to the button.
+	 */
+	private void clickExport(Button export) {
+		EventHandler<ActionEvent> event = new EventHandler<ActionEvent>() {
+			public void handle(ActionEvent e) {
+				FileChooser fileChooser = new FileChooser();
+				FileChooser.ExtensionFilter extension = new FileChooser.ExtensionFilter(
+						"txt files (*.txt)", "*.txt");
 
-      updateLastActionAndGroupAndUserCount("Displayed all friends of " + selection);
+				fileChooser.getExtensionFilters().add(extension);
 
-    } else if (rb2.isSelected()) { // Mutual friendships
+				File destination = fileChooser
+						.showSaveDialog((Stage) export.getScene().getWindow());
 
-      /*** Enable Friend comboBox ***/
+				if (destination != null)
+					sn.saveToFile(destination);
+			}
+		};
+		export.setOnAction(event);
 
-      c2.setDisable(false);
+	}
 
-      /*** Update friend comboBox with friends of main user ***/
+	/**
+	 * Handles what happens when the user selects exit.
+	 * 
+	 * @param exit reference to the exit button.
+	 */
+	private void clickExit(Button exit) {
+		EventHandler<ActionEvent> event = new EventHandler<ActionEvent>() {
+			public void handle(ActionEvent e) {
+
+				// ask if the user wants to save before exiting with a pop-up.
+				Stage stage = (Stage) exit.getScene().getWindow();
+				final Stage dialog = new Stage();
+				dialog.initModality(Modality.APPLICATION_MODAL);
+				dialog.initOwner(stage);
+
+				// Set title
+				dialog.setTitle("Exit");
+
+				Label label = new Label("Do you want to save your work?");
+				Button btnSave = new Button("Save");
+				Button btnDontSave = new Button("Dont Save");
+
+				VBox box = new VBox();
+				HBox box2 = new HBox();
+
+				box.getChildren().add(label);
+				box.setSpacing(10);
+				box2.getChildren().addAll(btnSave, btnDontSave);
+				box2.setSpacing(10);
+				box.setPadding(new Insets(10, 0, 0, 20));
+				box2.setPadding(new Insets(0, 0, 0, 20));
 
-      updateFriendComboBox(c1.getValue());
+				box.getChildren().add(box2);
 
-    } else if (rb3.isSelected()) { // Shortest path
+				Scene scene = new Scene(box, 210, 80);
 
-      /*** Enable Friend comboBox ***/
+				dialog.setScene(scene);
+				dialog.show();
+				// if the user chooses save it'll prompt them to save their
+				// file.
+				EventHandler<ActionEvent> eventSave = new EventHandler<ActionEvent>() {
+					public void handle(ActionEvent e) {
 
-      c2.setDisable(false);
+						FileChooser fileChooser = new FileChooser();
+						FileChooser.ExtensionFilter extension = new FileChooser.ExtensionFilter(
+								"txt files (*.txt)", "*.txt");
+
+						fileChooser.getExtensionFilters().add(extension);
+
+						File destination = fileChooser.showSaveDialog(
+								(Stage) btnSave.getScene().getWindow());
+
+						if (destination != null)
+							sn.saveToFile(destination);
+						stage.close();
 
-      /*** Add all users to friend comboBox ***/
+					}
+				};
+				btnSave.setOnAction(eventSave);
+
+				// If the user selected don't save the program will close.
+				EventHandler<ActionEvent> eventDontSave = new EventHandler<ActionEvent>() {
+					public void handle(ActionEvent e) {
+						stage.close();
+					}
+				};
+				btnDontSave.setOnAction(eventDontSave);
+			}
+		};
+
+		exit.setOnAction(event);
+	}
+
+	/**
+	 * Handles what happens when the user selects remove user.
+	 * 
+	 * @param removeUser reference to the button.
+	 */
+	private void clickRemoveUser(Button removeUser) {
+
+		EventHandler<ActionEvent> event = new EventHandler<ActionEvent>() {
+			public void handle(ActionEvent e) {
+				Stage stage = (Stage) removeUser.getScene().getWindow();
+				final Stage dialog = new Stage();
+				dialog.initModality(Modality.APPLICATION_MODAL);
+				dialog.initOwner(stage);
+
+				// Set title
+				dialog.setTitle("Remove user");
+
+				Label label = new Label("Select a user to remove:");
+				// users will have to be a list of all the users in the network.
+				ObservableList<String> users1 = FXCollections
+						.observableArrayList(sn.getAllUsers()); // TODO:
+																// UPDATE
+																// THIS
+																// WITH
+																// USERS
+																// FROM
+																// SOCIAL
+																// NETWORK
+				ComboBox<String> comboBox1 = new ComboBox<String>(users1);
+				comboBox1.setPrefSize(75, 20);
+
+				BorderPane root = new BorderPane();
+				HBox box = new HBox();
+				HBox box2 = new HBox();
+
+				box.getChildren().add(label);
+				box.setSpacing(10);
+				box.setPadding(new Insets(10, 20, 20, 20));
+
+				Button btnSubmit = new Button("Submit");
+				Button btnCancel = new Button("Cancel");
+				btnSubmit.setPrefSize(75, 20);
+				btnCancel.setPrefSize(75, 20);
+
+				box2.getChildren().addAll(comboBox1, btnSubmit, btnCancel);
+				box2.setSpacing(10);
+				box2.setPadding(new Insets(0, 0, 0, 20));
+
+				root.setTop(box);
+				root.setCenter(box2);
+
+				Scene dialogScene = new Scene(root, 275, 100);
+
+				EventHandler<ActionEvent> submit = new EventHandler<ActionEvent>() {
+					public void handle(ActionEvent e) {
+
+						sn.removeUser((String) comboBox1.getValue());
+						dialog.close();
+
+						updateLastActionAndGroupAndUserCount(
+								"Removed user: " + comboBox1.getValue());
+
+						updateMainComboBox();
+					}
+				};
+
+				EventHandler<ActionEvent> cancel = new EventHandler<ActionEvent>() {
+					public void handle(ActionEvent e) {
+						dialog.close();
+					}
+				};
+				btnSubmit.setOnAction(submit);
+				btnCancel.setOnAction(cancel);
+
+				dialog.setScene(dialogScene);
+				dialog.show();
+			}
+		};
+		removeUser.setOnAction(event);
+
+	}
+
+	/**
+	 * Handles what happens when the user selects remove friendship.
+	 * 
+	 * @param rmFriendship reference to the button.
+	 */
+	private void clickRemoveFriendship(Button rmFriendship) {
+		// when the user clicks remove friendship, a pop-up appears.
+		EventHandler<ActionEvent> event = new EventHandler<ActionEvent>() {
+			public void handle(ActionEvent e) {
+				Stage stage = (Stage) rmFriendship.getScene().getWindow();
+				final Stage dialog = new Stage();
+				dialog.initModality(Modality.APPLICATION_MODAL);
+				dialog.initOwner(stage);
+
+				// Set title
+				dialog.setTitle("Remove friendship");
+
+				Label label = new Label(
+						"Enter two users to remove friendship:");
+				// users will have to be a list of all the users in the network.
+				ObservableList<String> users1 = FXCollections
+						.observableArrayList(sn.getAllUsers()); // TODO:
+																// UPDATE
+																// THIS
+																// WITH
+																// USERS
+																// FROM
+																// SOCIAL
+																// NETWORK
+				ComboBox<String> comboBox1 = new ComboBox<String>(users1);
+
+				// users will have to be a list of all the users in the network.
+				ObservableList<String> users2 = FXCollections
+						.observableArrayList(sn.getAllUsers()); // TODO:
+																// UPDATE
+																// THIS
+																// WITH
+																// USERS
+																// FROM
+																// SOCIAL
+																// NETWORK
+				ComboBox<String> comboBox2 = new ComboBox<String>(users2);
+
+				comboBox1.setPrefSize(100, 20);
+				comboBox2.setPrefSize(100, 20);
+
+				BorderPane root = new BorderPane();
+				HBox box = new HBox();
+				HBox box2 = new HBox();
+				HBox box3 = new HBox();
+				VBox vbox = new VBox();
 
-      updateFriendComboBoxAllUsers();
-    }
-  }
+				box.getChildren().add(label);
+				box.setSpacing(10);
+				box.setPadding(new Insets(10, 20, 20, 20));
 
-  /**
-   * Updates last action label with the string that is passed in.
-   * 
-   * @param action - last action taken to update label with
-   */
-  private void updateLastActionAndGroupAndUserCount(String action) {
-    lblLastAction.setText(action);
-    lblGroupCount.setText("Group count: " + sn.getNumberOfConnectedComponents());
-    lblUsersCount.setText("User count: " + sn.getAllUsers().size());
-  }
+				Button btnSubmit = new Button("Submit");
+				Button btnCancel = new Button("Cancel");
+				btnSubmit.setPrefSize(75, 20);
+				btnCancel.setPrefSize(75, 20);
 
-private void clickFriendComboBox() {
+				box2.getChildren().addAll(comboBox1, comboBox2);
+				box2.setSpacing(30);
+				box2.setPadding(new Insets(0, 0, 0, 20));
 
-    /*** Local Variables ***/
+				box3.getChildren().addAll(btnSubmit, btnCancel);
+				box3.setSpacing(55);
+				box3.setPadding(new Insets(10, 30, 10, 30));
 
-    String mainSelection = "";
-    String friendSelection = "";
+				vbox.getChildren().addAll(box, box2, box3);
 
-    boolean validSelections = false;
+				root.setCenter(vbox);
 
-    /*** Check that valid selections are made ***/
+				Scene dialogScene = new Scene(root, 270, 120);
 
-    if (c1.getValue() != null) {
-      mainSelection = c1.getValue();
+				// the submit button action.
+				EventHandler<ActionEvent> submit = new EventHandler<ActionEvent>() {
+					public void handle(ActionEvent e) {
 
-      if (c2.getValue() != null) {
-        friendSelection = c2.getValue();
+						sn.removeFriends((String) comboBox1.getValue(),
+								(String) comboBox2.getValue());
+						dialog.close();
 
-        validSelections = true;
-      }
-    }
+						updateLastActionAndGroupAndUserCount(
+								"Removed friendship between: "
+										+ comboBox1.getValue() + " and "
+										+ comboBox2.getValue());
+					}
+				};
+				// the cancel button action.
+				EventHandler<ActionEvent> cancel = new EventHandler<ActionEvent>() {
+					public void handle(ActionEvent e) {
+						dialog.close();
+					}
+				};
+				btnSubmit.setOnAction(submit);
+				btnCancel.setOnAction(cancel);
 
-    if (validSelections) {
-      if (rb2.isSelected()) { // Mutual friends
+				dialog.setScene(dialogScene);
+				dialog.show();
+			}
+		};
+		rmFriendship.setOnAction(event);
+	}
 
-        /*** Clear current data ***/
+	private void clickMainComboBox() {
 
-        clearCanvas();
+		/*** Local Variables ***/
 
-        /*** Update listBox with all friends ***/
+		String selection = c1.getValue();
 
-        displayFriendsTwoUsers(mainSelection, friendSelection);
+		if (rb1.isSelected()) { // All friends
 
-        /*** Update canvas with all friends ***/
+			/*** Disable Friend comboBox ***/
 
-        drawMutualFriends(mainSelection, friendSelection);
+			c2.setDisable(true);
 
-        /*** Update last action ***/
+			/*** Clear current data ***/
 
-        updateLastActionAndGroupAndUserCount(
-            "Displayed mutual friends of: " + mainSelection + " and " + friendSelection);
+			clearCanvas();
 
-      } else if (rb3.isSelected()) { // Shortest path
-        displayShortestPath(mainSelection, friendSelection);
+			/*** Update listBox with all friends ***/
 
-        /*** Update last action ***/
+			displayFriendsOfOneUser(selection);
 
-        updateLastActionAndGroupAndUserCount(
-            "Displayed shortest path between " + mainSelection + " and " + friendSelection);
-      }
-    }
-  }
+			/*** Update canvas with all friends ***/
 
-  private void clickFriendListBox() {
+			drawFriends(selection);
 
-    /*** Local Variables ***/
+			/*** Update last action ***/
 
-    String selection = lvFriends.getSelectionModel().getSelectedItem();
+			updateLastActionAndGroupAndUserCount(
+					"Displayed all friends of " + selection);
 
-    /*** Disable Friend comboBox ***/
+		} else if (rb2.isSelected()) { // Mutual friendships
 
-    c2.setDisable(true);
+			/*** Enable Friend comboBox ***/
 
-    /*** Set radioButton selection to all friends ***/
+			c2.setDisable(false);
 
-    rb1.setSelected(true);
+			/*** Update friend comboBox with friends of main user ***/
 
-    /*** Clear current data ***/
+			updateFriendComboBox(c1.getValue());
 
-    clearCanvas();
+		} else if (rb3.isSelected()) { // Shortest path
 
-    /*** Update listBox with all friends ***/
+			/*** Enable Friend comboBox ***/
 
-    displayFriendsOfOneUser(selection);
+			c2.setDisable(false);
 
-    /*** Update canvas with all friends ***/
+			/*** Add all users to friend comboBox ***/
 
-    drawFriends(selection);
-    
-    /*** Update comboBox with selection ***/
-    
-    c1.setValue(selection);
+			updateFriendComboBoxAllUsers();
+		}
+	}
 
-    /*** Update last action ***/
+	/**
+	 * Updates last action label with the string that is passed in.
+	 * 
+	 * @param action - last action taken to update label with
+	 */
+	private void updateLastActionAndGroupAndUserCount(String action) {
+		lblLastAction.setText(action);
+		lblGroupCount
+				.setText("Group count: " + sn.getNumberOfConnectedComponents());
+		lblUsersCount.setText("User count: " + sn.getAllUsers().size());
+	}
 
-    updateLastActionAndGroupAndUserCount("Displayed all friends of " + selection);
-  }
+	private void clickFriendComboBox() {
 
-  private void clickRadioButton() {
+		/*** Local Variables ***/
 
-    /*** Local Variables ***/
+		String mainSelection = "";
+		String friendSelection = "";
 
-    RadioButton selected = (RadioButton) tGroup.getSelectedToggle();
-    List<String> userArray = sn.getAllUsers();
-    ObservableList<String> userList = FXCollections.observableArrayList();
+		boolean validSelections = false;
 
-    /*** Enable/disable second comboBox based on selected radioButton and update listbox label ***/
+		/*** Check that valid selections are made ***/
 
-    if (selected.equals(rb1)) {
+		if (c1.getValue() != null) {
+			mainSelection = c1.getValue();
 
-      c2.setDisable(true);
-      c2.getItems().clear();
+			if (c2.getValue() != null) {
+				friendSelection = c2.getValue();
 
-      lblRadioChoice.setText("All friends");
+				validSelections = true;
+			}
+		}
 
-    } else if (selected.equals(rb2)) {
-    	
-      c2.setDisable(false); 
-      c2.getItems().clear();
+		if (validSelections) {
+			if (rb2.isSelected()) { // Mutual friends
 
-      lblRadioChoice.setText("Mutual friends");
+				/*** Clear current data ***/
 
-    } else if (selected.equals(rb3)) {
+				clearCanvas();
 
-      c2.setDisable(false);
+				/*** Update listBox with all friends ***/
 
-      lblRadioChoice.setText("Shortest path");
+				displayFriendsTwoUsers(mainSelection, friendSelection);
 
-      /*** Add all users to ObservableList ***/
+				/*** Update canvas with all friends ***/
 
-      for (String user : userArray) {
-        userList.add(user);
-      }
+				drawMutualFriends(mainSelection, friendSelection);
 
-      /*** Clear current data ***/
+				/*** Update last action ***/
 
-      c2.getItems().clear();
+				updateLastActionAndGroupAndUserCount(
+						"Displayed mutual friends of: " + mainSelection
+								+ " and " + friendSelection);
 
-      /*** Update comboBox with new user data ***/
+			} else if (rb3.isSelected()) { // Shortest path
+				displayShortestPath(mainSelection, friendSelection);
 
-      c2.setItems(userList);      
-    }
-  }
+				/*** Update last action ***/
 
-  /*** Application ***/
+				updateLastActionAndGroupAndUserCount(
+						"Displayed shortest path between " + mainSelection
+								+ " and " + friendSelection);
+			}
+		}
+	}
 
-  public static void main(String[] args) {
-    launch(args);
-  }
+	private void clickFriendListBox() {
+
+		/*** Local Variables ***/
+
+		String selection = lvFriends.getSelectionModel().getSelectedItem();
+
+		/*** Disable Friend comboBox ***/
+
+		c2.setDisable(true);
+
+		/*** Set radioButton selection to all friends ***/
+
+		rb1.setSelected(true);
+
+		/*** Clear current data ***/
+
+		clearCanvas();
+
+		/*** Update listBox with all friends ***/
+
+		displayFriendsOfOneUser(selection);
+
+		/*** Update canvas with all friends ***/
+
+		drawFriends(selection);
+
+		/*** Update comboBox with selection ***/
+
+		c1.setValue(selection);
+
+		/*** Update last action ***/
+
+		updateLastActionAndGroupAndUserCount(
+				"Displayed all friends of " + selection);
+	}
+
+	private void clickRadioButton() {
+
+		/*** Local Variables ***/
+
+		RadioButton selected = (RadioButton) tGroup.getSelectedToggle();
+		List<String> userArray = sn.getAllUsers();
+		ObservableList<String> userList = FXCollections.observableArrayList();
+
+		/***
+		 * Enable/disable second comboBox based on selected radioButton and
+		 * update listbox label
+		 ***/
+
+		if (selected.equals(rb1)) {
+
+			c2.setDisable(true);
+			c2.getItems().clear();
+
+			lblRadioChoice.setText("All friends");
+
+		} else if (selected.equals(rb2)) {
+
+			c2.setDisable(false);
+			c2.getItems().clear();
+
+			lblRadioChoice.setText("Mutual friends");
+
+		} else if (selected.equals(rb3)) {
+
+			c2.setDisable(false);
+
+			lblRadioChoice.setText("Shortest path");
+
+			/*** Add all users to ObservableList ***/
+
+			for (String user : userArray) {
+				userList.add(user);
+			}
+
+			/*** Clear current data ***/
+
+			c2.getItems().clear();
+
+			/*** Update comboBox with new user data ***/
+
+			c2.setItems(userList);
+		}
+	}
+
+	/*** Application ***/
+
+	public static void main(String[] args) {
+		launch(args);
+	}
 }

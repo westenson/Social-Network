@@ -103,6 +103,7 @@ public class Main extends Application {
   Label lblUserOverflow;
   Label lblLastAction;
   Label lblGroupCount;
+  Label lblUsersCount;
 
   @Override
   public void start(Stage primaryStage) {
@@ -402,11 +403,18 @@ public class Main extends Application {
     lblLastAction = new Label(prevAction);
 
     // create variable for number of current users
+    int currentGroups = 0;
     int currentUsers = 0;
-    lblGroupCount = new Label("Group count: " + currentUsers);
+    lblGroupCount = new Label("Group count: " + currentGroups);
+    lblUsersCount = new Label("User count: " + currentUsers);
 
     bottomPanel.setLeft (lblLastAction);
-    bottomPanel.setRight(lblGroupCount);
+    VBox vbox = new VBox();
+    
+    vbox.getChildren().addAll(lblGroupCount, lblUsersCount);
+    bottomPanel.setRight(vbox);
+  //  bottomPanel.setRight(lblGroupCount);
+    //bottomPanel.setRight(lblUsersCount);
     
     bottomPanel.setPadding(new Insets(15, 15, 15, 15));
 
@@ -968,10 +976,13 @@ public class Main extends Application {
    * 
    * @param action - last action taken to update label with
    */
-  private void updateLastActionAndGroupCount(String action) {
+  private void updateLastActionAndGroupAndUserCount(String action) {
 	  lblLastAction.setText(action);
 	  lblGroupCount.setText("Group count: " + sn.getNumberOfConnectedComponents());	  
+	  lblUsersCount.setText("Group count: " + sn.getAllUsers().size());	
   }
+  
+  
 
   /***** ACTION EVENT/CLICK METHODS *****/
 
@@ -981,7 +992,7 @@ public class Main extends Application {
         lvFriends.getItems().clear();
         resetGUI(); 
         
-        updateLastActionAndGroupCount("Cleared GUI");
+        updateLastActionAndGroupAndUserCount("Cleared GUI");
       }
     };
     Clear.setOnAction(event);    
@@ -1027,7 +1038,7 @@ public class Main extends Application {
         	  //TODO: INPUT VERIFICATION AND INFORM USER OF BAD/INVALID INPUT
 
             if (sn.addUser(field.getText())) {
-                updateLastActionAndGroupCount("Added new user: " + field.getText());
+                updateLastActionAndGroupAndUserCount("Added new user: " + field.getText());
                 updateMainComboBox();
                 
            
@@ -1119,7 +1130,7 @@ public class Main extends Application {
 	            sn.addFriends((String)comboBox1.getValue(), (String)comboBox2.getValue());
 	            dialog.close();
 	            
-	            updateLastActionAndGroupCount("Added friendship between: " + comboBox1.getValue() + " and " + 
+	            updateLastActionAndGroupAndUserCount("Added friendship between: " + comboBox1.getValue() + " and " + 
 	            				 comboBox2.getValue());
 	          }
 	        };
@@ -1160,7 +1171,7 @@ public class Main extends Application {
         
         updateMainComboBox();
         
-        updateLastActionAndGroupCount("Loaded data from file");
+        updateLastActionAndGroupAndUserCount("Loaded data from file");
       }
     };
 
@@ -1232,7 +1243,7 @@ public class Main extends Application {
             sn.removeUser((String)comboBox1.getValue());
             dialog.close();
             
-            updateLastActionAndGroupCount("Removed user: " + comboBox1.getValue());
+            updateLastActionAndGroupAndUserCount("Removed user: " + comboBox1.getValue());
             
             updateMainComboBox();
           }
@@ -1315,7 +1326,7 @@ public class Main extends Application {
             sn.removeFriends((String)comboBox1.getValue(), (String)comboBox2.getValue());
             dialog.close();
             
-            updateLastActionAndGroupCount("Removed friendship between: " + comboBox1.getValue() + " and " + 
+            updateLastActionAndGroupAndUserCount("Removed friendship between: " + comboBox1.getValue() + " and " + 
             				 comboBox2.getValue());
           }
         };
@@ -1361,7 +1372,7 @@ public class Main extends Application {
 		  
 		  /*** Update last action ***/
 		  
-          updateLastActionAndGroupCount("Displayed all friends of " + selection);
+          updateLastActionAndGroupAndUserCount("Displayed all friends of " + selection);
 		  
 	  } else if (rb2.isSelected()) { //Mutual friendships
 		  
@@ -1423,7 +1434,7 @@ public class Main extends Application {
 			  
 			  /*** Update last action ***/
 			  
-	          updateLastActionAndGroupCount("Displayed mutual friends of: " + mainSelection + " and " + 
+	          updateLastActionAndGroupAndUserCount("Displayed mutual friends of: " + mainSelection + " and " + 
 	        		  			friendSelection);
 			  
 		  } else if (rb3.isSelected()) { //Shortest path
@@ -1431,7 +1442,7 @@ public class Main extends Application {
 			  
 			  /*** Update last action ***/
 			  
-	          updateLastActionAndGroupCount("Displayed shortest path between " + mainSelection + " and " + 
+	          updateLastActionAndGroupAndUserCount("Displayed shortest path between " + mainSelection + " and " + 
 	        		  			friendSelection);
 		  }
 	  }	  
@@ -1465,7 +1476,7 @@ public class Main extends Application {
 	  
 	  /*** Update last action ***/
 	  
-      updateLastActionAndGroupCount("Displayed all friends of " + selection);
+      updateLastActionAndGroupAndUserCount("Displayed all friends of " + selection);
   }
   
   private void clickRadioButton() {

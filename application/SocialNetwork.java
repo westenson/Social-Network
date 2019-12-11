@@ -350,11 +350,6 @@ public class SocialNetwork implements SocialNetworkADT {
 		return numberOfConnectedComponents;
 	}
 
-	/**
-	 * Takes file and builds social network 
-	 * 
-	 * @param file 
-	 */
 	@Override
 	public void loadFromFile(File file) {
 		Scanner scnr = null;
@@ -364,18 +359,52 @@ public class SocialNetwork implements SocialNetworkADT {
 			e.printStackTrace();
 		}
 		while (scnr.hasNextLine()) {
+			
 			String[] commands = scnr.nextLine().trim().split(" ");
+			
 			switch (commands[0]) {
+			
 			case "r":
+				
+				// remove the user and all of their friendships
 				if (commands.length == 2) {
-					removeUser(commands[1]);
-				} else if (commands.length == 3) {
-					removeFriends(commands[1], commands[2]);
+					this.removeUser(commands[1]);
+				} 
+				// remove a single friendship
+				else if (commands.length == 3) {
+					this.removeFriends(commands[1],commands[2]);
 				}
+				break;
+				
 			case "a":
-				addUser(commands[1]);
-			case "s": // setCentralUser(commands[1]);
-
+				
+				// add a single user
+				if (commands.length==2) {
+					if(graph.getNode(commands[1])==null) {
+						addUser(commands[1]);
+					}
+				} 
+				
+				// add each user if not present, and add their friendship
+				else if (commands.length==3) {
+					if(graph.getNode(commands[1])==null) {
+						addUser(commands[1]);
+					}
+					if(graph.getNode(commands[2])==null) {
+						addUser(commands[2]);
+					}
+					graph.addEdge(graph.getNode(commands[2]), graph.getNode(commands[1]));
+				}
+				break;
+				
+			case "s":
+				
+				// set user as central screen in GUI
+				if (commands.length==2) {
+					//Main.setCentralUser(commands[1]);
+				}
+				break;
+				
 			}
 		}
 		scnr.close();

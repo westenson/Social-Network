@@ -1179,7 +1179,16 @@ public class Main extends Application {
   }
 
   private void clickExport(Button export) {
+	  EventHandler<ActionEvent> event = new EventHandler<ActionEvent>() {
+	      public void handle(ActionEvent e) {
 
+	    	sn.saveToFile(new File("output.txt"));
+	    	
+	    	updateLastActionAndGroupAndUserCount("Exported data to file");
+	      }
+	    };
+
+	   export.setOnAction(event);
   }
 
   private void clickExit(Button exit) {

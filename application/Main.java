@@ -5,6 +5,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 import javafx.application.Application;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -23,6 +25,7 @@ import javafx.scene.control.ListView;
 import javafx.scene.control.RadioButton;
 import javafx.scene.control.TextField;
 import javafx.scene.control.TextInputControl;
+import javafx.scene.control.Toggle;
 import javafx.scene.control.ToggleGroup;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.BorderPane;
@@ -71,6 +74,8 @@ public class Main extends Application {
   final double CENTERING_OFFSET_Y = 4.0;
   final double CANVAS_X_SIZE = 350;
   final double CANVAS_Y_SIZE = 350;
+  
+  final ToggleGroup tGroup = new ToggleGroup();
 
   /*** Class Variables ***/
 
@@ -82,8 +87,14 @@ public class Main extends Application {
 
   GraphicsContext gc = canvas.getGraphicsContext2D();
   
-  ComboBox c1;
-  ComboBox c2;
+  ComboBox<String> c1;
+  ComboBox<String> c2;
+  
+  RadioButton rb1;
+  RadioButton rb2;
+  RadioButton rb3;
+  
+  Label lblRadioChoice;
 
   @Override
   public void start(Stage primaryStage) {
@@ -138,11 +149,25 @@ public class Main extends Application {
 
     HBox mainBox = new HBox();
 
-    Label lblRadioChoice = new Label("All friends (default)");
+    lblRadioChoice = new Label("All friends (default)");
 
     VBox rightBox = new VBox();
 
     lvFriends = new ListView<String>();
+    
+    /*** Add EventHandler ***/
+    
+    lvFriends.getSelectionModel().selectedItemProperty().addListener(new ChangeListener<String>() {
+        public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
+    		clickFriendListBox();
+        }
+    });
+    
+    lvFriends.setOnMouseClicked(new EventHandler<MouseEvent>() {
+    	public void handle (MouseEvent e) {
+
+    	}
+    });
 
     /*** HARDCODED DATA FOR EXAMPLE ***/
 
@@ -195,23 +220,23 @@ public class Main extends Application {
 
     ArrayList<Button> buttonList = new ArrayList<Button>();
 
-    Button btnClear = new Button("Clear");
+    Button btnClear   = new Button("Clear"   );
     Button btnNewUser = new Button("New User");
-    Button btnUndo = new Button("Undo");
-    Button btnRedo = new Button("Redo");
-    Button btnLoad = new Button("Load");
-    Button btnExport = new Button("Export");
-    Button btnExit = new Button("Exit");
+    Button btnUndo    = new Button("Undo"    );
+    Button btnRedo    = new Button("Redo"    );
+    Button btnLoad    = new Button("Load"    );
+    Button btnExport  = new Button("Export"  );
+    Button btnExit    = new Button("Exit"    );
 
     /*** Add buttons to Array ***/
 
-    buttonList.add(btnClear);
+    buttonList.add(btnClear  );
     buttonList.add(btnNewUser);
-    buttonList.add(btnUndo);
-    buttonList.add(btnRedo);
-    buttonList.add(btnLoad);
-    buttonList.add(btnExport);
-    buttonList.add(btnExit);
+    buttonList.add(btnUndo   );
+    buttonList.add(btnRedo   );
+    buttonList.add(btnLoad   );
+    buttonList.add(btnExport );
+    buttonList.add(btnExit   );
 
 
     /*** Set spacing for buttons ***/
@@ -242,13 +267,12 @@ public class Main extends Application {
 
     HBox topPanel = new HBox();
 
-    // create radio buttons for left-most feature
-    RadioButton rb1 = new RadioButton("Show all friends");
-    RadioButton rb2 = new RadioButton("Show mutual friends");
-    RadioButton rb3 = new RadioButton("Show shortest path");
+    // instantiate radio buttons for left-most feature
+    rb1 = new RadioButton("Show all friends");
+    rb2 = new RadioButton("Show mutual friends");
+    rb3 = new RadioButton("Show shortest path");
 
     VBox tGroupContainer = new VBox(rb1, rb2, rb3);
-    final ToggleGroup tGroup = new ToggleGroup();
 
     rb1.setSelected(true);
     rb1.setToggleGroup(tGroup);
@@ -269,6 +293,7 @@ public class Main extends Application {
         FXCollections.observableArrayList("Friend 1", "Friend 2", "Friend 3");
     c2 = new ComboBox<String>(friends);
     v2.getChildren().addAll(l2, c2);
+    c2.setDisable(true);
 
     // create button for remove user and remove friendship
     VBox v3 = new VBox();
@@ -288,6 +313,29 @@ public class Main extends Application {
     topPanel.setSpacing(20);
 
     topPanel.setPadding(new Insets(15, 15, 0, 15));
+    
+    /*** Add EventHandlers ***/
+
+    c1.setOnAction(new EventHandler<ActionEvent>() {
+    	public void handle (ActionEvent e) {
+    		clickMainComboBox();
+    	}
+    });
+    
+    c2.setOnAction(new EventHandler<ActionEvent>() {
+    	public void handle (ActionEvent e) {
+    		clickFriendComboBox();
+    	}
+    });
+    
+    tGroup.selectedToggleProperty().addListener(new ChangeListener<Toggle>() {
+        public void changed(ObservableValue<? extends Toggle> ov,
+            Toggle old_toggle, Toggle new_toggle) {
+          if (tGroup.getSelectedToggle() != null) {
+        	  clickRadioButton();
+          }
+        }
+      });
 
     clickRemoveUser(btnRmUser);
     clickRemoveFriendship(btnRmFriend);
@@ -716,6 +764,54 @@ public class Main extends Application {
 
 	    lvFriends.setItems(friendsList);
 	  }
+  
+  private void updateMainComboBox() {
+	  
+	  /*** Local Variables ***/	  
+	  
+	  List<String> userArray = sn.getAllUsers();
+	  ObservableList<String> userList = FXCollections.observableArrayList();
+	  
+	  /*** Add all users to ObservableList ***/
+	  
+	  for (String user : userArray) {
+		  userList.add(user);
+	  }
+	  
+	  /*** Clear current data ***/
+	  
+	  c1.getItems().clear();
+	  
+	  /*** Update comboBox with new user data ***/
+	  
+	  c1.setItems(userList);
+  }
+  
+  private void updateFriendComboBox(String user) {
+	  
+	  /*** Local Variables ***/	  
+	  
+	  Set<Person> userSet = sn.getFriends(user);
+	  ObservableList<String> userList = FXCollections.observableArrayList();
+	  
+	  /*** Convert set to list ***/
+	  
+	  List<Person> userArray = new ArrayList<Person>(userSet);
+	  
+	  /*** Add all users to ObservableList ***/
+	  
+	  for (Person p : userArray) {
+		  userList.add(p.getName());
+	  }
+	  
+	  /*** Clear current data ***/
+	  
+	  c2.getItems().clear();
+	  
+	  /*** Update comboBox with new user data ***/
+	  
+	  c2.setItems(userList);
+  }
 
 
   private void clickClear(Button Clear) {
@@ -914,9 +1010,148 @@ public class Main extends Application {
     };
     rmFriendship.setOnAction(event);
   }
+  
+  private void clickMainComboBox() {
+	  
+	  /*** Local Variables ***/
+	  
+	  String selection = c1.getValue();
+	  
+	  if (rb1.isSelected()) {
+		  
+		  /*** Disable Friend comboBox ***/
+		  
+		  c2.setDisable(true);
+		  
+		  /*** Clear current data ***/
+		  
+		  clearGUI();
+		  
+		  /*** Update listBox with all friends ***/
+		  
+		  displayFriendsOfOneUser(selection);
+		  
+		  /*** Update canvas with all friends ***/
+		  
+		  drawFriends(selection);
+		  
+	  } else if (rb2.isSelected()) {
+		  
+		  /*** Enable Friend comboBox ***/
+		  
+		  c2.setDisable(false);
+		  
+	  } else if (rb3.isSelected()) {
+		  
+		  /*** Enable Friend comboBox ***/
+		  
+		  c2.setDisable(false);
+	  }
+  }
+  
+  private void clickFriendComboBox() {
+	  
+	  /*** Local Variables ***/
+	  
+	  String mainSelection   = "";
+	  String friendSelection = "";
+	  
+	  boolean validSelections = false;
+	  
+	  /*** Check that valid selections are made ***/
+	  
+	  if (c1.getValue() != null) {
+		  mainSelection = c1.getValue();
+		  
+		  if (c2.getValue() != null) {
+			  friendSelection = c2.getValue();
+			  
+			  validSelections = true;
+		  }
+	  }
+	  
+	  if (validSelections) {	  
+		  if (rb2.isSelected()) {		  
+			  
+			  /*** Clear current data ***/
+			  
+			  clearGUI();
+			  
+			  /*** Update listBox with all friends ***/
+			  
+			  displayFriendsTwoUsers(mainSelection, friendSelection);
+			  
+			  /*** Update canvas with all friends ***/
+			  
+			  drawMutualFriends(mainSelection, friendSelection);
+			  
+		  } else if (rb3.isSelected()) {
+			  displayShortestPath(mainSelection, friendSelection);
+		  }
+	  }	  
+  }
 
   private void clickFriendListBox() {
-
+	  
+	  /*** Local Variables ***/
+	  
+	  String selection = lvFriends.getSelectionModel().getSelectedItem();
+	  
+	  /*** Disable Friend comboBox ***/
+	  
+	  c2.setDisable(true);
+	  
+	  /*** Set radioButton selection to all friends ***/
+	  
+	  rb1.setSelected(true);
+	  
+	  /*** Clear current data ***/
+	  
+	  clearGUI();
+	  
+	  /*** Update listBox with all friends ***/
+	  
+	  displayFriendsOfOneUser(selection);
+	  
+	  /*** Update canvas with all friends ***/
+	  
+	  drawFriends(selection);
+  }
+  
+  private void clickRadioButton() {
+	  
+	  /*** Local Variables ***/
+	  
+	  RadioButton selected = (RadioButton) tGroup.getSelectedToggle();
+	  
+	  /*** Enable/disable second comboBox based on selected radioButton and update listbox label***/
+	  
+	  if (selected.equals(rb1)) {
+		  
+		  c2.setDisable(true);
+		  
+		  lblRadioChoice.setText("All friends");
+		  
+	  } else if (selected.equals(rb2)) {
+		  
+		  c2.setDisable(false);
+		  
+		  lblRadioChoice.setText("Mutual friends");
+		  
+	  }	else if (selected.equals(rb3)) {
+		  
+		  c2.setDisable(false);
+		  
+		  lblRadioChoice.setText("Shortest path");		  
+	  }
+  }
+  
+  private void clearGUI() {
+	  
+  }
+  
+  private void displayShortestPath(String main, String friend) {
+	  //TODO: need to implement this yet.
   }
 	
 	/*** Application ***/

@@ -24,16 +24,13 @@ import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
 import javafx.scene.control.RadioButton;
 import javafx.scene.control.TextField;
-import javafx.scene.control.TextInputControl;
 import javafx.scene.control.Toggle;
 import javafx.scene.control.ToggleGroup;
-import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
-import javafx.scene.text.Text;
 import application.SocialNetwork;
 import application.Person;
 
@@ -41,25 +38,28 @@ import application.Person;
  *
  * @author  Dan Gerstl, Cecelia Peterson, Drew Zimmerman, Andrew Irvine
  *
- * @version 1.0
+ * @version 2.0
  *          <p>
  *
  *          File: Main.java
  *          <p>
  *
- *          Date: December 2, 2019
+ *          Date: December 11, 2019
  *          <p>
  *
- *          Purpose: aTeam p2 - GUI
+ *          Purpose: aTeam p3 - Final Project
  *
- *          Description: Creates a GUI as a mockup for our aTeam design and fills it with hardcoded
- *          data to provide an example for what it will look like when the data structure is
- *          implemented.
+ *          Description: Creates a GUI for a user to interact with the underlying data structure
+ *          			 that models a Social Network using a GraphADT.
  *
- *          Comment:
+ *          Comment: Redo and Undo buttons are not functional 
  *
  ***************************************************************************************************/
 
+/**
+ * @author Dan
+ *
+ */
 public class Main extends Application {
 
   /*** Class Constants ***/
@@ -75,6 +75,8 @@ public class Main extends Application {
   final double CENTERING_OFFSET_Y = 4.0;
   final double CANVAS_X_SIZE = 350;
   final double CANVAS_Y_SIZE = 350;
+  
+  final int OVERFLOW_LIMIT = 12;
   
   final ToggleGroup tGroup = new ToggleGroup();
 
@@ -98,6 +100,8 @@ public class Main extends Application {
   RadioButton rb3;
   
   Label lblRadioChoice;
+  Label lblUserOverflow;
+  Label lblLastAction;
 
   @Override
   public void start(Stage primaryStage) {
@@ -110,7 +114,8 @@ public class Main extends Application {
       VBox centerBox = new VBox();
 
       HBox topPanel = new HBox();
-      HBox bottomPanel = new HBox();
+      
+      BorderPane bottomPanel = new BorderPane();
       
       /*** Create top and bottom panels ***/
 
@@ -144,17 +149,26 @@ public class Main extends Application {
     }
   }
 
-  /*** Panel creation methods ***/
-
-  private HBox createCanvasPane() {
+  /***** PANEL CREATION METHODS *****/  
+  
+  /**
+   * Creates an HBox containing the canvas and listView that displays the users and friendships
+   * contained in the Social Network and the associated labels
+   * 
+   * @return mainBox - an HBox containing a Canvas and ListView
+   */
+	private HBox createCanvasPane() {
 
     /*** Local Variables ***/
 
     HBox mainBox = new HBox();
 
-    lblRadioChoice = new Label("All friends");
+    lblRadioChoice  = new Label("All friends");
+    lblUserOverflow = new Label("Unable to display all relationships. Displaying first " + 
+    						    OVERFLOW_LIMIT);
 
     VBox rightBox = new VBox();
+    VBox leftBox  = new VBox();
 
     lvFriends = new ListView<String>();
     
@@ -167,15 +181,19 @@ public class Main extends Application {
     		clickFriendListBox();
         }
     });
+    
+    /*** Hide overflow label ***/
+    
+    lblUserOverflow.setVisible(false);
 
-    /*** HARDCODED DATA FOR EXAMPLE ***/
+//    /*** HARDCODED DATA FOR TESTING ***/
+//
+//    ObservableList<String> friendsList =
+//        FXCollections.observableArrayList("Friend 1", "Friend 2", "Friend 3", "Friend 4"); 
+//
+//    lvFriends.setItems(friendsList);
 
-    ObservableList<String> friendsList =
-        FXCollections.observableArrayList("Friend 1", "Friend 2", "Friend 3", "Friend 4");
-
-    lvFriends.setItems(friendsList);
-
-    /*** Add components to VBox ***/
+    /*** Add components to right VBox ***/
 
     rightBox.getChildren().add(lblRadioChoice);
     rightBox.getChildren().add(lvFriends);
@@ -201,16 +219,26 @@ public class Main extends Application {
     
     canvasPane.getChildren().add(border);
     canvasPane.getChildren().add(canvas);
+    
+    /*** Add components to left VBox ***/
+    
+    leftBox.getChildren().addAll(canvasPane, lblUserOverflow);
 
     /*** Add components to main pane ***/
 
-    mainBox.getChildren().add(canvasPane);
+    mainBox.getChildren().add(leftBox );
     mainBox.getChildren().add(rightBox);
 
     return mainBox;
   }
-
-  private HBox createButtonPane() {
+	
+	/**
+	 * Creates an HBox that contains buttons that allows the user to interact with the modeled 
+	 * Social Network.
+	 * 
+	 * @return buttonPane - an HBox containing a row of buttons for user interaction
+	 */
+	private HBox createButtonPane() {
 
     /*** Local Constants ***/
 
@@ -266,6 +294,13 @@ public class Main extends Application {
 
     return buttonPane;
   }
+	
+/**
+ * Creates an HBox that contains RadioButtons, ComboBoxes, and Buttons that allows the user to
+ * interact with the modeled Social Network.
+ * 
+ * @return topPanel - an HBox multiple Objects for user interaction
+ */
 
   private HBox createTopPanel() {
 
@@ -347,31 +382,37 @@ public class Main extends Application {
     return topPanel;
 
   }
+  
+  /**
+   * Creates a BorderPane that contains labels that track the last action taken and the current
+   * number of users in the Social Network
+   * 
+   * @return bottomPanel - BorderPane containing informational labels
+   */
 
-  private HBox createBottomPanel() {
+  private BorderPane createBottomPanel() {
 
-    HBox bottomPanel = new HBox();
+	BorderPane bottomPanel = new BorderPane();
 
     // create variable for previous action
-    String prevAction = "Last Action Taken";
-    Label lastAction = new Label(prevAction);
+    String prevAction = "Program loaded";
+    lblLastAction = new Label(prevAction);
 
     // create variable for number of current users
-    int currentUsers = 4;
+    int currentUsers = 4; //TODO: UPDATE THIS TO CORRECTLY REFLECT USER COUNT
     Label userCount = new Label("Total Current Users: " + currentUsers);
 
-    bottomPanel.getChildren().addAll(lastAction, userCount);
-    bottomPanel.setSpacing(440);
-
+    bottomPanel.setLeft (lblLastAction);
+    bottomPanel.setRight(userCount);
+    
     bottomPanel.setPadding(new Insets(15, 15, 15, 15));
 
     return bottomPanel;
-
   }
 
-  /*** Canvas friend drawing method ***/
+  /***** CANVAS DRAWING METHODS *****/
 
-  private void drawExampleFriends(double x, double y) {
+  private void drawExampleFriends(double x, double y) { // For testing purposes only
 
     /*** Local Constants ***/
 
@@ -448,6 +489,8 @@ public class Main extends Application {
 
     double centerX = CANVAS_X_SIZE / 2.0;
     double centerY = CANVAS_Y_SIZE / 2.0;
+    
+    int listSize;
 
     Set<Person> friendSet;
 
@@ -456,6 +499,10 @@ public class Main extends Application {
     /*** Clear Canvas ***/
     
     clearCanvas();
+    
+    /*** Reset overflow label ***/
+    
+    lblUserOverflow.setVisible(false);
 
     /*** Set drawing properties ***/
 
@@ -463,7 +510,7 @@ public class Main extends Application {
     gc.setStroke(Color.BLACK);
     gc.setLineWidth(1);
 
-    // /*** Draw lines to find center of canvas ***/
+    // /*** Draw lines to find center of canvas ***/ //Used for orientation/testing
     //
     // gc.strokeLine(x / 2, 0, x/2, y);
     // gc.strokeLine(0, y/2, x, y/2);
@@ -486,7 +533,7 @@ public class Main extends Application {
 
     /*** Get friend list ***/ 
 
-     friendSet = sn.getFriends(user);
+    friendSet = sn.getFriends(user);
      
     /*** Convert set to list for displaying the names ***/
      
@@ -494,13 +541,14 @@ public class Main extends Application {
 
     /*** Determine rotation based on friend list size ***/
      
-     int listSize = friendList.size();
+     listSize = friendList.size();
 
-     if (listSize > 12) {    
+     if (listSize > OVERFLOW_LIMIT) {    
     	 
-    	 rotation = Math.toDegrees((2 * Math.PI) / 12);
+    	 rotation = Math.toDegrees((2 * Math.PI) / OVERFLOW_LIMIT);
     
-     //TODO: update user stating that there are too many to display on canvas
+    	 lblUserOverflow.setVisible(true);
+    	 
      } else {
     	 rotation = Math.toDegrees((2 * Math.PI) / listSize);
      }
@@ -536,14 +584,19 @@ public class Main extends Application {
     double leftMidX  = CANVAS_X_SIZE / 4.0;
     double rightMidX = (3 * CANVAS_X_SIZE) / 4.0;
     double centerY   = CANVAS_Y_SIZE / 2.0;
-    double centerX   = CANVAS_X_SIZE / 2.0;
     double spacing   = 0.0;
+    
+    int listSize;
     
     Set<Person> friendSet;
 
     /*** Clear any existing data from canvas ***/
 
     clearCanvas();
+    
+    /*** Reset overflow label ***/
+    
+    lblUserOverflow.setVisible(false);
 
     /*** Set drawing properties ***/
 
@@ -551,7 +604,7 @@ public class Main extends Application {
     gc.setStroke(Color.BLACK);
     gc.setLineWidth(1);
 
-//    /*** Draw lines to find midpoints ***/
+//    /*** Draw lines to find midpoints ***/ //Used for orientation/testing
 //
 //    gc.strokeLine(leftMidX, 0, leftMidX, CANVAS_Y_SIZE);
 //    gc.strokeLine(rightMidX, 0, rightMidX, CANVAS_Y_SIZE);
@@ -600,16 +653,17 @@ public class Main extends Application {
     
     /*** Determine spacing based on friend list size ***/
 
-     if (friendSet.size() > 12) {
+    if (friendSet.size() > OVERFLOW_LIMIT) {
     
-     spacing = CANVAS_Y_SIZE / 12;
-    
-     //TODO: update user stating that there are too many to display on canvas
-     } else {
-     spacing = CANVAS_Y_SIZE / friendSet.size();
-     }
+	     spacing = CANVAS_Y_SIZE / OVERFLOW_LIMIT;
+	    
+	     lblUserOverflow.setVisible(false);
+     
+    } else {
+    	 spacing = CANVAS_Y_SIZE / friendSet.size();
+    }
 
-    int listSize = friendList.size();
+    listSize = friendList.size();
     
     spacing = CANVAS_Y_SIZE / listSize;
     
@@ -697,16 +751,6 @@ public class Main extends Application {
     }
   }
 
-  private void drawCanvasBorder() {
-
-    /*** Draw border ***/
-
-    gcBorder.strokeLine(0, 0, CANVAS_X_SIZE, 0);
-    gcBorder.strokeLine(CANVAS_X_SIZE, 0, CANVAS_X_SIZE, CANVAS_Y_SIZE);
-    gcBorder.strokeLine(CANVAS_X_SIZE, CANVAS_Y_SIZE, 0, CANVAS_Y_SIZE);
-    gcBorder.strokeLine(0, CANVAS_Y_SIZE, 0, 0);
-  }
-
   private void displayFriendsOfOneUser(String user) {
 
     /*** Local Variables ***/
@@ -760,6 +804,46 @@ public class Main extends Application {
 
 	    lvFriends.setItems(friendsList);
 	  }
+  
+  private void displayShortestPath(String main, String friend) {
+	  
+	  /*** Local Variables ***/
+	  
+	  List<Person> path;
+	  ObservableList<String> observablePath = FXCollections.observableArrayList();
+
+	  /*** Clear canvas ***/
+	  
+	  clearCanvas();
+	  
+	  /*** Check for invalid input ***/
+	  
+	  if (main.isEmpty() || friend.isEmpty()) {
+		  return;
+	  }
+	  
+	  /*** Clear friend listView ***/
+	  
+	  lvFriends.getItems().clear();
+	  
+	  /*** Get list of shortest path ***/
+	  
+	  path = sn.getShortestPath(main, friend);
+
+	  /*** Add list of users to observableList ***/
+	  
+	  for (Person p : path) {
+		  observablePath.add(p.getName());
+	  }
+	  
+	  /*** Update listBox label with user names ***/
+	  
+	  lblRadioChoice.setText("Shortest path between " + main + " and " + friend + ".");
+	  
+	  /*** Update listView with shortest path between two users ***/
+	  
+	  lvFriends.setItems(observablePath);
+  }
   
   private void updateMainComboBox() {
 	  
@@ -830,17 +914,71 @@ public class Main extends Application {
 	  
 	  c2.setItems(userList);
   }
+  
+  /***** GUI HELPER METHODS ****/
 
+  private void drawCanvasBorder() {
+
+    /*** Draw border ***/
+
+    gcBorder.strokeLine(0, 0, CANVAS_X_SIZE, 0);
+    gcBorder.strokeLine(CANVAS_X_SIZE, 0, CANVAS_X_SIZE, CANVAS_Y_SIZE);
+    gcBorder.strokeLine(CANVAS_X_SIZE, CANVAS_Y_SIZE, 0, CANVAS_Y_SIZE);
+    gcBorder.strokeLine(0, CANVAS_Y_SIZE, 0, 0);
+  }
+  
+  private void clearCanvas() {
+	  
+	  /*** Clear canvas contents by brute force ***/
+	  
+ 	  gc.clearRect(-CANVAS_X_SIZE, -CANVAS_Y_SIZE, CANVAS_X_SIZE * 2, CANVAS_Y_SIZE * 2);
+  }
+  
+  private void resetGUI() {
+	  
+	  /*** Set radio button group to first selection ***/
+	  
+	  rb1.setSelected(true);
+	  
+	  /*** Set main comboBox to first entry and disable friend comboBox ***/
+	  
+	  c1.getSelectionModel().clearSelection();
+	  c2.setDisable(true);
+	  
+	  /*** Clear canvas ***/
+	  
+	  clearCanvas();
+	  
+	  /*** Clear friends listBox ***/
+	  
+	  lvFriends.getItems().clear();  
+	  
+	  /*** Reset overflow label ***/
+	  
+	  lblUserOverflow.setVisible(false);
+  }   
+  
+  /**
+   * Updates last action label with the string that is passed in.
+   * 
+   * @param action - last action taken to update label with
+   */
+  private void updateLastAction(String action) {
+	  lblLastAction.setText(action);
+  }
+
+  /***** ACTION EVENT/CLICK METHODS *****/
 
   private void clickClear(Button Clear) {
     EventHandler<ActionEvent> event = new EventHandler<ActionEvent>() {
       public void handle(ActionEvent e) {
         lvFriends.getItems().clear();
-        resetGUI();  	   
+        resetGUI(); 
+        
+        updateLastAction("Cleared GUI");
       }
     };
-    Clear.setOnAction(event);
-
+    Clear.setOnAction(event);    
   }
 
   private void clickNewUser(Button newUser) {
@@ -882,8 +1020,12 @@ public class Main extends Application {
         	  
         	  //TODO: INPUT VERIFICATION AND INFORM USER OF BAD/INVALID INPUT
 
-            sn.addUser(field.getText());
-            // updateFriendListBox(field.getText());
+            if (sn.addUser(field.getText())) {
+                updateLastAction("Added new user: " + field.getText());
+            } else {
+            	//TODO: INFORM USER THAT ADDING USER FAILED
+            }
+            //updateFriendListBox(field.getText()); //TODO: dont know what was supposed to be done here
             dialog.close();
           }
         };
@@ -905,11 +1047,11 @@ public class Main extends Application {
   }
 
   private void clickUndo() {
-
+	  //TODO: implement if there is time
   }
 
   private void clickRedo() {
-
+	  //TODO: implement if there is time
   }
 
 
@@ -926,6 +1068,10 @@ public class Main extends Application {
 
         if (file != null)
           sn.loadFromFile(file);
+        
+        updateMainComboBox();
+        
+        updateLastAction("Loaded data from file");
       }
     };
 
@@ -965,8 +1111,8 @@ public class Main extends Application {
         Label label = new Label("Select a user to remove:");
         // users will have to be a list of all the users in the network.
         ObservableList<String> users1 =
-            FXCollections.observableArrayList("User 1", "User 2", "User 3");
-        ComboBox comboBox1 = new ComboBox(users1);
+            FXCollections.observableArrayList("User 1", "User 2", "User 3"); //TODO: UPDATE THIS WITH USERS FROM SOCIAL NETWORK
+        ComboBox<String> comboBox1 = new ComboBox<String>(users1);
         comboBox1.setPrefSize(75, 20);
 
         BorderPane root = new BorderPane();
@@ -996,6 +1142,10 @@ public class Main extends Application {
             
             sn.removeUser((String)comboBox1.getValue());
             dialog.close();
+            
+            updateLastAction("Removed user: " + comboBox1.getValue());
+            
+            updateMainComboBox();
           }
         };
         
@@ -1028,13 +1178,13 @@ public class Main extends Application {
         Label label = new Label("Enter two users to remove friendship:");
         // users will have to be a list of all the users in the network.
         ObservableList<String> users1 =
-            FXCollections.observableArrayList("User 1", "User 2", "User 3");
-        ComboBox comboBox1 = new ComboBox(users1);
+            FXCollections.observableArrayList("User 1", "User 2", "User 3"); //TODO: UPDATE THIS WITH USERS FROM SOCIAL NETWORK
+        ComboBox<String> comboBox1 = new ComboBox<String>(users1);
        
         // users will have to be a list of all the users in the network.
         ObservableList<String> users2 =
-            FXCollections.observableArrayList("User 1", "User 2", "User 3");
-        ComboBox comboBox2 = new ComboBox(users2);
+            FXCollections.observableArrayList("User 1", "User 2", "User 3"); //TODO: UPDATE THIS WITH USERS FROM SOCIAL NETWORK
+        ComboBox<String> comboBox2 = new ComboBox<String>(users2);
         
         comboBox1.setPrefSize(100, 20);
         comboBox2.setPrefSize(100, 20);
@@ -1075,6 +1225,9 @@ public class Main extends Application {
             
             sn.removeFriends((String)comboBox1.getValue(), (String)comboBox2.getValue());
             dialog.close();
+            
+            updateLastAction("Removed friendship between: " + comboBox1.getValue() + " and " + 
+            				 comboBox2.getValue());
           }
         };
         
@@ -1116,6 +1269,10 @@ public class Main extends Application {
 		  /*** Update canvas with all friends ***/
 		  
 		  drawFriends(selection);
+		  
+		  /*** Update last action ***/
+		  
+          updateLastAction("Displayed all friends of " + selection);
 		  
 	  } else if (rb2.isSelected()) { //Mutual friendships
 		  
@@ -1161,7 +1318,7 @@ public class Main extends Application {
 	  }
 	  
 	  if (validSelections) {	  
-		  if (rb2.isSelected()) {		  
+		  if (rb2.isSelected()) { //Mutual friends		  
 			  
 			  /*** Clear current data ***/
 			  
@@ -1175,8 +1332,18 @@ public class Main extends Application {
 			  
 			  drawMutualFriends(mainSelection, friendSelection);
 			  
-		  } else if (rb3.isSelected()) {
+			  /*** Update last action ***/
+			  
+	          updateLastAction("Displayed mutual friends of: " + mainSelection + " and " + 
+	        		  			friendSelection);
+			  
+		  } else if (rb3.isSelected()) { //Shortest path
 			  displayShortestPath(mainSelection, friendSelection);
+			  
+			  /*** Update last action ***/
+			  
+	          updateLastAction("Displayed shortest path between " + mainSelection + " and " + 
+	        		  			friendSelection);
 		  }
 	  }	  
   }
@@ -1206,6 +1373,10 @@ public class Main extends Application {
 	  /*** Update canvas with all friends ***/
 	  
 	  drawFriends(selection);
+	  
+	  /*** Update last action ***/
+	  
+      updateLastAction("Displayed all friends of " + selection);
   }
   
   private void clickRadioButton() {
@@ -1234,73 +1405,6 @@ public class Main extends Application {
 		  
 		  lblRadioChoice.setText("Shortest path");		  
 	  }
-  }
-  
-  private void clearCanvas() {
-	  
-	  /*** Clear canvas contents by brute force ***/
-	  
- 	  gc.clearRect(-CANVAS_X_SIZE, -CANVAS_Y_SIZE, CANVAS_X_SIZE * 2, CANVAS_Y_SIZE * 2);
-  }
-  
-  private void resetGUI() {
-	  
-	  /*** Set radio button group to first selection ***/
-	  
-	  rb1.setSelected(true);
-	  
-	  /*** Set main comboBox to first entry and disable friend comboBox ***/
-	  
-	  c1.getSelectionModel().clearSelection();
-	  c2.setDisable(true);
-	  
-	  /*** Clear canvas ***/
-	  
-	  clearCanvas();
-	  
-	  /*** Clear friends listBox ***/
-	  
-	  lvFriends.getItems().clear();  
-  }
-  
-  private void displayShortestPath(String main, String friend) {
-	  
-	  /*** Local Variables ***/
-	  
-	  List<Person> path;
-	  ObservableList<String> observablePath = FXCollections.observableArrayList();
-
-	  /*** Clear canvas ***/
-	  
-	  clearCanvas();
-	  
-	  /*** Check for invalid input ***/
-	  
-	  if (main.isEmpty() || friend.isEmpty()) {
-		  return;
-	  }
-	  
-	  /*** Clear friend listView ***/
-	  
-	  lvFriends.getItems().clear();
-	  
-	  /*** Get list of shortest path ***/
-	  
-	  path = sn.getShortestPath(main, friend);
-
-	  /*** Add list of users to observableList ***/
-	  
-	  for (Person p : path) {
-		  observablePath.add(p.getName());
-	  }
-	  
-	  /*** Update listBox label with user names ***/
-	  
-	  lblRadioChoice.setText("Shortest path between " + main + " and " + friend + ".");
-	  
-	  /*** Update listView with shortest path between two users ***/
-	  
-	  lvFriends.setItems(observablePath);
   }
 	
 	/*** Application ***/

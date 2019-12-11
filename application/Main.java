@@ -2,6 +2,7 @@ package application;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Set;
 import javafx.application.Application;
 import javafx.collections.FXCollections;
@@ -34,7 +35,7 @@ import application.Person;
 
 /***************************************************************************************************
  *
- * @author Dan Gerstl, Cecelia Peterson, Drew Zimmerman, Andrew Irvine
+ * @author  Dan Gerstl, Cecelia Peterson, Drew Zimmerman, Andrew Irvine
  *
  * @version 1.0
  *          <p>
@@ -159,12 +160,16 @@ public class Main extends Application {
 
     mainBox.setPadding(new Insets(15, 15, 15, 15));
     mainBox.setSpacing(130);
+    
+    /*** Draw canvas border ***/
+    
+    drawCanvasBorder();
 
     /*** Add EXAMPLE FRIENDS ***/
 
     // drawExampleFriends(CANVAS_X_SIZE, CANVAS_Y_SIZE);
 
-     drawFriends("USER");
+     //drawFriends("USER");
 
     //drawMutualFriends("USER1", "USER2");
 
@@ -392,7 +397,7 @@ public class Main extends Application {
     double centerX = CANVAS_X_SIZE / 2.0;
     double centerY = CANVAS_Y_SIZE / 2.0;
 
-    Set<Person> friendList;
+    Set<Person> friendSet;
 
     double rotation;
 
@@ -408,7 +413,7 @@ public class Main extends Application {
 
     /*** Draw border ***/
 
-    drawCanvasBorder(gc, CANVAS_X_SIZE, CANVAS_Y_SIZE);
+    drawCanvasBorder();
 
     // /*** Draw lines to find center of canvas ***/
     //
@@ -433,24 +438,26 @@ public class Main extends Application {
 
     /*** Get friend list ***/ //-----------------------------------------------------------------------------
 
-    // friendList = sn.getFriends(user);
+     friendSet = sn.getFriends(user);
+     
+    /*** Convert set to list for displaying the names ***/
+     
+     List<Person> friendList = new ArrayList<Person>(friendSet); 
 
     /*** Determine rotation based on friend list size ***/
+     
+     int listSize = friendList.size();
 
-    // if (friendList.size() > 12) {
-    //
-    // rotation = (2 * Math.PI) / 12;
-    //
-    // //TODO: update user stating that there are too many to display on canvas
-    // } else {
-    // rotation = (2 * Math.PI) / friendList.size();
-    // }
+     if (listSize > 12) {    
+    	 
+    	 rotation = Math.toDegrees((2 * Math.PI) / 12);
+    
+     //TODO: update user stating that there are too many to display on canvas
+     } else {
+    	 rotation = Math.toDegrees((2 * Math.PI) / listSize);
+     }
 
-    int tempListSize = 0; // USED JUST FOR TESTING PURPOSES --------------------------------------------------
-
-    rotation = Math.toDegrees((2 * Math.PI) / tempListSize);
-
-    for (int i = 0; i < tempListSize; i++) { // NEED TO UPDATE LOOP VARIABLE WITH SN CLASS IS DONE -----------
+     for (int i = 0; i < listSize; i++) {
 
       /*** Draw friend circle ***/
 
@@ -461,7 +468,7 @@ public class Main extends Application {
       /*** Draw friend name ***/
 
       gc.setFill(Color.BLACK);
-      gc.strokeText("ID" + i, CENTERING_OFFSET_X, -FRIEND_Y_OFFSET + CENTERING_OFFSET_Y); //---------------------
+      gc.strokeText(friendList.get(i).getName(), CENTERING_OFFSET_X, -FRIEND_Y_OFFSET + CENTERING_OFFSET_Y); 
 
       /*** Rotate transform ***/
 
@@ -469,8 +476,8 @@ public class Main extends Application {
 
     }
     
-    if (tempListSize == 0) {
-        gc.strokeText("No friends", CENTERING_OFFSET_X * 2 - 4, -FRIEND_Y_OFFSET + CENTERING_OFFSET_Y); //--------
+    if (listSize == 0) {
+        gc.strokeText("No friends", CENTERING_OFFSET_X * 2 - 4, -FRIEND_Y_OFFSET + CENTERING_OFFSET_Y);
     }
   }
 
@@ -483,6 +490,8 @@ public class Main extends Application {
     double centerY   = CANVAS_Y_SIZE / 2.0;
     double centerX   = CANVAS_X_SIZE / 2.0;
     double spacing   = 0.0;
+    
+    Set<Person> friendSet;
 
     /*** Clear any existing data from canvas ***/
 
@@ -496,7 +505,7 @@ public class Main extends Application {
 
     /*** Draw border ***/
 
-    drawCanvasBorder(gc, CANVAS_X_SIZE, CANVAS_Y_SIZE);
+    drawCanvasBorder();
 
 //    /*** Draw lines to find midpoints ***/
 //
@@ -536,23 +545,31 @@ public class Main extends Application {
     /*** Move to middle ***/
 
     gc.translate(-leftMidX, 0);
-
-    /*** Determine spacing based on friend list size ***/ //-------------------------------------------------
-
-    // if (friendList.size() > 12) {
-    //
-    // spacing = CANVAS_Y_SIZE / 12;
-    //
-    // //TODO: update user stating that there are too many to display on canvas
-    // } else {
-    // spacing = CANVAS_Y_SIZE / friendList.size();
-    // }
-
-    int tempListSize = 0; // USED JUST FOR TESTING PURPOSES----------------------------------------------------
     
-    spacing = CANVAS_Y_SIZE / tempListSize;
+    /*** Get mutual friends ***/
     
-    if (tempListSize > 1 && tempListSize % 2 == 0) { //even number of friends
+    friendSet = sn.getMutualFriends(user1, user2);
+    
+    /*** Convert set to list for displaying the names ***/
+    
+    List<Person> friendList = new ArrayList<Person>(friendSet);    
+    
+    /*** Determine spacing based on friend list size ***/
+
+     if (friendSet.size() > 12) {
+    
+     spacing = CANVAS_Y_SIZE / 12;
+    
+     //TODO: update user stating that there are too many to display on canvas
+     } else {
+     spacing = CANVAS_Y_SIZE / friendSet.size();
+     }
+
+    int listSize = friendList.size();
+    
+    spacing = CANVAS_Y_SIZE / listSize;
+    
+    if (listSize > 1 && listSize % 2 == 0) { //even number of friends
     	
     	/*** Translate up for spacing on non-centered friends ***/
     	
@@ -560,7 +577,7 @@ public class Main extends Application {
     	
     	gc.translate(0, shift);    	
     	
-        for (int i = 0; i < tempListSize; i++) {
+        for (int i = 0; i < listSize; i++) {
         	
         	spacing = spacing * - 1;
         	
@@ -582,13 +599,13 @@ public class Main extends Application {
         	
         	/*** Draw name ***/
         	
-        	gc.strokeText("ID" + i, START_X + 4 + CIRCLE_MID / 2, START_Y + CIRCLE_MID + 4); // -----------------
+        	gc.strokeText(friendList.get(i).getName(), START_X + 4 + CIRCLE_MID / 2, START_Y + CIRCLE_MID + 4);
         	
         }
         
-    } else if (tempListSize > 1 && tempListSize % 2 == 1) { //odd number of friends
+    } else if (listSize > 1 && listSize % 2 == 1) { //odd number of friends
     	
-        for (int i = 0; i < tempListSize; i++) {
+        for (int i = 0; i < listSize; i++) {
         	
         	spacing = spacing * - 1.0;        	
         	
@@ -613,10 +630,10 @@ public class Main extends Application {
         	
         	/*** Draw name ***/
         	
-        	gc.strokeText("ID" + i, START_X + 4 + CIRCLE_MID / 2, START_Y + CIRCLE_MID + 4); //-----------------
+        	gc.strokeText(friendList.get(i).getName(), START_X + 4 + CIRCLE_MID / 2, START_Y + CIRCLE_MID + 4); 
         }
         
-    } else if (tempListSize == 1) {
+    } else if (listSize == 1) {
     	
     	/*** Add single friend ***/
     	
@@ -629,21 +646,21 @@ public class Main extends Application {
     	
     	/*** Draw name ***/
     	
-    	gc.strokeText("ID0" , CENTERING_OFFSET_X, CENTERING_OFFSET_Y); //-----------------------------------------
+    	gc.strokeText(friendList.get(0).getName() , CENTERING_OFFSET_X, CENTERING_OFFSET_Y);
 
     } else {
     	gc.strokeText("No mutual friends", -CIRCLE_WIDTH + 4, CENTERING_OFFSET_Y);
     }
   }
 
-  private void drawCanvasBorder(GraphicsContext gc, double width, double height) {
+  private void drawCanvasBorder() {
 
     /*** Draw border ***/
 
-    gc.strokeLine(0, 0, width, 0);
-    gc.strokeLine(width, 0, width, height);
-    gc.strokeLine(width, height, 0, height);
-    gc.strokeLine(0, height, 0, 0);
+    gc.strokeLine(0, 0, CANVAS_X_SIZE, 0);
+    gc.strokeLine(CANVAS_X_SIZE, 0, CANVAS_X_SIZE, CANVAS_Y_SIZE);
+    gc.strokeLine(CANVAS_X_SIZE, CANVAS_Y_SIZE, 0, CANVAS_Y_SIZE);
+    gc.strokeLine(0, CANVAS_Y_SIZE, 0, 0);
   }
 
   private void displayFriendsOfOneUser(String user) {

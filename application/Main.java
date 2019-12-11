@@ -1116,13 +1116,21 @@ public class Main extends Application {
 					public void handle(ActionEvent e) {
 						// If the user types in valid input, add them to the
 						// network.
-						if (!(field.getText().equals(""))) {
+						if (sn.getAllUsers().contains(field.getText())) {
+							updateLastActionAndGroupAndUserCount(
+									"Invalid Action: User already exists");
+							updateMainComboBox();
+						}
+						
+						else {if (!(field.getText().equals(""))) {
 							sn.addUser(field.getText());
 							updateLastActionAndGroupAndUserCount(
 									"Added new user: " + field.getText());
 							updateMainComboBox();
 
-						} else {
+						}
+						
+						else {
 							// informs the user that adding user failed if input
 							// is invalid.
 							dialog.close();
@@ -1154,6 +1162,7 @@ public class Main extends Application {
 								}
 							};
 							btnCancel2.setOnAction(cancel2);
+						}
 						}
 						dialog.close();
 					}

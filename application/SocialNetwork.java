@@ -69,8 +69,12 @@ public class SocialNetwork implements SocialNetworkADT {
 	 */
 	@Override
 	public boolean addUser(String user) {
+		if (getAllUsers().contains(user)) return false;
+		
+		else {
 		Person user1 = new Person(user);
 		return graph.addNode(user1);
+		}
 	}
 
 	/**

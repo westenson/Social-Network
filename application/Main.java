@@ -1283,7 +1283,7 @@ public class Main extends Application {
   /**
    * Handles what happens when the user selects exit.
    * 
-   * @param exit reference to the button.
+   * @param exit reference to the exit button.
    */
   private void clickExit(Button exit) {
     EventHandler<ActionEvent> event = new EventHandler<ActionEvent>() {

@@ -202,6 +202,7 @@ public class Graph implements GraphADT {
 
 		// iterate through the users neighbors and add them to the neighbors
 		// set
+		if (user == null) return null;
 		for (Person friend : personsMap.get(user))
 			neighbors.add(friend);
 

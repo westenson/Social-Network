@@ -491,7 +491,7 @@ public class Main extends Application {
     double centerX = CANVAS_X_SIZE / 2.0;
     double centerY = CANVAS_Y_SIZE / 2.0;
     
-    int listSize;
+    int listSize =0;
 
     Set<Person> friendSet;
 
@@ -537,13 +537,14 @@ public class Main extends Application {
     friendSet = sn.getFriends(user);
      
     /*** Convert set to list for displaying the names ***/
+    if (friendSet != null ) {
      
      List<Person> friendList = new ArrayList<Person>(friendSet); 
-
+    
     /*** Determine rotation based on friend list size ***/
      
      listSize = friendList.size();
-
+    
      if (listSize > OVERFLOW_LIMIT) {    
     	 
     	 rotation = Math.toDegrees((2 * Math.PI) / OVERFLOW_LIMIT);
@@ -570,7 +571,7 @@ public class Main extends Application {
       /*** Rotate transform ***/
 
       gc.rotate(rotation);
-
+     }
     }
     
     if (listSize == 0) {
@@ -769,11 +770,11 @@ public class Main extends Application {
     friendSet = sn.getFriends(user);
 
     /*** Add friends from set to list ***/
-
+    
     for (Person p : friendSet) {
       friendsList.add(p.getName());
     }
-
+    
     /*** Add friendsList to listView ****/
 
     lvFriends.setItems(friendsList);
@@ -1025,10 +1026,14 @@ public class Main extends Application {
 
             if (sn.addUser(field.getText())) {
                 updateLastActionAndGroupCount("Added new user: " + field.getText());
+                updateMainComboBox();
+                
+           
             } else {
             	//TODO: INFORM USER THAT ADDING USER FAILED
             }
             //updateFriendListBox(field.getText()); //TODO: dont know what was supposed to be done here
+           
             dialog.close();
           }
         };
@@ -1046,6 +1051,7 @@ public class Main extends Application {
         dialog.show();
       }
     };
+
     newUser.setOnAction(event);
   }
 

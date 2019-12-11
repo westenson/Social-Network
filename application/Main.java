@@ -1,6 +1,10 @@
 package application;
 
+import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.Writer;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
@@ -104,6 +108,8 @@ public class Main extends Application {
 	Label lblLastAction;
 	Label lblGroupCount;
 	Label lblUsersCount;
+	
+	ArrayList<String> commandLog;
 
 	@Override
 	public void start(Stage primaryStage) {
@@ -118,6 +124,9 @@ public class Main extends Application {
 			HBox topPanel = new HBox();
 
 			BorderPane bottomPanel = new BorderPane();
+			
+			// saves commands for log file
+			ArrayList<String> commandLog = new ArrayList<String>();
 
 			/*** Create top and bottom panels ***/
 
@@ -1116,21 +1125,19 @@ public class Main extends Application {
 					public void handle(ActionEvent e) {
 						// If the user types in valid input, add them to the
 						// network.
-						if (sn.getAllUsers().contains(field.getText())) {
-							updateLastActionAndGroupAndUserCount(
-									"Invalid Action: User already exists");
-							updateMainComboBox();
-						}
-						
-						else {if (!(field.getText().equals(""))) {
-							sn.addUser(field.getText());
-							updateLastActionAndGroupAndUserCount(
-									"Added new user: " + field.getText());
-							updateMainComboBox();
+						if (!(field.getText().equals(""))) {
+							
+							//commandLog.add("a "+field.getText());
 
-						}
-						
-						else {
+							String userName = field.getText();
+							sn.addUser(userName);
+							updateLastActionAndGroupAndUserCount(
+									"Added new user: " + userName);
+
+							updateMainComboBox();
+							
+
+						} else {
 							// informs the user that adding user failed if input
 							// is invalid.
 							dialog.close();
@@ -1162,7 +1169,6 @@ public class Main extends Application {
 								}
 							};
 							btnCancel2.setOnAction(cancel2);
-						}
 						}
 						dialog.close();
 					}
@@ -1276,6 +1282,8 @@ public class Main extends Application {
 									"Added friendship between: "
 											+ comboBox1.getValue() + " and "
 											+ comboBox2.getValue());
+							commandLog.add("a "+comboBox1.getValue()+" "+comboBox2.getValue());
+
 						}
 					}
 				};
@@ -1337,30 +1345,43 @@ public class Main extends Application {
 		load.setOnAction(event);
 	}
 
-	/**
-	 * Handles what happens when the user chooses export
-	 * 
-	 * @param export reference to the button.
-	 */
+//	/**
+//	 * Handles what happens when the user chooses export
+//	 * 
+//	 * @param export reference to the button.
+//	 */
+//	private void clickExport(Button export) {
+//		EventHandler<ActionEvent> event = new EventHandler<ActionEvent>() {
+//			public void handle(ActionEvent e) {
+//				FileChooser fileChooser = new FileChooser();
+//				FileChooser.ExtensionFilter extension = new FileChooser.ExtensionFilter(
+//						"txt files (*.txt)", "*.txt");
+//
+//				fileChooser.getExtensionFilters().add(extension);
+//
+//				File destination = fileChooser
+//						.showSaveDialog((Stage) export.getScene().getWindow());
+//
+//				if (destination != null)
+//					sn.saveToFile(destination);
+//			}
+//		};
+//		export.setOnAction(event);
+//
+//	}
+	
 	private void clickExport(Button export) {
-		EventHandler<ActionEvent> event = new EventHandler<ActionEvent>() {
-			public void handle(ActionEvent e) {
-				FileChooser fileChooser = new FileChooser();
-				FileChooser.ExtensionFilter extension = new FileChooser.ExtensionFilter(
-						"txt files (*.txt)", "*.txt");
+		  EventHandler<ActionEvent> event = new EventHandler<ActionEvent>() {
+		      public void handle(ActionEvent e) {
 
-				fileChooser.getExtensionFilters().add(extension);
+		    	sn.saveToFile(new File("output.txt"));
+		    	
+		    	updateLastActionAndGroupAndUserCount("Exported data to file");
+		      }
+		    };
 
-				File destination = fileChooser
-						.showSaveDialog((Stage) export.getScene().getWindow());
-
-				if (destination != null)
-					sn.saveToFile(destination);
-			}
-		};
-		export.setOnAction(event);
-
-	}
+		   export.setOnAction(event);
+	  }
 
 	/**
 	 * Handles what happens when the user selects exit.
@@ -1415,9 +1436,9 @@ public class Main extends Application {
 								(Stage) btnSave.getScene().getWindow());
 
 						if (destination != null)
-							sn.saveToFile(destination);
+							createLogFile(commandLog,destination);
 						stage.close();
-
+	
 					}
 				};
 				btnSave.setOnAction(eventSave);
@@ -1496,6 +1517,8 @@ public class Main extends Application {
 
 						updateLastActionAndGroupAndUserCount(
 								"Removed user: " + comboBox1.getValue());
+						commandLog.add("r "+comboBox1.getValue());
+
 
 						updateMainComboBox();
 					}
@@ -1611,6 +1634,8 @@ public class Main extends Application {
 									"Removed friendship between: "
 											+ comboBox1.getValue() + " and "
 											+ comboBox2.getValue());
+							commandLog.add("r "+comboBox1.getValue()+" "+comboBox2.getValue());
+
 						}
 					}
 				};
@@ -1683,6 +1708,34 @@ public class Main extends Application {
 
 			updateFriendComboBoxAllUsers();
 		}
+	}
+	
+	/**
+	 * Creates a log file from all commands
+	 * 
+	 * @param file 
+	 */
+	public void createLogFile(ArrayList<String> commands, File file) {
+		
+		Writer outFile;
+
+		try {
+			
+			outFile = new FileWriter(file);
+				
+			BufferedWriter bw = new BufferedWriter(outFile);
+			
+			for (String command: commands) {
+				
+				bw.write(command);
+				bw.newLine();
+				
+			}
+		
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+
 	}
 
 	/**

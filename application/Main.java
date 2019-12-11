@@ -246,7 +246,7 @@ public class Main extends Application {
     /*** Local Constants ***/
 
     final double BUTTON_HEIGHT = 20.0;
-    final double BUTTON_WIDTH = 90.0;
+    final double BUTTON_WIDTH = 100.0;
     final double BUTTON_SPACING = 10.0;
 
     /*** Local Variables ***/
@@ -268,7 +268,7 @@ public class Main extends Application {
     buttonList.add(btnClear);
     buttonList.add(btnNewUser);
     buttonList.add(btnAddFrnd);
-    buttonList.add(btnRedo);
+   // buttonList.add(btnRedo);
     buttonList.add(btnLoad);
     buttonList.add(btnExport);
     buttonList.add(btnExit);
@@ -618,7 +618,7 @@ public class Main extends Application {
     /*** Clear any existing data from canvas ***/
 
     clearCanvas();
-
+    
     /*** Reset overflow label ***/
 
     lblUserOverflow.setVisible(false);
@@ -697,8 +697,13 @@ public class Main extends Application {
     listSize = friendList.size();
 
     spacing = CANVAS_Y_SIZE / listSize;
+    
+    System.out.println(listSize);
 
-    if (listSize > 1 && listSize % 2 == 0) { // even number of friends
+    if (listSize >= 1 && listSize % 2 == 0) { // even number of friends
+    	
+    	System.out.println("even friends");
+
 
       /*** Translate up for spacing on non-centered friends ***/
 
@@ -734,7 +739,10 @@ public class Main extends Application {
 
       }
 
-    } else if (listSize > 1 && listSize % 2 == 1) { // odd number of friends
+    } else if (listSize >= 1 && listSize % 2 == 1) { // odd number of friends
+    	
+    	System.out.println("odd friends");
+
 
       for (int i = 0; i < listSize; i++) {
 
@@ -766,28 +774,34 @@ public class Main extends Application {
             START_Y + CIRCLE_MID + 4);
       }
 
-    } else if (listSize == 1) {
+//    } else if (listSize == 1 ) {
+//    	
+//    	System.out.println("one friend");
+//
+//
+//      /*** Add single friend ***/
+//
+//      gc.fillOval(START_X, START_Y, CIRCLE_WIDTH, CIRCLE_HEIGHT);
+//
+//      /*** Draw connecting lines ***/
+//
+//      gc.strokeLine(-CIRCLE_MID, 0, -leftMidX + CIRCLE_MID, 0); // left
+//      gc.strokeLine(CIRCLE_MID, 0, leftMidX - CIRCLE_MID, 0); // right
+//
+//      /*** Draw name ***/
+//
+//      gc.strokeText(friendList.get(0).getName(), CENTERING_OFFSET_X, CENTERING_OFFSET_Y);
 
-      /*** Add single friend ***/
+    } else if (listSize == 0){
+    	
+    	System.out.println("no friends " + listSize);
 
-      gc.fillOval(START_X, START_Y, CIRCLE_WIDTH, CIRCLE_HEIGHT);
-
-      /*** Draw connecting lines ***/
-
-      gc.strokeLine(-CIRCLE_MID, 0, -leftMidX + CIRCLE_MID, 0); // left
-      gc.strokeLine(CIRCLE_MID, 0, leftMidX - CIRCLE_MID, 0); // right
-
-      /*** Draw name ***/
-
-      gc.strokeText(friendList.get(0).getName(), CENTERING_OFFSET_X, CENTERING_OFFSET_Y);
-
-    } else {
       gc.strokeText("No mutual friends", -CIRCLE_WIDTH + 4, CENTERING_OFFSET_Y);
     }
     
     /*** Move back to origin ***/
     
-    gc.translate(-currentX, -currentY);
+   gc.translate(-currentX, -currentY);
   }
 
   private void displayFriendsOfOneUser(String user) {
@@ -909,6 +923,7 @@ public class Main extends Application {
   private void setMainUser(String user) {
 	  updateMainComboBox();
 	  
+	  
   }
 
   private void updateFriendComboBoxAllUsers() {
@@ -977,6 +992,13 @@ public class Main extends Application {
 
     gc.clearRect(-CANVAS_X_SIZE, -CANVAS_Y_SIZE, CANVAS_X_SIZE * 2, CANVAS_Y_SIZE * 2);
   }
+  
+  private void clearAllData() {
+	  sn = new SocialNetwork();
+	  c1.getItems().clear();
+	  c2.getItems().clear();
+	  resetGUI();
+  }
 
   private void resetGUI() {
 
@@ -1012,10 +1034,9 @@ public class Main extends Application {
   private void clickClear(Button Clear) {
     EventHandler<ActionEvent> event = new EventHandler<ActionEvent>() {
       public void handle(ActionEvent e) {
-        lvFriends.getItems().clear();
-        resetGUI();
+    	clearAllData();
 
-        updateLastActionAndGroupAndUserCount("Cleared GUI");
+        updateLastActionAndGroupAndUserCount("Cleared all data");
       }
     };
     Clear.setOnAction(event);
@@ -1219,6 +1240,8 @@ public class Main extends Application {
 
         dialog.setScene(dialogScene);
         dialog.show();
+        
+        displayFriendsOfOneUser(comboBox1.getValue());
       }
     };
     btnAddFrnd.setOnAction(event);
@@ -1632,18 +1655,22 @@ private void clickFriendComboBox() {
     /*** Local Variables ***/
 
     RadioButton selected = (RadioButton) tGroup.getSelectedToggle();
+    List<String> userArray = sn.getAllUsers();
+    ObservableList<String> userList = FXCollections.observableArrayList();
 
     /*** Enable/disable second comboBox based on selected radioButton and update listbox label ***/
 
     if (selected.equals(rb1)) {
 
       c2.setDisable(true);
+      c2.getItems().clear();
 
       lblRadioChoice.setText("All friends");
 
     } else if (selected.equals(rb2)) {
-
+    	
       c2.setDisable(false);
+      c2.getItems().clear();
 
       lblRadioChoice.setText("Mutual friends");
 
@@ -1652,6 +1679,20 @@ private void clickFriendComboBox() {
       c2.setDisable(false);
 
       lblRadioChoice.setText("Shortest path");
+
+      /*** Add all users to ObservableList ***/
+
+      for (String user : userArray) {
+        userList.add(user);
+      }
+
+      /*** Clear current data ***/
+
+      c2.getItems().clear();
+
+      /*** Update comboBox with new user data ***/
+
+      c2.setItems(userList);      
     }
   }
 

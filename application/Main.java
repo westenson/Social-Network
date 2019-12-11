@@ -1,6 +1,10 @@
 package application;
 
+import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.Writer;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
@@ -104,6 +108,8 @@ public class Main extends Application {
 	Label lblLastAction;
 	Label lblGroupCount;
 	Label lblUsersCount;
+	
+	ArrayList<String> commandLog;
 
 	@Override
 	public void start(Stage primaryStage) {
@@ -118,6 +124,9 @@ public class Main extends Application {
 			HBox topPanel = new HBox();
 
 			BorderPane bottomPanel = new BorderPane();
+			
+			// saves commands for log file
+			ArrayList<String> commandLog = new ArrayList<String>();
 
 			/*** Create top and bottom panels ***/
 
@@ -1121,6 +1130,8 @@ public class Main extends Application {
 							updateLastActionAndGroupAndUserCount(
 									"Added new user: " + field.getText());
 							updateMainComboBox();
+							
+							commandLog.add("a "+field.getText());
 
 						} else {
 							// informs the user that adding user failed if input
@@ -1267,6 +1278,8 @@ public class Main extends Application {
 									"Added friendship between: "
 											+ comboBox1.getValue() + " and "
 											+ comboBox2.getValue());
+							commandLog.add("a "+comboBox1.getValue()+" "+comboBox2.getValue());
+
 						}
 					}
 				};
@@ -1406,9 +1419,9 @@ public class Main extends Application {
 								(Stage) btnSave.getScene().getWindow());
 
 						if (destination != null)
-							sn.saveToFile(destination);
+							createLogFile(commandLog,destination);
 						stage.close();
-
+	
 					}
 				};
 				btnSave.setOnAction(eventSave);
@@ -1487,6 +1500,8 @@ public class Main extends Application {
 
 						updateLastActionAndGroupAndUserCount(
 								"Removed user: " + comboBox1.getValue());
+						commandLog.add("r "+comboBox1.getValue());
+
 
 						updateMainComboBox();
 					}
@@ -1602,6 +1617,8 @@ public class Main extends Application {
 									"Removed friendship between: "
 											+ comboBox1.getValue() + " and "
 											+ comboBox2.getValue());
+							commandLog.add("r "+comboBox1.getValue()+" "+comboBox2.getValue());
+
 						}
 					}
 				};
@@ -1674,6 +1691,34 @@ public class Main extends Application {
 
 			updateFriendComboBoxAllUsers();
 		}
+	}
+	
+	/**
+	 * Creates a log file from all commands
+	 * 
+	 * @param file 
+	 */
+	public void createLogFile(ArrayList<String> commands, File file) {
+		
+		Writer outFile;
+
+		try {
+			
+			outFile = new FileWriter(file);
+				
+			BufferedWriter bw = new BufferedWriter(outFile);
+			
+			for (String command: commands) {
+				
+				bw.write(command);
+				bw.newLine();
+				
+			}
+		
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+
 	}
 
 	/**

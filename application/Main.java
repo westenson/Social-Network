@@ -255,7 +255,7 @@ public class Main extends Application {
 
     Button btnClear   = new Button("Clear"   );
     Button btnNewUser = new Button("New User");
-    Button btnUndo    = new Button("Undo"    );
+    Button btnAddFrnd    = new Button("Add Friendship"    );
     Button btnRedo    = new Button("Redo"    );
     Button btnLoad    = new Button("Load"    );
     Button btnExport  = new Button("Export"  );
@@ -265,7 +265,7 @@ public class Main extends Application {
 
     buttonList.add(btnClear  );
     buttonList.add(btnNewUser);
-    buttonList.add(btnUndo   );
+    buttonList.add(btnAddFrnd   );
     buttonList.add(btnRedo   );
     buttonList.add(btnLoad   );
     buttonList.add(btnExport );
@@ -291,6 +291,7 @@ public class Main extends Application {
     clickLoad(btnLoad);
     clickExport(btnExport);
     clickExit(btnExit);
+    clickAddFriendship(btnAddFrnd);
 
 
     return buttonPane;
@@ -322,7 +323,8 @@ public class Main extends Application {
     // create combo box for main profile
     VBox v1 = new VBox();
     Label l1 = new Label("Main Profile");
-    ObservableList<String> users = FXCollections.observableArrayList("User 1", "User 2", "User 3");
+   // ObservableList<String> users = FXCollections.observableArrayList(sn.getAllUsers());
+     ObservableList<String> users = FXCollections.observableArrayList("          ");
     c1 = new ComboBox<String>(users);
     v1.getChildren().addAll(l1, c1);
 
@@ -330,7 +332,7 @@ public class Main extends Application {
     VBox v2 = new VBox();
     Label l2 = new Label("Friend");
     ObservableList<String> friends =
-        FXCollections.observableArrayList("Friend 1", "Friend 2", "Friend 3");
+        FXCollections.observableArrayList("          ");
     c2 = new ComboBox<String>(friends);
     v2.getChildren().addAll(l2, c2);
     c2.setDisable(true);
@@ -1055,8 +1057,86 @@ public class Main extends Application {
     newUser.setOnAction(event);
   }
 
-  private void clickUndo() {
-	  //TODO: implement if there is time
+  private void clickAddFriendship(Button btnAddFrnd) {
+	  EventHandler<ActionEvent> event = new EventHandler<ActionEvent>() {
+	      public void handle(ActionEvent e) {
+	        Stage stage = (Stage) btnAddFrnd.getScene().getWindow();
+	        final Stage dialog = new Stage();
+	        dialog.initModality(Modality.APPLICATION_MODAL);
+	        dialog.initOwner(stage);
+	        
+	        // Set title        
+	        dialog.setTitle("Add Friendship");
+
+	        Label label = new Label("Enter two users to add friendship:");
+	        // users will have to be a list of all the users in the network.
+	        ObservableList<String> users1 =
+	            FXCollections.observableArrayList(sn.getAllUsers()); //TODO: UPDATE THIS WITH USERS FROM SOCIAL NETWORK
+	        ComboBox<String> comboBox1 = new ComboBox<String>(users1);
+	       
+	        // users will have to be a list of all the users in the network.
+	        ObservableList<String> users2 =
+	            FXCollections.observableArrayList(sn.getAllUsers()); //TODO: UPDATE THIS WITH USERS FROM SOCIAL NETWORK
+	        ComboBox<String> comboBox2 = new ComboBox<String>(users2);
+	        
+	        comboBox1.setPrefSize(100, 20);
+	        comboBox2.setPrefSize(100, 20);
+
+	        BorderPane root = new BorderPane();
+	        HBox box = new HBox();
+	        HBox box2 = new HBox();
+	        HBox box3 = new HBox();
+	        VBox vbox = new VBox();
+
+	        box.getChildren().add(label);
+	        box.setSpacing(10);
+	        box.setPadding(new Insets(10, 20, 20, 20));
+
+	        Button btnSubmit = new Button("Submit");
+	        Button btnCancel = new Button("Cancel");
+	        btnSubmit.setPrefSize(75, 20);
+	        btnCancel.setPrefSize(75, 20);
+	        
+	        box2.getChildren().addAll(comboBox1, comboBox2);
+	        box2.setSpacing(30);
+	        box2.setPadding(new Insets(0, 0, 0, 20));
+	        
+	        box3.getChildren().addAll(btnSubmit, btnCancel);
+	        box3.setSpacing(55);
+	        box3.setPadding(new Insets(10, 30, 10, 30));
+	        
+	        vbox.getChildren().addAll(box, box2, box3);
+
+	        root.setCenter(vbox);
+
+
+	        Scene dialogScene = new Scene(root, 270, 120);
+
+
+	        EventHandler<ActionEvent> submit = new EventHandler<ActionEvent>() {
+	          public void handle(ActionEvent e) {
+	            
+	            sn.addFriends((String)comboBox1.getValue(), (String)comboBox2.getValue());
+	            dialog.close();
+	            
+	            updateLastActionAndGroupCount("Added friendship between: " + comboBox1.getValue() + " and " + 
+	            				 comboBox2.getValue());
+	          }
+	        };
+	        
+	        EventHandler<ActionEvent> cancel = new EventHandler<ActionEvent>() {
+	            public void handle(ActionEvent e) {
+	              dialog.close();
+	            }
+	          };
+	        btnSubmit.setOnAction(submit);
+	        btnCancel.setOnAction(cancel);
+
+	        dialog.setScene(dialogScene);
+	        dialog.show();
+	      }
+	    };
+	    btnAddFrnd.setOnAction(event);
   }
 
   private void clickRedo() {
@@ -1120,7 +1200,7 @@ public class Main extends Application {
         Label label = new Label("Select a user to remove:");
         // users will have to be a list of all the users in the network.
         ObservableList<String> users1 =
-            FXCollections.observableArrayList("User 1", "User 2", "User 3"); //TODO: UPDATE THIS WITH USERS FROM SOCIAL NETWORK
+            FXCollections.observableArrayList(sn.getAllUsers()); //TODO: UPDATE THIS WITH USERS FROM SOCIAL NETWORK
         ComboBox<String> comboBox1 = new ComboBox<String>(users1);
         comboBox1.setPrefSize(75, 20);
 
@@ -1187,12 +1267,12 @@ public class Main extends Application {
         Label label = new Label("Enter two users to remove friendship:");
         // users will have to be a list of all the users in the network.
         ObservableList<String> users1 =
-            FXCollections.observableArrayList("User 1", "User 2", "User 3"); //TODO: UPDATE THIS WITH USERS FROM SOCIAL NETWORK
+            FXCollections.observableArrayList(sn.getAllUsers()); //TODO: UPDATE THIS WITH USERS FROM SOCIAL NETWORK
         ComboBox<String> comboBox1 = new ComboBox<String>(users1);
        
         // users will have to be a list of all the users in the network.
         ObservableList<String> users2 =
-            FXCollections.observableArrayList("User 1", "User 2", "User 3"); //TODO: UPDATE THIS WITH USERS FROM SOCIAL NETWORK
+            FXCollections.observableArrayList(sn.getAllUsers()); //TODO: UPDATE THIS WITH USERS FROM SOCIAL NETWORK
         ComboBox<String> comboBox2 = new ComboBox<String>(users2);
         
         comboBox1.setPrefSize(100, 20);

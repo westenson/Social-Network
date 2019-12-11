@@ -920,10 +920,13 @@ public class Main extends Application {
     c1.setItems(userList);
   }
   
-  private void setMainUser(String user) {
+  public void setCentralUser(String user) {
 	  updateMainComboBox();
 	  
+	  displayFriendsOfOneUser(user);
+	  drawFriends(user);
 	  
+	  c1.setValue(user);
   }
 
   private void updateFriendComboBoxAllUsers() {
@@ -1260,6 +1263,8 @@ public class Main extends Application {
     EventHandler<ActionEvent> event = new EventHandler<ActionEvent>() {
       public void handle(ActionEvent e) {
 
+    	String centralUser = null;
+    	  
         FileChooser fileChooser = new FileChooser();
         fileChooser.setTitle("Choose file");
 
@@ -1273,6 +1278,12 @@ public class Main extends Application {
         updateMainComboBox();
 
         updateLastActionAndGroupAndUserCount("Loaded data from file");
+        
+        centralUser = sn.getCentralUser();
+        
+        if (centralUser != null) {
+        	setCentralUser(centralUser);
+        }        
       }
     };
 
@@ -1721,7 +1732,7 @@ private void clickFriendComboBox() {
 
     } else if (selected.equals(rb2)) {
     	
-      c2.setDisable(false);
+      c2.setDisable(false); 
       c2.getItems().clear();
 
       lblRadioChoice.setText("Mutual friends");

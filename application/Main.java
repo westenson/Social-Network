@@ -149,7 +149,7 @@ public class Main extends Application {
 
     HBox mainBox = new HBox();
 
-    lblRadioChoice = new Label("All friends (default)");
+    lblRadioChoice = new Label("All friends");
 
     VBox rightBox = new VBox();
 
@@ -161,12 +161,6 @@ public class Main extends Application {
         public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
     		clickFriendListBox();
         }
-    });
-    
-    lvFriends.setOnMouseClicked(new EventHandler<MouseEvent>() {
-    	public void handle (MouseEvent e) {
-
-    	}
     });
 
     /*** HARDCODED DATA FOR EXAMPLE ***/
@@ -192,7 +186,7 @@ public class Main extends Application {
 
     /*** Add EXAMPLE FRIENDS ***/
 
-    // drawExampleFriends(CANVAS_X_SIZE, CANVAS_Y_SIZE);
+    //drawExampleFriends(CANVAS_X_SIZE, CANVAS_Y_SIZE);
 
      //drawFriends("USER");
 
@@ -482,9 +476,9 @@ public class Main extends Application {
 
     /*** Set color for friends ***/
 
-    gc.setFill(Color.INDIANRED);
+    gc.setFill(Color.PURPLE);
 
-    /*** Get friend list ***/ //-----------------------------------------------------------------------------
+    /*** Get friend list ***/ 
 
      friendSet = sn.getFriends(user);
      
@@ -818,6 +812,7 @@ public class Main extends Application {
     EventHandler<ActionEvent> event = new EventHandler<ActionEvent>() {
       public void handle(ActionEvent e) {
         lvFriends.getItems().clear();
+        resetGUI();  	   
       }
     };
     Clear.setOnAction(event);
@@ -1025,7 +1020,7 @@ public class Main extends Application {
 		  
 		  /*** Clear current data ***/
 		  
-		  clearGUI();
+		  clearCanvas();
 		  
 		  /*** Update listBox with all friends ***/
 		  
@@ -1075,7 +1070,7 @@ public class Main extends Application {
 			  
 			  /*** Clear current data ***/
 			  
-			  clearGUI();
+			  clearCanvas();
 			  
 			  /*** Update listBox with all friends ***/
 			  
@@ -1107,7 +1102,7 @@ public class Main extends Application {
 	  
 	  /*** Clear current data ***/
 	  
-	  clearGUI();
+	  clearCanvas();
 	  
 	  /*** Update listBox with all friends ***/
 	  
@@ -1146,8 +1141,43 @@ public class Main extends Application {
 	  }
   }
   
-  private void clearGUI() {
+  private void clearCanvas() {
 	  
+	  /*** Move to origin ***/
+	  
+	  gc.translate(-CANVAS_X_SIZE / 2, -CANVAS_Y_SIZE / 2);
+	  
+	  /*** Clear canvas contents ***/
+	  
+ 	  gc.clearRect(0, 0, CANVAS_X_SIZE, CANVAS_Y_SIZE);
+ 	  
+ 	  /*** Redraw canvas border ***/
+ 	  
+ 	  drawCanvasBorder();
+ 	  
+ 	  /*** Move back to middle ***/
+ 	  
+	  gc.translate(CANVAS_X_SIZE / 2, CANVAS_Y_SIZE / 2);
+  }
+  
+  private void resetGUI() {
+	  
+	  /*** Set radio button group to first selection ***/
+	  
+	  rb1.setSelected(true);
+	  
+	  /*** Set main comboBox to first entry and disable friend comboBox ***/
+	  
+	  c1.getSelectionModel().clearSelection();
+	  c2.setDisable(true);
+	  
+	  /*** Clear canvas ***/
+	  
+	  clearCanvas();
+	  
+	  /*** Clear friends listBox ***/
+	  
+	  lvFriends.getItems().clear();  
   }
   
   private void displayShortestPath(String main, String friend) {

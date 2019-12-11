@@ -1306,16 +1306,68 @@ public class Main extends Application {
   /**
    * Handles what happens when the user selects exit.
    * 
-   * @param exit reference to the button.
+   * @param exit reference to the exit button.
    */
   private void clickExit(Button exit) {
     EventHandler<ActionEvent> event = new EventHandler<ActionEvent>() {
       public void handle(ActionEvent e) {
 
-        // TODO: ASK USER IF THEY WANT TO SAVE
-
+        // ask if the user wants to save before exiting with a pop-up.
         Stage stage = (Stage) exit.getScene().getWindow();
-        stage.close();
+        final Stage dialog = new Stage();
+        dialog.initModality(Modality.APPLICATION_MODAL);
+        dialog.initOwner(stage);
+
+        // Set title
+        dialog.setTitle("Exit");
+
+        Label label = new Label("Do you want to save your work?");
+        Button btnSave = new Button("Save");
+        Button btnDontSave = new Button("Dont Save");
+
+        VBox box = new VBox();
+        HBox box2 = new HBox();
+
+        box.getChildren().add(label);
+        box.setSpacing(10);
+        box2.getChildren().addAll(btnSave, btnDontSave);
+        box2.setSpacing(10);
+        box.setPadding(new Insets(10, 0, 0, 20));
+        box2.setPadding(new Insets(0, 0, 0, 20));
+
+        box.getChildren().add(box2);
+
+        Scene scene = new Scene(box, 210, 80);
+
+        dialog.setScene(scene);
+        dialog.show();
+        // if the user chooses save it'll prompt them to save their file.
+        EventHandler<ActionEvent> eventSave = new EventHandler<ActionEvent>() {
+          public void handle(ActionEvent e) {
+            
+            FileChooser fileChooser = new FileChooser();
+            FileChooser.ExtensionFilter extension =
+                new FileChooser.ExtensionFilter("txt files (*.txt)", "*.txt");
+
+            fileChooser.getExtensionFilters().add(extension);
+
+            File destination = fileChooser.showSaveDialog((Stage) btnSave.getScene().getWindow());
+
+            if (destination != null)
+              sn.saveToFile(destination);
+            stage.close();
+            
+          }
+        };
+        btnSave.setOnAction(eventSave);
+        
+        // If the user selected don't save the program will close.
+        EventHandler<ActionEvent> eventDontSave = new EventHandler<ActionEvent>() {
+          public void handle(ActionEvent e) {
+            stage.close();
+          }
+        };
+        btnDontSave.setOnAction(eventDontSave);
       }
     };
 

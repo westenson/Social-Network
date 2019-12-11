@@ -30,6 +30,7 @@ import javafx.scene.control.ToggleGroup;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Text;
@@ -84,8 +85,10 @@ public class Main extends Application {
   ListView<String> lvFriends;
 
   Canvas canvas = new Canvas(CANVAS_X_SIZE, CANVAS_Y_SIZE);
+  Canvas border = new Canvas(CANVAS_X_SIZE, CANVAS_Y_SIZE);
 
   GraphicsContext gc = canvas.getGraphicsContext2D();
+  GraphicsContext gcBorder = border.getGraphicsContext2D();
   
   ComboBox<String> c1;
   ComboBox<String> c2;
@@ -155,6 +158,8 @@ public class Main extends Application {
 
     lvFriends = new ListView<String>();
     
+    Pane canvasPane = new Pane();
+    
     /*** Add EventHandler ***/
     
     lvFriends.getSelectionModel().selectedItemProperty().addListener(new ChangeListener<String>() {
@@ -191,10 +196,15 @@ public class Main extends Application {
      //drawFriends("USER");
 
     //drawMutualFriends("USER1", "USER2");
+    
+    /*** Add canvases to pane ***/
+    
+    canvasPane.getChildren().add(border);
+    canvasPane.getChildren().add(canvas);
 
     /*** Add components to main pane ***/
 
-    mainBox.getChildren().add(canvas);
+    mainBox.getChildren().add(canvasPane);
     mainBox.getChildren().add(rightBox);
 
     return mainBox;
@@ -443,19 +453,15 @@ public class Main extends Application {
 
     double rotation;
 
-    /*** Clear any existing data from canvas ***/
-
-    gc.clearRect(0, 0, CANVAS_X_SIZE, CANVAS_Y_SIZE);
+    /*** Clear Canvas ***/
+    
+    clearCanvas();
 
     /*** Set drawing properties ***/
 
     gc.setFill(Color.CRIMSON);
     gc.setStroke(Color.BLACK);
     gc.setLineWidth(1);
-
-    /*** Draw border ***/
-
-    drawCanvasBorder();
 
     // /*** Draw lines to find center of canvas ***/
     //
@@ -537,17 +543,13 @@ public class Main extends Application {
 
     /*** Clear any existing data from canvas ***/
 
-    gc.clearRect(0, 0, CANVAS_X_SIZE, CANVAS_Y_SIZE);
+    clearCanvas();
 
     /*** Set drawing properties ***/
 
     gc.setFill(Color.CRIMSON);
     gc.setStroke(Color.BLACK);
     gc.setLineWidth(1);
-
-    /*** Draw border ***/
-
-    drawCanvasBorder();
 
 //    /*** Draw lines to find midpoints ***/
 //
@@ -699,10 +701,10 @@ public class Main extends Application {
 
     /*** Draw border ***/
 
-    gc.strokeLine(0, 0, CANVAS_X_SIZE, 0);
-    gc.strokeLine(CANVAS_X_SIZE, 0, CANVAS_X_SIZE, CANVAS_Y_SIZE);
-    gc.strokeLine(CANVAS_X_SIZE, CANVAS_Y_SIZE, 0, CANVAS_Y_SIZE);
-    gc.strokeLine(0, CANVAS_Y_SIZE, 0, 0);
+    gcBorder.strokeLine(0, 0, CANVAS_X_SIZE, 0);
+    gcBorder.strokeLine(CANVAS_X_SIZE, 0, CANVAS_X_SIZE, CANVAS_Y_SIZE);
+    gcBorder.strokeLine(CANVAS_X_SIZE, CANVAS_Y_SIZE, 0, CANVAS_Y_SIZE);
+    gcBorder.strokeLine(0, CANVAS_Y_SIZE, 0, 0);
   }
 
   private void displayFriendsOfOneUser(String user) {
@@ -781,6 +783,28 @@ public class Main extends Application {
 	  c1.setItems(userList);
   }
   
+  private void updateFriendComboBoxAllUsers() {
+	  
+	  /*** Local Variables ***/	  
+	  
+	  List<String> userArray = sn.getAllUsers();
+	  ObservableList<String> userList = FXCollections.observableArrayList();
+	  
+	  /*** Add all users to ObservableList ***/
+	  
+	  for (String user : userArray) {
+		  userList.add(user);
+	  }
+	  
+	  /*** Clear current data ***/
+	  
+	  c2.getItems().clear();
+	  
+	  /*** Update comboBox with new user data ***/
+	  
+	  c2.setItems(userList);
+  }
+  
   private void updateFriendComboBox(String user) {
 	  
 	  /*** Local Variables ***/	  
@@ -826,28 +850,52 @@ public class Main extends Application {
         final Stage dialog = new Stage();
         dialog.initModality(Modality.APPLICATION_MODAL);
         dialog.initOwner(stage);
+        
+        /*** Set title on popup ***/
+        
+        dialog.setTitle("Add new user");
 
         Label label = new Label("");
-        TextField field = new TextField("Enter new user");
+        TextField field = new TextField("Enter name of user");
 
-
-        VBox box = new VBox();
-        box.getChildren().addAll(label, field);
-        box.setSpacing(10);
+        VBox vbox = new VBox();
+        vbox.getChildren().addAll(label, field);
+        vbox.setPadding(new Insets(0,10,0,10));
+        vbox.setSpacing(10);
+        
+        HBox hbox = new HBox();
 
         Button btnSubmit = new Button("Submit");
-        box.getChildren().add(btnSubmit);
-        Scene dialogScene = new Scene(box, 200, 100);
+        Button btnCancel = new Button("Cancel");
+        btnSubmit.setPrefSize(90, 20);
+        btnCancel.setPrefSize(90, 20);
+        
+        hbox.getChildren().add(btnSubmit);
+        hbox.getChildren().add(btnCancel);
+        hbox.setPadding(new Insets(0, 10, 0, 10));
+        hbox.setSpacing(50);
+        vbox.getChildren().add(hbox);
+        Scene dialogScene = new Scene(vbox, 240, 100);
 
-        EventHandler<ActionEvent> event = new EventHandler<ActionEvent>() {
+        EventHandler<ActionEvent> submit = new EventHandler<ActionEvent>() {
           public void handle(ActionEvent e) {
+        	  
+        	  //TODO: INPUT VERIFICATION AND INFORM USER OF BAD/INVALID INPUT
 
             sn.addUser(field.getText());
             // updateFriendListBox(field.getText());
             dialog.close();
           }
         };
-        btnSubmit.setOnAction(event);
+        
+        EventHandler<ActionEvent> cancel = new EventHandler<ActionEvent>() {
+            public void handle(ActionEvent e) {
+            	dialog.close();
+            }
+          };
+        btnSubmit.setOnAction(submit);
+        
+        btnCancel.setOnAction(cancel);
 
         dialog.setScene(dialogScene);
         dialog.show();
@@ -891,6 +939,8 @@ public class Main extends Application {
   private void clickExit(Button exit) {
     EventHandler<ActionEvent> event = new EventHandler<ActionEvent>() {
       public void handle(ActionEvent e) {
+    	  
+    	  //TODO: ASK USER IF THEY WANT TO SAVE
 
         Stage stage = (Stage) exit.getScene().getWindow();
         stage.close();
@@ -907,13 +957,17 @@ public class Main extends Application {
         Stage stage = (Stage) removeUser.getScene().getWindow();
         final Stage dialog = new Stage();
         dialog.initModality(Modality.APPLICATION_MODAL);
-        dialog.initOwner(stage);
+        dialog.initOwner(stage);        
+        
+        // Set title        
+        dialog.setTitle("Remove user");
 
-        Label label = new Label("Click a user to remove:");
+        Label label = new Label("Select a user to remove:");
         // users will have to be a list of all the users in the network.
         ObservableList<String> users1 =
             FXCollections.observableArrayList("User 1", "User 2", "User 3");
         ComboBox comboBox1 = new ComboBox(users1);
+        comboBox1.setPrefSize(75, 20);
 
         BorderPane root = new BorderPane();
         HBox box = new HBox();
@@ -924,25 +978,34 @@ public class Main extends Application {
         box.setPadding(new Insets(10, 20, 20, 20));
 
         Button btnSubmit = new Button("Submit");
-        box2.getChildren().addAll(comboBox1, btnSubmit);
+        Button btnCancel = new Button("Cancel");
+        btnSubmit.setPrefSize(75, 20);
+        btnCancel.setPrefSize(75, 20);
+        
+        box2.getChildren().addAll(comboBox1, btnSubmit, btnCancel);
         box2.setSpacing(10);
         box2.setPadding(new Insets(0, 0, 0, 20));
 
         root.setTop(box);
         root.setCenter(box2);
 
+        Scene dialogScene = new Scene(root, 275, 100);
 
-        Scene dialogScene = new Scene(root, 200, 100);
-
-
-        EventHandler<ActionEvent> event = new EventHandler<ActionEvent>() {
+        EventHandler<ActionEvent> submit = new EventHandler<ActionEvent>() {
           public void handle(ActionEvent e) {
             
             sn.removeUser((String)comboBox1.getValue());
             dialog.close();
           }
         };
-        btnSubmit.setOnAction(event);
+        
+        EventHandler<ActionEvent> cancel = new EventHandler<ActionEvent>() {
+            public void handle(ActionEvent e) {
+              dialog.close();
+            }
+          };
+        btnSubmit.setOnAction(submit);
+        btnCancel.setOnAction(cancel);
 
         dialog.setScene(dialogScene);
         dialog.show();
@@ -958,6 +1021,9 @@ public class Main extends Application {
         final Stage dialog = new Stage();
         dialog.initModality(Modality.APPLICATION_MODAL);
         dialog.initOwner(stage);
+        
+        // Set title        
+        dialog.setTitle("Remove friendship");
 
         Label label = new Label("Enter two users to remove friendship:");
         // users will have to be a list of all the users in the network.
@@ -969,35 +1035,56 @@ public class Main extends Application {
         ObservableList<String> users2 =
             FXCollections.observableArrayList("User 1", "User 2", "User 3");
         ComboBox comboBox2 = new ComboBox(users2);
+        
+        comboBox1.setPrefSize(100, 20);
+        comboBox2.setPrefSize(100, 20);
 
         BorderPane root = new BorderPane();
         HBox box = new HBox();
         HBox box2 = new HBox();
+        HBox box3 = new HBox();
+        VBox vbox = new VBox();
 
         box.getChildren().add(label);
         box.setSpacing(10);
         box.setPadding(new Insets(10, 20, 20, 20));
 
         Button btnSubmit = new Button("Submit");
-        box2.getChildren().addAll(comboBox1, comboBox2, btnSubmit);
-        box2.setSpacing(10);
+        Button btnCancel = new Button("Cancel");
+        btnSubmit.setPrefSize(75, 20);
+        btnCancel.setPrefSize(75, 20);
+        
+        box2.getChildren().addAll(comboBox1, comboBox2);
+        box2.setSpacing(30);
         box2.setPadding(new Insets(0, 0, 0, 20));
+        
+        box3.getChildren().addAll(btnSubmit, btnCancel);
+        box3.setSpacing(55);
+        box3.setPadding(new Insets(10, 30, 10, 30));
+        
+        vbox.getChildren().addAll(box, box2, box3);
 
-        root.setTop(box);
-        root.setCenter(box2);
+        root.setCenter(vbox);
 
 
-        Scene dialogScene = new Scene(root, 290, 100);
+        Scene dialogScene = new Scene(root, 270, 120);
 
 
-        EventHandler<ActionEvent> event = new EventHandler<ActionEvent>() {
+        EventHandler<ActionEvent> submit = new EventHandler<ActionEvent>() {
           public void handle(ActionEvent e) {
             
             sn.removeFriends((String)comboBox1.getValue(), (String)comboBox2.getValue());
             dialog.close();
           }
         };
-        btnSubmit.setOnAction(event);
+        
+        EventHandler<ActionEvent> cancel = new EventHandler<ActionEvent>() {
+            public void handle(ActionEvent e) {
+              dialog.close();
+            }
+          };
+        btnSubmit.setOnAction(submit);
+        btnCancel.setOnAction(cancel);
 
         dialog.setScene(dialogScene);
         dialog.show();
@@ -1012,7 +1099,7 @@ public class Main extends Application {
 	  
 	  String selection = c1.getValue();
 	  
-	  if (rb1.isSelected()) {
+	  if (rb1.isSelected()) { //All friends
 		  
 		  /*** Disable Friend comboBox ***/
 		  
@@ -1030,17 +1117,25 @@ public class Main extends Application {
 		  
 		  drawFriends(selection);
 		  
-	  } else if (rb2.isSelected()) {
+	  } else if (rb2.isSelected()) { //Mutual friendships
 		  
 		  /*** Enable Friend comboBox ***/
 		  
 		  c2.setDisable(false);
 		  
-	  } else if (rb3.isSelected()) {
+		  /*** Update friend comboBox with friends of main user ***/
+		  
+		  updateFriendComboBox(c1.getValue());
+		  
+	  } else if (rb3.isSelected()) { //Shortest path
 		  
 		  /*** Enable Friend comboBox ***/
 		  
 		  c2.setDisable(false);
+		  
+		  /*** Add all users to friend comboBox ***/
+		  
+		  updateFriendComboBoxAllUsers();
 	  }
   }
   
@@ -1143,21 +1238,9 @@ public class Main extends Application {
   
   private void clearCanvas() {
 	  
-	  /*** Move to origin ***/
+	  /*** Clear canvas contents by brute force ***/
 	  
-	  gc.translate(-CANVAS_X_SIZE / 2, -CANVAS_Y_SIZE / 2);
-	  
-	  /*** Clear canvas contents ***/
-	  
- 	  gc.clearRect(0, 0, CANVAS_X_SIZE, CANVAS_Y_SIZE);
- 	  
- 	  /*** Redraw canvas border ***/
- 	  
- 	  drawCanvasBorder();
- 	  
- 	  /*** Move back to middle ***/
- 	  
-	  gc.translate(CANVAS_X_SIZE / 2, CANVAS_Y_SIZE / 2);
+ 	  gc.clearRect(-CANVAS_X_SIZE, -CANVAS_Y_SIZE, CANVAS_X_SIZE * 2, CANVAS_Y_SIZE * 2);
   }
   
   private void resetGUI() {
@@ -1181,7 +1264,43 @@ public class Main extends Application {
   }
   
   private void displayShortestPath(String main, String friend) {
-	  //TODO: need to implement this yet.
+	  
+	  /*** Local Variables ***/
+	  
+	  List<Person> path;
+	  ObservableList<String> observablePath = FXCollections.observableArrayList();
+
+	  /*** Clear canvas ***/
+	  
+	  clearCanvas();
+	  
+	  /*** Check for invalid input ***/
+	  
+	  if (main.isEmpty() || friend.isEmpty()) {
+		  return;
+	  }
+	  
+	  /*** Clear friend listView ***/
+	  
+	  lvFriends.getItems().clear();
+	  
+	  /*** Get list of shortest path ***/
+	  
+	  path = sn.getShortestPath(main, friend);
+
+	  /*** Add list of users to observableList ***/
+	  
+	  for (Person p : path) {
+		  observablePath.add(p.getName());
+	  }
+	  
+	  /*** Update listBox label with user names ***/
+	  
+	  lblRadioChoice.setText("Shortest path between " + main + " and " + friend + ".");
+	  
+	  /*** Update listView with shortest path between two users ***/
+	  
+	  lvFriends.setItems(observablePath);
   }
 	
 	/*** Application ***/

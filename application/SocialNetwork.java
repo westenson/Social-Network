@@ -1,5 +1,6 @@
 package application;
 
+import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileWriter;
@@ -423,6 +424,7 @@ public class SocialNetwork implements SocialNetworkADT {
 		try {
 
 			outFile = new FileWriter(file);
+			BufferedWriter bw = new BufferedWriter(outFile);
 
 			Set<Graph> graphs = getConnectedComponents();
 
@@ -440,7 +442,8 @@ public class SocialNetwork implements SocialNetworkADT {
 					for (Person f : friends) {
 						outFile.write(i);
 						if (!visited.contains(f.getName())) {
-							outFile.write("a " + p.getName() + f.getName());
+							bw.write("a " + p.getName() + " " + f.getName());
+							bw.newLine();
 						}
 					}
 					// mark as visited
@@ -450,12 +453,43 @@ public class SocialNetwork implements SocialNetworkADT {
 
 			}
 
-			outFile.close();
+			bw.close();
 
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
 	}
+	
+	// main method for testing purposes
+		public static void main(String[] args) {
+			SocialNetwork socialNetwork = new SocialNetwork();
+			Person wally = new Person("wally");
+			Person jack = new Person("jack");
+			Person bill = new Person("bill");
+			Person jake = new Person("jake");
+
+			socialNetwork.graph.addNode(wally);
+			socialNetwork.graph.addNode(jack);
+			socialNetwork.graph.addNode(bill);
+			socialNetwork.graph.addNode(jake);
+
+			socialNetwork.graph.addEdge(wally, jack);
+			socialNetwork.graph.addEdge(bill, jake);
+			socialNetwork.graph.addEdge(wally, jake);
+			socialNetwork.graph.addEdge(wally, bill);
+
+			//System.out.println(socialNetwork.graph);
+
+			socialNetwork.graph.removeEdge(jack, wally);
+			//System.out.println(socialNetwork.graph);
+			
+			SocialNetwork sn2 = new SocialNetwork();
+
+			sn2.loadFromFile(new File("input.txt"));
+			System.out.println(sn2.toString());
+			sn2.saveToFile(new File("output.txt"));
+
+		}
 
 	/**
 	 * Returns number of edges in the social network

@@ -940,9 +940,10 @@ public class Main extends Application {
 	  
 	  rb1.setSelected(true);
 	  
-	  /*** Set main comboBox to first entry and disable friend comboBox ***/
+	  /*** Clear comboBoxes and disable friend comboBox ***/
 	  
 	  c1.getSelectionModel().clearSelection();
+	  c2.getSelectionModel().clearSelection();
 	  c2.setDisable(true);
 	  
 	  /*** Clear canvas ***/

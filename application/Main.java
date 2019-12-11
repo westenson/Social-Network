@@ -500,6 +500,9 @@ public class Main extends Application {
 
     double centerX = CANVAS_X_SIZE / 2.0;
     double centerY = CANVAS_Y_SIZE / 2.0;
+    
+    double currentX = 0.0;
+    double currentY = 0.0;
 
     int listSize = 0;
 
@@ -529,6 +532,8 @@ public class Main extends Application {
     /*** Move to center of canvas ***/
 
     gc.translate(centerX, centerY);
+    currentX += centerX;
+    currentY += centerY;
 
     /*** Draw main user ***/
 
@@ -589,6 +594,10 @@ public class Main extends Application {
       gc.strokeText("No friends", CENTERING_OFFSET_X * 2 - 4,
           -FRIEND_Y_OFFSET + CENTERING_OFFSET_Y);
     }
+    
+    /*** Move back to origin ***/
+    
+    gc.translate(-currentX, -currentY);
   }
 
   private void drawMutualFriends(String user1, String user2) {
@@ -599,6 +608,8 @@ public class Main extends Application {
     double rightMidX = (3 * CANVAS_X_SIZE) / 4.0;
     double centerY = CANVAS_Y_SIZE / 2.0;
     double spacing = 0.0;
+    double currentX = 0.0;
+    double currentY = 0.0;
 
     int listSize;
 
@@ -618,16 +629,19 @@ public class Main extends Application {
     gc.setStroke(Color.BLACK);
     gc.setLineWidth(1);
 
-    // /*** Draw lines to find midpoints ***/ //Used for orientation/testing
-    //
-    // gc.strokeLine(leftMidX, 0, leftMidX, CANVAS_Y_SIZE);
-    // gc.strokeLine(rightMidX, 0, rightMidX, CANVAS_Y_SIZE);
-    // gc.strokeLine(0, CANVAS_Y_SIZE / 2, CANVAS_X_SIZE, CANVAS_Y_SIZE / 2);
-    // gc.strokeLine(CANVAS_X_SIZE / 2, 0, CANVAS_X_SIZE / 2, CANVAS_Y_SIZE);
+     /*** Draw lines to find midpoints ***/ //Used for orientation/testing
+    
+     gc.strokeLine(leftMidX, 0, leftMidX, CANVAS_Y_SIZE);
+     gc.strokeLine(rightMidX, 0, rightMidX, CANVAS_Y_SIZE);
+     gc.strokeLine(0, CANVAS_Y_SIZE / 2, CANVAS_X_SIZE, CANVAS_Y_SIZE / 2);
+     gc.strokeLine(CANVAS_X_SIZE / 2, 0, CANVAS_X_SIZE / 2, CANVAS_Y_SIZE);
 
     /*** Move to left half center ***/
 
     gc.translate(leftMidX, centerY);
+    
+    currentX += leftMidX;
+    currentY += centerY;
 
     /*** Draw left user ***/
 
@@ -644,6 +658,8 @@ public class Main extends Application {
 
     gc.translate(rightMidX - leftMidX, 0);
     gc.fillOval(START_X, START_Y, CIRCLE_WIDTH, CIRCLE_HEIGHT);
+    
+    currentX += rightMidX - leftMidX;
 
     /*** Label right user ***/
 
@@ -655,8 +671,9 @@ public class Main extends Application {
 
     /*** Move to middle ***/
 
-    gc.translate(-leftMidX, 0);
-
+    gc.translate(-leftMidX, 0);    
+    currentX += -leftMidX;
+    
     /*** Get mutual friends ***/
 
     friendSet = sn.getMutualFriends(user1, user2);
@@ -688,6 +705,7 @@ public class Main extends Application {
       double shift = -spacing / 2;
 
       gc.translate(0, shift);
+      currentY += shift;
 
       for (int i = 0; i < listSize; i++) {
 
@@ -695,6 +713,8 @@ public class Main extends Application {
 
         gc.translate(0, spacing * i);
         gc.fillOval(START_X, START_Y, CIRCLE_WIDTH, CIRCLE_HEIGHT);
+
+        currentY += (spacing * i);
 
         /*** Draw connecting lines ***/
 
@@ -722,7 +742,8 @@ public class Main extends Application {
 
         /*** Draw circles for friends ***/
 
-        gc.translate(0, spacing * i);
+        gc.translate(0, spacing * i);        
+        currentY += (spacing * i);
 
         gc.fillOval(START_X, START_Y, CIRCLE_WIDTH, CIRCLE_HEIGHT);
 
@@ -763,6 +784,10 @@ public class Main extends Application {
     } else {
       gc.strokeText("No mutual friends", -CIRCLE_WIDTH + 4, CENTERING_OFFSET_Y);
     }
+    
+    /*** Move back to origin ***/
+    
+    gc.translate(-currentX, -currentY);
   }
 
   private void displayFriendsOfOneUser(String user) {
@@ -880,6 +905,11 @@ public class Main extends Application {
 
     c1.setItems(userList);
   }
+  
+  private void setMainUser(String user) {
+	  updateMainComboBox();
+	  
+  }
 
   private void updateFriendComboBoxAllUsers() {
 
@@ -972,19 +1002,6 @@ public class Main extends Application {
 
     lblUserOverflow.setVisible(false);
   }
-
-  /**
-   * Updates last action label with the string that is passed in.
-   * 
-   * @param action - last action taken to update label with
-   */
-  private void updateLastActionAndGroupAndUserCount(String action) {
-    lblLastAction.setText(action);
-    lblGroupCount.setText("Group count: " + sn.getNumberOfConnectedComponents());
-    lblUsersCount.setText("Group count: " + sn.getAllUsers().size());
-  }
-
-
 
   /***** ACTION EVENT/CLICK METHODS *****/
   /**
@@ -1512,7 +1529,18 @@ public class Main extends Application {
     }
   }
 
-  private void clickFriendComboBox() {
+  /**
+   * Updates last action label with the string that is passed in.
+   * 
+   * @param action - last action taken to update label with
+   */
+  private void updateLastActionAndGroupAndUserCount(String action) {
+    lblLastAction.setText(action);
+    lblGroupCount.setText("Group count: " + sn.getNumberOfConnectedComponents());
+    lblUsersCount.setText("User count: " + sn.getAllUsers().size());
+  }
+
+private void clickFriendComboBox() {
 
     /*** Local Variables ***/
 
@@ -1589,6 +1617,10 @@ public class Main extends Application {
     /*** Update canvas with all friends ***/
 
     drawFriends(selection);
+    
+    /*** Update comboBox with selection ***/
+    
+    c1.setValue(selection);
 
     /*** Update last action ***/
 

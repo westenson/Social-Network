@@ -629,12 +629,12 @@ public class Main extends Application {
     gc.setStroke(Color.BLACK);
     gc.setLineWidth(1);
 
-     /*** Draw lines to find midpoints ***/ //Used for orientation/testing
-    
-     gc.strokeLine(leftMidX, 0, leftMidX, CANVAS_Y_SIZE);
-     gc.strokeLine(rightMidX, 0, rightMidX, CANVAS_Y_SIZE);
-     gc.strokeLine(0, CANVAS_Y_SIZE / 2, CANVAS_X_SIZE, CANVAS_Y_SIZE / 2);
-     gc.strokeLine(CANVAS_X_SIZE / 2, 0, CANVAS_X_SIZE / 2, CANVAS_Y_SIZE);
+//     /*** Draw lines to find midpoints ***/ //Used for orientation/testing
+//    
+//     gc.strokeLine(leftMidX, 0, leftMidX, CANVAS_Y_SIZE);
+//     gc.strokeLine(rightMidX, 0, rightMidX, CANVAS_Y_SIZE);
+//     gc.strokeLine(0, CANVAS_Y_SIZE / 2, CANVAS_X_SIZE, CANVAS_Y_SIZE / 2);
+//     gc.strokeLine(CANVAS_X_SIZE / 2, 0, CANVAS_X_SIZE / 2, CANVAS_Y_SIZE);
 
     /*** Move to left half center ***/
 
@@ -646,9 +646,6 @@ public class Main extends Application {
     /*** Draw left user ***/
 
     gc.fillOval(START_X, START_Y, CIRCLE_WIDTH, CIRCLE_HEIGHT);
-
-    c1.getSelectionModel().selectFirst();
-    c2.getSelectionModel().selectFirst();
 
     /*** Label left user ***/
 
@@ -697,13 +694,8 @@ public class Main extends Application {
     listSize = friendList.size();
 
     spacing = CANVAS_Y_SIZE / listSize;
-    
-    System.out.println(listSize);
 
     if (listSize >= 1 && listSize % 2 == 0) { // even number of friends
-    	
-    	System.out.println("even friends");
-
 
       /*** Translate up for spacing on non-centered friends ***/
 
@@ -740,9 +732,6 @@ public class Main extends Application {
       }
 
     } else if (listSize >= 1 && listSize % 2 == 1) { // odd number of friends
-    	
-    	System.out.println("odd friends");
-
 
       for (int i = 0; i < listSize; i++) {
 
@@ -776,9 +765,6 @@ public class Main extends Application {
 
 //    } else if (listSize == 1 ) {
 //    	
-//    	System.out.println("one friend");
-//
-//
 //      /*** Add single friend ***/
 //
 //      gc.fillOval(START_X, START_Y, CIRCLE_WIDTH, CIRCLE_HEIGHT);
@@ -793,8 +779,6 @@ public class Main extends Application {
 //      gc.strokeText(friendList.get(0).getName(), CENTERING_OFFSET_X, CENTERING_OFFSET_Y);
 
     } else if (listSize == 0){
-    	
-    	System.out.println("no friends " + listSize);
 
       gc.strokeText("No mutual friends", -CIRCLE_WIDTH + 4, CENTERING_OFFSET_Y);
     }
@@ -1598,10 +1582,14 @@ public class Main extends Application {
       /*** Enable Friend comboBox ***/
 
       c2.setDisable(false);
+      
+      /*** Add all users to friend comboBox ***/
 
-      /*** Update friend comboBox with friends of main user ***/
+      updateFriendComboBoxAllUsers();
 
-      updateFriendComboBox(c1.getValue());
+//      /*** Update friend comboBox with friends of main user ***/
+//
+//      updateFriendComboBox(c1.getValue());
 
     } else if (rb3.isSelected()) { // Shortest path
 
@@ -1729,13 +1717,31 @@ private void clickFriendComboBox() {
       c2.getItems().clear();
 
       lblRadioChoice.setText("All friends");
+      
+      /*** Updates to show friends of user selected in main comboBox ***/
+      
+      if(c1.getValue() != null) {
+    	  displayFriendsOfOneUser(c1.getValue());
+    	  drawFriends(c1.getValue());
+      }
 
     } else if (selected.equals(rb2)) {
     	
       c2.setDisable(false); 
+
+      /*** Add all users to ObservableList ***/
+
+      for (String user : userArray) {
+        userList.add(user);
+      }
+
+      /*** Clear current data ***/
+
       c2.getItems().clear();
 
-      lblRadioChoice.setText("Mutual friends");
+      /*** Update comboBox with new user data ***/
+
+      c2.setItems(userList); 
 
     } else if (selected.equals(rb3)) {
 

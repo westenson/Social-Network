@@ -95,6 +95,9 @@ public class SocialNetwork implements SocialNetworkADT {
 	 */
 	@Override
 	public boolean addFriends(String friend1, String friend2) {
+		
+		if (friend1 == friend2) return false;
+		
 		Person user1 = new Person(friend1);
 		Person user2 = new Person(friend2);
 
@@ -475,37 +478,6 @@ public class SocialNetwork implements SocialNetworkADT {
 		}
 	}
 	
-	// main method for testing purposes
-		public static void main(String[] args) {
-			SocialNetwork socialNetwork = new SocialNetwork();
-			Person wally = new Person("wally");
-			Person jack = new Person("jack");
-			Person bill = new Person("bill");
-			Person jake = new Person("jake");
-
-			socialNetwork.graph.addNode(wally);
-			socialNetwork.graph.addNode(jack);
-			socialNetwork.graph.addNode(bill);
-			socialNetwork.graph.addNode(jake);
-
-			socialNetwork.graph.addEdge(wally, jack);
-			socialNetwork.graph.addEdge(bill, jake);
-			socialNetwork.graph.addEdge(wally, jake);
-			socialNetwork.graph.addEdge(wally, bill);
-
-			//System.out.println(socialNetwork.graph);
-
-			socialNetwork.graph.removeEdge(jack, wally);
-			//System.out.println(socialNetwork.graph);
-			
-			SocialNetwork sn2 = new SocialNetwork();
-
-			sn2.loadFromFile(new File("input.txt"));
-			System.out.println(sn2.toString());
-			sn2.saveToFile(new File("output.txt"));
-
-		}
-
 	/**
 	 * Returns number of edges in the social network
 	 * 

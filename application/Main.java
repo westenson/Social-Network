@@ -22,6 +22,8 @@ import javafx.stage.Stage;
 import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
+import javafx.scene.control.Alert;
+import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
@@ -1359,8 +1361,19 @@ public class Main extends Application {
 
 				File file = fileChooser.showOpenDialog(stage);
 
-				if (file != null)
-					sn.loadFromFile(file);
+				if (file != null) {
+					if (!sn.loadFromFile(file)); {
+						Alert alert = new Alert(AlertType.ERROR);
+						alert.setTitle("File Error");
+						alert.setHeaderText("Error encountered when parsing file.");
+						alert.setContentText("An error occured while parsing the file <" + 
+											file.getName() + ">. No new information added to "
+											+ "Social Network.");
+						updateLastActionAndGroupAndUserCount("Error encountered while loading file: "
+															 + file.getName(), "");
+					}
+				}
+
 
 				updateMainComboBox();
 

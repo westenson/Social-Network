@@ -1590,7 +1590,7 @@ public class Main extends Application {
 	 */
 	private void clickRemoveFriendship(Button rmFriendship) {
 		// when the user clicks remove friendship, a pop-up appears.
-		EventHandler<ActionEvent> event = new EventHandler<ActionEvent>() {
+		EventHandler<ActionEvent> event = new EventHandler<ActionEvent>() { 
 			public void handle(ActionEvent e) {
 				Stage stage = (Stage) rmFriendship.getScene().getWindow();
 				final Stage dialog = new Stage();

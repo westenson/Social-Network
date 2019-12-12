@@ -361,7 +361,7 @@ public class SocialNetwork implements SocialNetworkADT {
 	}
 
 	@Override
-	public void loadFromFile(File file) {
+	public boolean loadFromFile(File file) {
 		Scanner scnr = null;
 		try {
 			scnr = new Scanner(file);
@@ -371,6 +371,10 @@ public class SocialNetwork implements SocialNetworkADT {
 		while (scnr.hasNextLine()) {
 			
 			String[] commands = scnr.nextLine().trim().split(" ");
+			
+			if (!commands[0].equals("r") && !commands[0].equals("a") && !commands[0].equals("s")) {
+				return false;
+			}
 			
 			switch (commands[0]) {
 			
@@ -383,6 +387,9 @@ public class SocialNetwork implements SocialNetworkADT {
 				// remove a single friendship
 				else if (commands.length == 3) {
 					this.removeFriends(commands[1],commands[2]);
+				}
+				else {
+					return false;
 				}
 				break;
 				
@@ -405,6 +412,9 @@ public class SocialNetwork implements SocialNetworkADT {
 					}
 					graph.addEdge(graph.getNode(commands[2]), graph.getNode(commands[1]));
 				}
+				else {
+					return false;
+				}
 				break;
 				
 			case "s":
@@ -413,13 +423,17 @@ public class SocialNetwork implements SocialNetworkADT {
 				// set user as central screen in GUI
 				if (commands.length==2) {
 					setCentralUser(commands[1]);
-					//Main.setCentralUser(commands[1]);
+				}
+				else {
+					return false;
 				}
 				break;
 				
 			}
 		}
 		scnr.close();
+		return true;
+		
 	}
 	
 

@@ -86,7 +86,7 @@ public interface SocialNetworkADT {
    */
   public int getNumberOfConnectedComponents();
 
-  public void loadFromFile(File file);
+  public boolean loadFromFile(File file);
 
   public void saveToFile(File file);
 

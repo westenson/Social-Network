@@ -1125,6 +1125,7 @@ public class Main extends Application {
 					public void handle(ActionEvent e) {
 						// If the user types in valid input, add them to the
 						// network.
+						
 						if (!(field.getText().equals(""))) {
 							
 							String userName = field.getText();
@@ -1741,11 +1742,14 @@ public class Main extends Application {
 
 	/**
 	 * Updates last action label with the string that is passed in.
+	 * Adds the most recent command to the log array list
 	 * 
 	 * @param action - last action taken to update label with
+	 * @param commands - the letter and names for log file addition
 	 */
 	private void updateLastActionAndGroupAndUserCount(String action, String commands) {
 		
+		// "" commands means nothing needs to be recorded
 		if (!commands.equals("")) {
 			commandLog.add(commands);
 		}
@@ -1756,6 +1760,9 @@ public class Main extends Application {
 		lblUsersCount.setText("User count: " + sn.getAllUsers().size());
 	}
 
+	/**
+	 * Updates the GUI for c1 and c2 input
+	 */
 	private void clickFriendComboBox() {
 
 		/*** Local Variables ***/
@@ -1765,44 +1772,42 @@ public class Main extends Application {
 
 		boolean validSelections = false;
 
-		/*** Check that valid selections are made ***/
+		/*** Check that valid selections are made in both c1 and c2 ***/
 
 		if (c1.getValue() != null) {
 			mainSelection = c1.getValue();
-
 			if (c2.getValue() != null) {
 				friendSelection = c2.getValue();
-
 				validSelections = true;
 			}
 		}
 
 		if (validSelections) {
-			if (rb2.isSelected()) { // Mutual friends
+			
+			// Mutual friends
+			if (rb2.isSelected()) {
 
 				/*** Clear current data ***/
-
 				clearCanvas();
 
-				/*** Update listBox with all friends ***/
-
+				/*** Update listBox with all mutual friends ***/
 				displayFriendsTwoUsers(mainSelection, friendSelection);
 
-				/*** Update canvas with all friends ***/
-
+				/*** Update canvas with all mutual friends ***/
 				drawMutualFriends(mainSelection, friendSelection);
 
 				/*** Update last action ***/
-
 				updateLastActionAndGroupAndUserCount(
 						"Displayed mutual friends of: " + mainSelection
 								+ " and " + friendSelection, "");
 
-			} else if (rb3.isSelected()) { // Shortest path
+			// Shortest path
+			} else if (rb3.isSelected()) { 
+				
+				
 				displayShortestPath(mainSelection, friendSelection);
 
 				/*** Update last action ***/
-
 				updateLastActionAndGroupAndUserCount(
 						"Displayed shortest path between " + mainSelection
 								+ " and " + friendSelection, "");

@@ -126,7 +126,7 @@ public class Main extends Application {
 			BorderPane bottomPanel = new BorderPane();
 			
 			// saves commands for log file
-			ArrayList<String> commandLog = new ArrayList<String>();
+			commandLog = new ArrayList<String>();
 
 			/*** Create top and bottom panels ***/
 
@@ -1072,7 +1072,7 @@ public class Main extends Application {
 			public void handle(ActionEvent e) {
 				clearAllData();
 
-				updateLastActionAndGroupAndUserCount("Cleared all data");
+				updateLastActionAndGroupAndUserCount("Cleared all data", "");
 			}
 		};
 		Clear.setOnAction(event);
@@ -1127,12 +1127,11 @@ public class Main extends Application {
 						// network.
 						if (!(field.getText().equals(""))) {
 							
-							//commandLog.add("a "+field.getText());
-
 							String userName = field.getText();
+
 							sn.addUser(userName);
 							updateLastActionAndGroupAndUserCount(
-									"Added new user: " + userName);
+									"Added new user: " + userName, "a "+field.getText());
 
 							updateMainComboBox();
 							
@@ -1273,7 +1272,7 @@ public class Main extends Application {
 
 						if (comboBox1.getValue().equals(comboBox2.getValue())) {
 							updateLastActionAndGroupAndUserCount(
-									"Invalid Action: Cannot add friendship between same user");
+									"Invalid Action: Cannot add friendship between same user", "");
 
 						}
 
@@ -1281,8 +1280,8 @@ public class Main extends Application {
 							updateLastActionAndGroupAndUserCount(
 									"Added friendship between: "
 											+ comboBox1.getValue() + " and "
-											+ comboBox2.getValue());
-							commandLog.add("a "+comboBox1.getValue()+" "+comboBox2.getValue());
+											+ comboBox2.getValue(), 
+											"a "+comboBox1.getValue()+" "+comboBox2.getValue());
 
 						}
 					}
@@ -1332,7 +1331,7 @@ public class Main extends Application {
 
 				updateMainComboBox();
 
-				updateLastActionAndGroupAndUserCount("Loaded data from file");
+				updateLastActionAndGroupAndUserCount("Loaded data from file", "");
 
 				centralUser = sn.getCentralUser();
 
@@ -1376,7 +1375,7 @@ public class Main extends Application {
 
 		    	sn.saveToFile(new File("output.txt"));
 		    	
-		    	updateLastActionAndGroupAndUserCount("Exported data to file");
+		    	updateLastActionAndGroupAndUserCount("Exported data to file", "");
 		      }
 		    };
 
@@ -1426,6 +1425,7 @@ public class Main extends Application {
 				EventHandler<ActionEvent> eventSave = new EventHandler<ActionEvent>() {
 					public void handle(ActionEvent e) {
 
+						//System.out.println("commands: "+commandLog.toString());
 						FileChooser fileChooser = new FileChooser();
 						FileChooser.ExtensionFilter extension = new FileChooser.ExtensionFilter(
 								"txt files (*.txt)", "*.txt");
@@ -1435,8 +1435,8 @@ public class Main extends Application {
 						File destination = fileChooser.showSaveDialog(
 								(Stage) btnSave.getScene().getWindow());
 
-						if (destination != null)
-							createLogFile(commandLog,destination);
+						createLogFile(commandLog,destination);
+
 						stage.close();
 	
 					}
@@ -1516,9 +1516,7 @@ public class Main extends Application {
 						dialog.close();
 
 						updateLastActionAndGroupAndUserCount(
-								"Removed user: " + comboBox1.getValue());
-						commandLog.add("r "+comboBox1.getValue());
-
+								"Removed user: " + comboBox1.getValue(), "r "+comboBox1.getValue());
 
 						updateMainComboBox();
 					}
@@ -1625,7 +1623,7 @@ public class Main extends Application {
 
 						if (comboBox1.getValue().equals(comboBox2.getValue())) {
 							updateLastActionAndGroupAndUserCount(
-									"Invalid Action: Cannot remove friendship between same user");
+									"Invalid Action: Cannot remove friendship between same user", "");
 
 						}
 
@@ -1633,8 +1631,8 @@ public class Main extends Application {
 							updateLastActionAndGroupAndUserCount(
 									"Removed friendship between: "
 											+ comboBox1.getValue() + " and "
-											+ comboBox2.getValue());
-							commandLog.add("r "+comboBox1.getValue()+" "+comboBox2.getValue());
+											+ comboBox2.getValue(), 
+											"r "+comboBox1.getValue()+" "+comboBox2.getValue());
 
 						}
 					}
@@ -1682,7 +1680,7 @@ public class Main extends Application {
 			/*** Update last action ***/
 
 			updateLastActionAndGroupAndUserCount(
-					"Displayed all friends of " + selection);
+					"Displayed all friends of " + selection, "");
 
 		} else if (rb2.isSelected()) { // Mutual friendships
 
@@ -1724,17 +1722,20 @@ public class Main extends Application {
 			outFile = new FileWriter(file);
 				
 			BufferedWriter bw = new BufferedWriter(outFile);
-			
+						
 			for (String command: commands) {
 				
 				bw.write(command);
 				bw.newLine();
 				
 			}
+			
+			bw.close();
 		
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
+		
 
 	}
 
@@ -1743,7 +1744,12 @@ public class Main extends Application {
 	 * 
 	 * @param action - last action taken to update label with
 	 */
-	private void updateLastActionAndGroupAndUserCount(String action) {
+	private void updateLastActionAndGroupAndUserCount(String action, String commands) {
+		
+		if (!commands.equals("")) {
+			commandLog.add(commands);
+		}
+		
 		lblLastAction.setText(action);
 		lblGroupCount
 				.setText("Group count: " + sn.getNumberOfConnectedComponents());
@@ -1790,7 +1796,7 @@ public class Main extends Application {
 
 				updateLastActionAndGroupAndUserCount(
 						"Displayed mutual friends of: " + mainSelection
-								+ " and " + friendSelection);
+								+ " and " + friendSelection, "");
 
 			} else if (rb3.isSelected()) { // Shortest path
 				displayShortestPath(mainSelection, friendSelection);
@@ -1799,7 +1805,7 @@ public class Main extends Application {
 
 				updateLastActionAndGroupAndUserCount(
 						"Displayed shortest path between " + mainSelection
-								+ " and " + friendSelection);
+								+ " and " + friendSelection, "");
 			}
 		}
 	}
@@ -1837,7 +1843,7 @@ public class Main extends Application {
 		/*** Update last action ***/
 
 		updateLastActionAndGroupAndUserCount(
-				"Displayed all friends of " + selection);
+				"Displayed all friends of " + selection, "");
 	}
 
 	private void clickRadioButton() {

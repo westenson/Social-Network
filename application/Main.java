@@ -56,9 +56,9 @@ import application.Person;
  *          Purpose: aTeam p3 - Final Project
  *
  *          Description: Creates a GUI for a user to interact with the underlying data structure
- *          that models a Social Network using a GraphADT.
+ *                       that models a Social Network using a GraphADT.
  *
- *          Comment: Redo and Undo buttons are not functional
+ *          Comment: 
  *
  ***************************************************************************************************/
 
@@ -444,8 +444,7 @@ public class Main extends Application {
 
 	/***** CANVAS DRAWING METHODS *****/
 
-	private void drawExampleFriends(double x, double y) { // For testing
-															// purposes only
+	private void drawExampleFriends(double x, double y) { // For testing purposes only
 
 		/*** Local Constants ***/
 
@@ -1282,6 +1281,8 @@ public class Main extends Application {
 
 				Scene dialogScene = new Scene(root, 270, 120);
 				
+				/*** Makes it so same user cant be selected in both comboBoxes ***/
+				
 				comboBox1.setOnAction(new EventHandler<ActionEvent>() {
 					public void handle(ActionEvent e) {
 						
@@ -1379,16 +1380,17 @@ public class Main extends Application {
 						
 						alert.showAndWait();
 					}
-				}
+				} else {
 
-				updateMainComboBox();
-
-				updateLastActionAndGroupAndUserCount("Loaded data from file", "");
-
-				centralUser = sn.getCentralUser();
-
-				if (centralUser != null) {
-					setCentralUser(centralUser);
+					updateMainComboBox();
+	
+					updateLastActionAndGroupAndUserCount("Loaded data from file", "");
+	
+					centralUser = sn.getCentralUser();
+	
+					if (centralUser != null) {
+						setCentralUser(centralUser);
+					}
 				}
 			}
 		};
@@ -1643,6 +1645,8 @@ public class Main extends Application {
 				root.setCenter(vbox);
 
 				Scene dialogScene = new Scene(root, 270, 120);
+				
+				/*** Makes it so same user cant be selected in both comboBoxes ***/
 				
 				comboBox1.setOnAction(new EventHandler<ActionEvent>() {
 					public void handle(ActionEvent e) {

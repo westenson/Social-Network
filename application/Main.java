@@ -1705,9 +1705,8 @@ public class Main extends Application {
 				displayShortestPath(mainSelection, friendSelection);
 
 				/*** Update last action ***/
-				updateLastActionAndGroupAndUserCount(
-						"Displayed shortest path between " + mainSelection
-								+ " and " + friendSelection, "");
+				updateLastActionAndGroupAndUserCount("Displayed shortest path between " 
+				                             + mainSelection + " and " + friendSelection, "");
 			}
 		}
 	}

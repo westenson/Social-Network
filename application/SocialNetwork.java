@@ -372,7 +372,7 @@ public class SocialNetwork implements SocialNetworkADT {
 			
 			String[] commands = scnr.nextLine().trim().split(" ");
 			
-			if (!commands[0].equals("r") && !commands[0].equals("a") && !commands[0].equals("s")) {
+			if ((!commands[0].equals("r")) && (!commands[0].equals("a")) && (!commands[0].equals("s")) && !commands[0].equals("")) {
 				return false;
 			}
 			if (commands[0].equals("r")&&((commands.length!=2)&&(commands.length!=3))) {

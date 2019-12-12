@@ -1371,6 +1371,8 @@ public class Main extends Application {
 											+ "Social Network.");
 						updateLastActionAndGroupAndUserCount("Error encountered while loading file: "
 															 + file.getName(), "");
+						
+						alert.showAndWait();
 					}
 				}
 

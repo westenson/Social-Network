@@ -384,6 +384,19 @@ public class SocialNetwork implements SocialNetworkADT {
 			if (commands[0].equals("s")&&(commands.length!=2)) {
 				return false;
 			}
+	
+		}
+		scnr.close();
+		
+		Scanner scnr2 = null;
+		try {
+			scnr2 = new Scanner(file);
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
+		}
+		while (scnr2.hasNextLine()) {
+			
+			String[] commands = scnr2.nextLine().trim().split(" ");
 			
 			switch (commands[0]) {
 			
@@ -397,7 +410,6 @@ public class SocialNetwork implements SocialNetworkADT {
 				else if (commands.length == 3) {
 					this.removeFriends(commands[1],commands[2]);
 				}
-				
 				break;
 				
 			case "a":
@@ -431,7 +443,7 @@ public class SocialNetwork implements SocialNetworkADT {
 				
 			}
 		}
-		scnr.close();
+		scnr2.close();
 		return true;
 		
 	}

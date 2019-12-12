@@ -1126,7 +1126,39 @@ public class Main extends Application {
 						// If the user types in valid input, add them to the
 						// network.
 						
-						if (!(field.getText().equals(""))) {
+						if (sn.getUser(field.getText())!=null) {
+							
+							dialog.close();
+							Stage stage2 = (Stage) newUser.getScene()
+									.getWindow();
+							final Stage dialog2 = new Stage();
+							dialog2.initModality(Modality.APPLICATION_MODAL);
+							dialog2.initOwner(stage2);
+
+							dialog2.setTitle("Failed");
+
+							VBox box3 = new VBox();
+							Label label3 = new Label("User already in network.");
+							box3.setPadding(new Insets(10, 10, 10, 50));
+							box3.setSpacing(10);
+
+							Button btnCancel2 = new Button("Cancel");
+							btnCancel2.setPrefSize(90, 20);
+							box3.getChildren().addAll(label3, btnCancel2);
+
+							Scene dialogScene2 = new Scene(box3, 200, 100);
+
+							dialog2.setScene(dialogScene2);
+							dialog2.show();
+							// The cancel button for the invalid input pop-up
+							EventHandler<ActionEvent> cancel2 = new EventHandler<ActionEvent>() {
+								public void handle(ActionEvent e) {
+									dialog2.close();
+								}
+							};
+							btnCancel2.setOnAction(cancel2);
+							
+						} else if (!(field.getText().equals(""))) {
 							
 							String userName = field.getText();
 

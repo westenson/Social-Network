@@ -1361,14 +1361,14 @@ public class Main extends Application {
 
 				File file = fileChooser.showOpenDialog(stage);
 
-				if (file != null) {;
-					if (sn.loadFromFile(file)) {				
+				if (file != null) {
+					if (!sn.loadFromFile(file)) {				
 
 						Alert alert = new Alert(AlertType.ERROR);
 						alert.setTitle("File Error");
 						alert.setHeaderText("An error occured while parsing the file <" + 
 										    file.getName() + ">");
-						alert.setContentText("No new information added to Social Network.");
+						alert.setContentText("Incomplete data loaded to Social Network.");
 						updateLastActionAndGroupAndUserCount("Error encountered while loading file: "
 															 + file.getName(), "");
 						
@@ -1728,6 +1728,10 @@ public class Main extends Application {
 
 			updateLastActionAndGroupAndUserCount(
 					"Displayed all friends of " + selection, "");
+			
+			/*** Remove currently selected user in main comboBox from friend comboBox ***/
+			
+			removeUserFromFriendComboBox(c1.getValue());
 
 		} else if (rb2.isSelected()) { // Mutual friendships
 
@@ -1738,10 +1742,10 @@ public class Main extends Application {
 			/*** Add all users to friend comboBox ***/
 
 			updateFriendComboBoxAllUsers();
-
-//      /*** Update friend comboBox with friends of main user ***/
-//
-//      updateFriendComboBox(c1.getValue());
+			
+			/*** Remove currently selected user in main comboBox ***/
+			
+			removeUserFromFriendComboBox(c1.getValue());
 
 		} else if (rb3.isSelected()) { // Shortest path
 
@@ -1752,7 +1756,30 @@ public class Main extends Application {
 			/*** Add all users to friend comboBox ***/
 
 			updateFriendComboBoxAllUsers();
+			
+			/*** Remove currently selected user in main comboBox from friend comboBox ***/
+			
+			removeUserFromFriendComboBox(c1.getValue());
 		}
+	}
+	
+	private void removeUserFromFriendComboBox(String user) {
+		
+		/*** Get current list of users ***/
+		
+		ObservableList<String> users = c2.getItems();
+		
+		/*** Find and remove target user ***/
+		
+		for (int i = 0; i < users.size(); i++) {
+			if (users.get(i) == user) {
+				users.remove(i);
+			}
+		}
+		
+		/*** Update list ***/
+
+		c2.setItems(users);
 	}
 	
 	/**
@@ -1941,6 +1968,8 @@ public class Main extends Application {
 			/*** Update comboBox with new user data ***/
 
 			c2.setItems(userList);
+			removeUserFromFriendComboBox(c1.getValue());
+			
 
 		} else if (selected.equals(rb3)) {
 
@@ -1961,6 +1990,7 @@ public class Main extends Application {
 			/*** Update comboBox with new user data ***/
 
 			c2.setItems(userList);
+			removeUserFromFriendComboBox(c1.getValue());
 		}
 	}
 

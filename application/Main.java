@@ -1243,27 +1243,11 @@ public class Main extends Application {
 
 				Label label = new Label("Enter two users to add friendship:");
 				// users will have to be a list of all the users in the network.
-				ObservableList<String> users1 = FXCollections
-						.observableArrayList(sn.getAllUsers()); // TODO:
-																// UPDATE
-																// THIS
-																// WITH
-																// USERS
-																// FROM
-																// SOCIAL
-																// NETWORK
+				ObservableList<String> users1 = FXCollections.observableArrayList(sn.getAllUsers()); 
 				ComboBox<String> comboBox1 = new ComboBox<String>(users1);
 
 				// users will have to be a list of all the users in the network.
-				ObservableList<String> users2 = FXCollections
-						.observableArrayList(sn.getAllUsers()); // TODO:
-																// UPDATE
-																// THIS
-																// WITH
-																// USERS
-																// FROM
-																// SOCIAL
-																// NETWORK
+				ObservableList<String> users2 = FXCollections.observableArrayList(sn.getAllUsers()); 
 				ComboBox<String> comboBox2 = new ComboBox<String>(users2);
 
 				comboBox1.setPrefSize(100, 20);
@@ -1297,6 +1281,27 @@ public class Main extends Application {
 				root.setCenter(vbox);
 
 				Scene dialogScene = new Scene(root, 270, 120);
+				
+				comboBox1.setOnAction(new EventHandler<ActionEvent>() {
+					public void handle(ActionEvent e) {
+						
+						/*** Get current list of users ***/
+						
+						ObservableList<String> users = comboBox2.getItems();
+						
+						/*** Find and remove target user ***/
+						
+						for (int i = 0; i < users.size(); i++) {
+							if (users.get(i) == comboBox1.getValue()) {
+								users.remove(i);
+							}
+						}
+						
+						/*** Update list ***/
+
+						comboBox2.setItems(users);						
+					}
+				});
 
 				EventHandler<ActionEvent> submit = new EventHandler<ActionEvent>() {
 					public void handle(ActionEvent e) {
@@ -1523,14 +1528,7 @@ public class Main extends Application {
 				Label label = new Label("Select a user to remove:");
 				// users will have to be a list of all the users in the network.
 				ObservableList<String> users1 = FXCollections
-						.observableArrayList(sn.getAllUsers()); // TODO:
-																// UPDATE
-																// THIS
-																// WITH
-																// USERS
-																// FROM
-																// SOCIAL
-																// NETWORK
+						.observableArrayList(sn.getAllUsers()); 
 				ComboBox<String> comboBox1 = new ComboBox<String>(users1);
 				comboBox1.setPrefSize(75, 20);
 
@@ -1606,26 +1604,12 @@ public class Main extends Application {
 						"Enter two users to remove friendship:");
 				// users will have to be a list of all the users in the network.
 				ObservableList<String> users1 = FXCollections
-						.observableArrayList(sn.getAllUsers()); // TODO:
-																// UPDATE
-																// THIS
-																// WITH
-																// USERS
-																// FROM
-																// SOCIAL
-																// NETWORK
+						.observableArrayList(sn.getAllUsers()); 
 				ComboBox<String> comboBox1 = new ComboBox<String>(users1);
 
 				// users will have to be a list of all the users in the network.
 				ObservableList<String> users2 = FXCollections
-						.observableArrayList(sn.getAllUsers()); // TODO:
-																// UPDATE
-																// THIS
-																// WITH
-																// USERS
-																// FROM
-																// SOCIAL
-																// NETWORK
+						.observableArrayList(sn.getAllUsers()); 
 				ComboBox<String> comboBox2 = new ComboBox<String>(users2);
 
 				comboBox1.setPrefSize(100, 20);
@@ -1659,6 +1643,27 @@ public class Main extends Application {
 				root.setCenter(vbox);
 
 				Scene dialogScene = new Scene(root, 270, 120);
+				
+				comboBox1.setOnAction(new EventHandler<ActionEvent>() {
+					public void handle(ActionEvent e) {
+						
+						/*** Get current list of users ***/
+						
+						ObservableList<String> users = comboBox2.getItems();
+						
+						/*** Find and remove target user ***/
+						
+						for (int i = 0; i < users.size(); i++) {
+							if (users.get(i) == comboBox1.getValue()) {
+								users.remove(i);
+							}
+						}
+						
+						/*** Update list ***/
+
+						comboBox2.setItems(users);						
+					}
+				});
 
 				// the submit button action.
 				EventHandler<ActionEvent> submit = new EventHandler<ActionEvent>() {

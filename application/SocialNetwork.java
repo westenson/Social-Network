@@ -375,6 +375,15 @@ public class SocialNetwork implements SocialNetworkADT {
 			if (!commands[0].equals("r") && !commands[0].equals("a") && !commands[0].equals("s")) {
 				return false;
 			}
+			if (commands[0].equals("r")&&((commands.length!=2)&&(commands.length!=3))) {
+				return false;
+			}
+			if (commands[0].equals("a")&&((commands.length!=2)&&(commands.length!=3))) {
+				return false;
+			}
+			if (commands[0].equals("s")&&(commands.length!=2)) {
+				return false;
+			}
 			
 			switch (commands[0]) {
 			
@@ -388,9 +397,7 @@ public class SocialNetwork implements SocialNetworkADT {
 				else if (commands.length == 3) {
 					this.removeFriends(commands[1],commands[2]);
 				}
-				else {
-					return false;
-				}
+				
 				break;
 				
 			case "a":
@@ -412,20 +419,13 @@ public class SocialNetwork implements SocialNetworkADT {
 					}
 					graph.addEdge(graph.getNode(commands[2]), graph.getNode(commands[1]));
 				}
-				else {
-					return false;
-				}
 				break;
 				
 			case "s":
-				
-				
+						
 				// set user as central screen in GUI
 				if (commands.length==2) {
 					setCentralUser(commands[1]);
-				}
-				else {
-					return false;
 				}
 				break;
 				
